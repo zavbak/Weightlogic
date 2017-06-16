@@ -1,4 +1,4 @@
-package ru.a799000.android.weightlogic.mvp.presenters;
+package ru.a799000.android.weightlogic.mvp.presenters.generalscreen;
 
 import android.content.Context;
 
@@ -28,14 +28,11 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-
     }
 
 
     List<String> getListCommands(){
-
         List<String> list = Arrays.asList(mContext.getResources().getStringArray(R.array.commands_array));
-
         return list;
     }
 

@@ -2,22 +2,23 @@ package ru.a799000.android.weightlogic.ui.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
-import com.arellomobile.mvp.MvpPresenter;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.RealmResults;
 import ru.a799000.android.weightlogic.R;
-import ru.a799000.android.weightlogic.mvp.presenters.GeneralScreenPr;
+import ru.a799000.android.weightlogic.mvp.presenters.generalscreen.GeneralScreenPr;
 import ru.a799000.android.weightlogic.mvp.view.GeneralScreenView;
 import ru.a799000.android.weightlogic.ui.adapters.CommandsAdapter;
 
@@ -47,7 +48,20 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.general_screen, container, false);
+        View view = inflater.inflate(R.layout.general_screen, container, false);
+
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if(event.getAction()== KeyEvent.ACTION_DOWN){
+                    Toast.makeText(getActivity(),"keyCode = " + keyCode,Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+        });
+
+        return view;
     }
 
 
@@ -55,18 +69,42 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
     public void onStart() {
         super.onStart();
         mPresenter.onStart();
+
+
+
     }
 
     @Override
     public void refreshView(List<String> list) {
-        //mRecyclerView.setAdapter(new AdapterListProduct(list, id -> mPresenter.clickItem(id)));
+
         CommandsAdapter adapter = new CommandsAdapter(getActivity(),list);
         lvCommands.setAdapter(adapter);
-
-        lvCommands.requestFocus();
-        lvCommands.requestFocus(5);
+        lvCommands.requestFocus(0);
+        lvCommands.setSelection(0);
         lvCommands.setClickable(true);
 
+        lvCommands.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Toast.makeText(getActivity(), "itemClick: position = " + position + ", id = "
+                        + id,Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+
+        lvCommands.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if(event.getAction()== KeyEvent.ACTION_DOWN){
+                    Toast.makeText(getActivity(),"" + event.getNumber(),Toast.LENGTH_SHORT).show();
+                }
+
+                return false;
+            }
+        });
     }
 
     @Override

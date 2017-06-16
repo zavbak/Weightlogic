@@ -57,7 +57,7 @@ public class CommandsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.setData(Integer.toString(position), mlist.get(position));
+        viewHolder.setData(Integer.toString(position + 1), mlist.get(position));
 
         return convertView;
     }

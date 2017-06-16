@@ -6,7 +6,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import io.realm.RealmConfiguration;
-import ru.a799000.android.weightlogic.mvp.presenters.GeneralScreenPr;
+import ru.a799000.android.weightlogic.mvp.presenters.generalscreen.GeneralScreenPr;
 
 
 @Singleton
