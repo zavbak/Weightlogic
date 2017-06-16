@@ -20,9 +20,11 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
 
     @Inject
     Context mContext;
+    List<String> mlist;
 
     public GeneralScreenPr() {
         App.getAppComponent().injectGeneralScreenPr(this);
+        mlist = Arrays.asList(mContext.getResources().getStringArray(R.array.commands_array));
     }
 
     @Override
@@ -31,12 +33,28 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
     }
 
 
-    List<String> getListCommands(){
-        List<String> list = Arrays.asList(mContext.getResources().getStringArray(R.array.commands_array));
-        return list;
+    List<String> getListCommands() {
+        return mlist;
     }
 
     public void onStart() {
+
         getViewState().refreshView(getListCommands());
+    }
+
+    public void selectCommand(int position) {
+        getViewState().showMessageView(mlist.get(position));
+    }
+
+    public void pressKey(char number) {
+        try {
+            int i = Integer.parseInt(Character.toString(number));
+            if ((i != 0) && (i-1 < mlist.size())) {
+                getViewState().showMessageView(mlist.get(i-1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

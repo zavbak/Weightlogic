@@ -13,4 +13,6 @@ import java.util.List;
 public interface GeneralScreenView extends MvpView{
     @StateStrategyType(OneExecutionStateStrategy.class)
     void refreshView(List<String> list);
+
+    void showMessageView(String messager);
 }

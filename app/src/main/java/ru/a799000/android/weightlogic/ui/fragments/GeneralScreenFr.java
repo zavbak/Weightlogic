@@ -2,6 +2,7 @@ package ru.a799000.android.weightlogic.ui.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,9 +70,6 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
     public void onStart() {
         super.onStart();
         mPresenter.onStart();
-
-
-
     }
 
     @Override
@@ -86,8 +84,8 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
         lvCommands.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(getActivity(), "itemClick: position = " + position + ", id = "
-                        + id,Toast.LENGTH_SHORT).show();
+
+                mPresenter.selectCommand(position);
 
             }
         });
@@ -99,12 +97,18 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
                 if(event.getAction()== KeyEvent.ACTION_DOWN){
-                    Toast.makeText(getActivity(),"" + event.getNumber(),Toast.LENGTH_SHORT).show();
+                    mPresenter.pressKey(event.getNumber());
                 }
 
                 return false;
             }
         });
+    }
+
+    @Override
+    public void showMessageView(String messager) {
+        Snackbar.make(getView(), messager, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
     @Override
