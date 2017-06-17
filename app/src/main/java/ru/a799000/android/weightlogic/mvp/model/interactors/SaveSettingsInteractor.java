@@ -9,16 +9,16 @@ import rx.Observable;
  * Created by user on 17.06.2017.
  */
 
-public class SaveSettings extends Interactor<SettingsApp> {
+public class SaveSettingsInteractor extends Interactor<SettingsApp> {
 
     SettingsApp mSettingsApp;
 
-    public SaveSettings(SettingsApp settingsApp) {
+    public SaveSettingsInteractor(SettingsApp settingsApp) {
         mSettingsApp = settingsApp;
     }
 
     @Override
-    protected Observable getObservable() {
+    public Observable getObservable() {
         try {
             SharedPreferenseHelper.getInstance(App.getAppComponent().getContext()).saveSettings(mSettingsApp);
             return  Observable.empty();

@@ -9,10 +9,10 @@ import rx.Observable;
  * Created by user on 17.06.2017.
  */
 
-public class GetSettings extends Interactor<SettingsApp> {
+public class GetSettingsInteractor extends Interactor<SettingsApp> {
 
     @Override
-    protected Observable<SettingsApp> getObservable() {
+    public Observable<SettingsApp> getObservable() {
         return Observable.just(SharedPreferenseHelper.getInstance(App.getAppComponent().getContext()).getSettings());
     }
 }

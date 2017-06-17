@@ -7,5 +7,5 @@ import rx.Observable;
  */
 
 public abstract class Interactor<T> {
-    protected abstract Observable<T> getObservable();
+    public abstract Observable<T> getObservable();
 }

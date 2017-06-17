@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +14,14 @@ import javax.inject.Inject;
 
 import ru.a799000.android.weightlogic.R;
 import ru.a799000.android.weightlogic.app.App;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.LoadFileseInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
+import ru.a799000.android.weightlogic.mvp.model.intities.IntitiesLoadObject;
+import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.view.GeneralScreenView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 @InjectViewState
@@ -39,17 +48,66 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
 
 
     void executeCommand(int id) {
+
         switch (id) {
+            case 0:
+                getViewState().startProductsScreenView();
+                break;
+            case 1:
+                loadFile();
+                break;
+
             case 4:
                 getViewState().startSettingsScreenView();
                 break;
             case 5:
                 getViewState().startTestScreenView();
                 break;
-            case 0:
-                getViewState().startProductsScreenView();
-                break;
         }
+    }
+
+    private void loadFile() {
+        getViewState().showProgressDialog(true);
+
+        LoadFileseInteractor interactor = new LoadFileseInteractor();
+        interactor.getObservable()
+                .map(s -> {
+                    GsonBuilder builder = new GsonBuilder();
+                    Gson gson = builder.create();
+                    return gson.fromJson(s, IntitiesLoadObject.class);
+                })
+                .flatMap(intitiesLoadObject -> {
+                    return Observable.from(intitiesLoadObject.getTovars());
+                })
+                .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
+                .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
+                .flatMap(intitiesTovar -> {
+                    Product product = new Product();
+                    product.setCode(intitiesTovar.getCode());
+                    product.setName(intitiesTovar.getName());
+                    product.setUnit(intitiesTovar.getEd());
+
+                    SaveProductInteractor saveProductInteractor = new SaveProductInteractor(product);
+                    return saveProductInteractor.getObservable();
+
+                })
+                .count()
+                .subscribe(integer -> {
+
+                    getViewState().showSnackbarView("Загружено: " + integer);
+                    getViewState().showProgressDialog(false);
+
+                }, throwable -> {
+
+                    getViewState().showSnackbarView(throwable.getMessage());
+                    getViewState().showProgressDialog(false);
+
+
+                }, () -> {
+
+
+                });
+
     }
 
     public void onStart() {

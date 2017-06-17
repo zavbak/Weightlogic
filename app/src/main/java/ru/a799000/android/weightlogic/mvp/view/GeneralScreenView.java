@@ -1,6 +1,7 @@
 package ru.a799000.android.weightlogic.mvp.view;
 
 import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
@@ -26,4 +27,7 @@ public interface GeneralScreenView extends MvpView{
 
     @StateStrategyType(SkipStrategy.class)
     void startProductsScreenView();
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void showProgressDialog(boolean show);
 }

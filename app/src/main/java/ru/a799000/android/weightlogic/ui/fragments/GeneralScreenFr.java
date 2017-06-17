@@ -1,5 +1,8 @@
 package ru.a799000.android.weightlogic.ui.fragments;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -38,6 +41,8 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
 
     @BindView(R.id.lvCommands)
     ListView lvCommands;
+
+    ProgressDialog mProgressDialog;
 
 
     public static GeneralScreenFr getInstance() {
@@ -115,6 +120,23 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
     @Override
     public void startProductsScreenView() {
         mCallBackScreens.startProductsScreenView(null);
+    }
+
+    @Override
+    public void showProgressDialog(boolean show ) {
+        if(show){
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setTitle("Выполняем..");
+            //mProgressDialog.setMessage("Message");
+            mProgressDialog.show();
+
+        }else{
+            if(mProgressDialog.isShowing()){
+                mProgressDialog.dismiss();
+            }
+        }
+
     }
 
     @Override

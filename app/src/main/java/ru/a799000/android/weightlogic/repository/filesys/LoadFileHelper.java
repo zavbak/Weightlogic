@@ -20,11 +20,11 @@ import rx.Observable;
  * Created by Alex on 30.05.2017.
  */
 
-public class LoadProductFile {
+public class LoadFileHelper {
 
     String mFileName;
 
-    public LoadProductFile(String fileName) {
+    public LoadFileHelper(String fileName) {
         mFileName = fileName;
     }
 
