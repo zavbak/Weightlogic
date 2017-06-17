@@ -2,6 +2,7 @@ package ru.a799000.android.weightlogic.mvp.view;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 /**
@@ -17,9 +18,14 @@ public interface MainAcView extends MvpView{
     void startTestScreenView();
 
     @StateStrategyType(OneExecutionStateStrategy.class)
-    void startProductsScreenView();
+    void startProductsScreenView(String id);
 
     @StateStrategyType(OneExecutionStateStrategy.class)
-    void startDetailProductScreenView(String id);
+    void startSettingsScreenView();
+
+    @StateStrategyType(SkipStrategy.class)
+    void showSnackbarView(String messager);
+
+
 
 }

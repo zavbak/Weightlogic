@@ -1,29 +1,52 @@
 package ru.a799000.android.weightlogic.ui.activityes;
 
+import android.appwidget.AppWidgetHostView;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.MenuItem;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
-import com.arellomobile.mvp.MvpView;
-import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.f2prateek.rx.receivers.RxBroadcastReceiver;
+
+
+
+import io.realm.RealmResults;
 import ru.a799000.android.weightlogic.R;
+import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.presenters.MainAcPr;
 import ru.a799000.android.weightlogic.mvp.view.MainAcView;
+import ru.a799000.android.weightlogic.repository.barcode.BarcodeDataBroadcastReceiver;
+import rx.Observable;
 
 
-public class MainActivity extends MvpAppCompatActivity implements MainAcView,CallBackScreens {
+public class MainActivity extends MvpAppCompatActivity implements MainAcView,CallBackScreens,GetDataActivity {
 
     @InjectPresenter
     MainAcPr mPresenter;
 
     RouterScreen mRouterScreen;
 
+    BarcodeDataBroadcastReceiver mBarcodeDataBroadcastReceiver;
+    Observable<String> mObservableBarcode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRouterScreen = new RouterScreen(this);
+
+
+        IntentFilter intentFilter = new IntentFilter("DATA_SCAN");
+        mObservableBarcode =   RxBroadcastReceiver.create(this, intentFilter)
+                .map(intent -> intent.getStringExtra("com.hht.emdk.datawedge.data_string"));
+    }
+
+    @Override
+    public Observable<String> getObservableBarcode() {
+        return mObservableBarcode;
     }
 
 
@@ -35,8 +58,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -52,13 +73,29 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
     }
 
     @Override
-    public void startProductsScreenView() {
-        mRouterScreen.startProductsScreen();
+    public void startProductsScreenView(String id) {
+        mRouterScreen.startProductsScreen(id);
+    }
+
+    @Override
+    public void startSettingsScreenView() {
+        mRouterScreen.startSettingsScreen();
+    }
+
+    @Override
+    public void showSnackbarView(String messager) {
+        Snackbar.make(findViewById(R.id.root), messager, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
     @Override
     public void startDetailProductScreenView(String id) {
         mRouterScreen.startDetailProductScreen(id);
+    }
+
+    @Override
+    public void backStack() {
+        mRouterScreen.backStack();
     }
 
 

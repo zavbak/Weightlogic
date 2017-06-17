@@ -25,6 +25,7 @@ public class Barcode extends RealmObject {
         this.barcode = barcodeBuilder.barcode;
         this.places = barcodeBuilder.places;
         this.weight = barcodeBuilder.weight;
+
     }
 
     public static Builder getBuilder() {
@@ -85,6 +86,7 @@ public class Barcode extends RealmObject {
 
         public Builder() {
         }
+
 
         public Builder setBarcode(String barcode) {
             this.barcode = barcode;

@@ -31,4 +31,7 @@ public interface ProductsListScreenView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void startDetailProductScreenView(String id);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void setListPosition();
 }

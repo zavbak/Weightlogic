@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.a799000.android.weightlogic.ui.activityes.MainActivity">
+    tools:context="ru.a799000.android.weightlogic.ui.activityes.MainActivity"
+     android:id="@+id/root">
 
     <FrameLayout
         android:id="@+id/fragment"

@@ -83,8 +83,6 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
             }
         });
 
-
-
         lvCommands.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -110,8 +108,13 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
     }
 
     @Override
+    public void startSettingsScreenView() {
+        mCallBackScreens.startSettingsScreenView();
+    }
+
+    @Override
     public void startProductsScreenView() {
-        mCallBackScreens.startProductsScreenView();
+        mCallBackScreens.startProductsScreenView(null);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class TestScreenFr extends MvpAppCompatFragment implements TestScreenFrVi
     @InjectPresenter
     TestScreenFrPr mPresenter;
 
-    @BindView(R.id.tvMessage)
+    @BindView(R.id.tvMessageBarcode)
     TextView tvMessage;
 
 

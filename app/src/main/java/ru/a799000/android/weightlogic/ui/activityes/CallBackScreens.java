@@ -6,6 +6,8 @@ package ru.a799000.android.weightlogic.ui.activityes;
 
 public interface CallBackScreens {
     void startTestScreenView();
-    void startProductsScreenView();
+    void startProductsScreenView(String id);
     void startDetailProductScreenView(String id);
+    void startSettingsScreenView();
+    void backStack();
 }

@@ -40,6 +40,9 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
 
     void executeCommand(int id) {
         switch (id) {
+            case 4:
+                getViewState().startSettingsScreenView();
+                break;
             case 5:
                 getViewState().startTestScreenView();
                 break;

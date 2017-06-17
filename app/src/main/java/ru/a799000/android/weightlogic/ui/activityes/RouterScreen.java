@@ -3,9 +3,11 @@ package ru.a799000.android.weightlogic.ui.activityes;
 import android.support.v7.app.AppCompatActivity;
 
 import ru.a799000.android.weightlogic.R;
+import ru.a799000.android.weightlogic.mvp.view.SettingsScreenView;
 import ru.a799000.android.weightlogic.ui.fragments.DetailProductScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.GeneralScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.ProductsListScreenFr;
+import ru.a799000.android.weightlogic.ui.fragments.SettingsScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.TestScreenFr;
 
 /**
@@ -36,21 +38,42 @@ public class RouterScreen {
     }
 
 
-    void startProductsScreen(){
+    void startProductsScreen(String id){
         mActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment, ProductsListScreenFr.getInstance(), ProductsListScreenFr.TAG)
+                .replace(R.id.fragment, ProductsListScreenFr.getInstance(id), ProductsListScreenFr.TAG)
                 .addToBackStack("myBackStack")
                 .commit();
     }
 
 
     void startDetailProductScreen(String id){
-        mActivity.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment, DetailProductScreenFr.getInstance(id), DetailProductScreenFr.TAG)
-                .addToBackStack("myBackStack")
-                .commit();
+
+
+            mActivity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment, DetailProductScreenFr.getInstance(id), DetailProductScreenFr.TAG)
+                    .addToBackStack("myBackStack")
+                    .commit();
+
     }
 
+    void startSettingsScreen(){
+
+        mActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment, SettingsScreenFr.getInstance(), SettingsScreenFr.TAG)
+                .addToBackStack("myBackStack")
+                .commit();
+
+    }
+
+
+    public void backStack() {
+        if (mActivity.getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            mActivity.getSupportFragmentManager().popBackStack();
+        } else {
+            mActivity.onBackPressed();
+        }
+    }
 }

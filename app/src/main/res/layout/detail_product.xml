@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,6 +14,7 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             >
 
             <TextView
@@ -24,24 +27,51 @@
                 android:textSize="24dp"
                 android:textStyle="bold"/>
 
+
+
+
         </FrameLayout>
 
 
         <FrameLayout
 
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
 
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        </FrameLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+
+        <FrameLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilName"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
                 android:layout_margin="8dp"
-                android:layout_weight="15"
-                android:text="Настройка"
-                android:textSize="24dp"
-                android:textStyle="bold"/>
+                >
+                <EditText
+                    android:id="@+id/edName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:hint="Наименование"
+                    android:textSize="24dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
 
         </FrameLayout>
     </LinearLayout>
@@ -55,15 +85,15 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/tilBarcode"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="68dp"
             android:layout_margin="8dp"
             >
             <EditText
                 android:id="@+id/edBarcode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
                 android:hint="Штрихкод"
+                android:inputType="textEmailAddress"
                 android:textSize="24dp"
                 />
         </android.support.design.widget.TextInputLayout>
@@ -77,14 +107,14 @@
 
 
         <TextView
-            android:id="@+id/tvMessage"
+            android:id="@+id/tvMessageBarcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Сим. 10, 1245 ВЕС 12.45"
             android:layout_margin="8dp"
-            android:textSize="24dp"/>
+            android:textSize="18dp"
+            android:textStyle="bold"/>
     </FrameLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -95,14 +125,15 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/tilStart"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:layout_margin="8dp"
+
             >
             <EditText
                 android:id="@+id/edStart"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
+                android:inputType="numberSigned"
                 android:hint="Начало"
                 android:textSize="24dp"
                 />
@@ -111,14 +142,14 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/tilFinish"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:layout_margin="8dp"
             >
             <EditText
                 android:id="@+id/edFinish"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
+                android:inputType="numberSigned"
                 android:hint="Конец"
                 android:textSize="24dp"
                 />
@@ -127,21 +158,53 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/tilCoef"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:layout_margin="8dp"
             >
             <EditText
                 android:id="@+id/edCoef"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
+                android:inputType="numberDecimal"
                 android:hint="Коэф."
                 android:textSize="24dp"
                 />
         </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Зап. 15, В. 105, M. 50"
+            android:layout_margin="8dp"
+            android:textSize="24dp"/>
+    </LinearLayout>
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/btCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Отмена"/>
+
+        <Button
+            android:id="@+id/btSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Сохранить"/>
     </LinearLayout>
 
 </LinearLayout>

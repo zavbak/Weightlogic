@@ -22,5 +22,8 @@ public interface GeneralScreenView extends MvpView{
     void startTestScreenView();
 
     @StateStrategyType(SkipStrategy.class)
+    void startSettingsScreenView();
+
+    @StateStrategyType(SkipStrategy.class)
     void startProductsScreenView();
 }

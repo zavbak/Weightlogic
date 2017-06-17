@@ -6,6 +6,7 @@ import com.arellomobile.mvp.MvpPresenter;
 import io.realm.RealmResults;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllProductInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.view.ProductsListScreenView;
 import rx.android.schedulers.AndroidSchedulers;
@@ -18,6 +19,9 @@ import rx.android.schedulers.AndroidSchedulers;
 public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
 
     RealmResults<Product> mData;
+    String mId;
+    int positionCurent;
+
 
 
     private void refreshList() {
@@ -29,9 +33,27 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
                         resultO -> {
                             mData = (RealmResults<Product>) resultO;
                             getViewState().refreshView(mData);
+                            setListPosition();
+
                         }
                         , throwable ->
                                 getViewState().showInfoView(throwable.getMessage()));
+
+
+    }
+
+
+    void setListPosition(){
+        if(mId != null){
+            int i = 0;
+            for(Product product:mData){
+                if(product.getId()==Long.parseLong(mId)){
+                    positionCurent = i;
+                    getViewState().setListPosition();
+                }
+                i = i +1;
+            }
+        }
     }
 
 
@@ -84,6 +106,14 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
 
 
     public void onClickProduct(int position) {
-        getViewState().startDetailProductScreenView(Integer.toString(position));
+        getViewState().startDetailProductScreenView(Long.toString(mData.get(position).getId()));
+    }
+
+    public void setID(String id) {
+        mId = id;
+    }
+
+    public int getSelectionPosition() {
+        return positionCurent;
     }
 }

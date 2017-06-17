@@ -30,12 +30,13 @@ import ru.a799000.android.weightlogic.ui.adapters.AdapretProdact;
 
 public class ProductsListScreenFr extends MvpAppCompatFragment implements ProductsListScreenView {
     public static final String TAG = "ProductsListScreenFr";
+    static final String ID = "id";
 
 
     @InjectPresenter
     ProductsListScreenPr mPresenter;
 
-    @BindView(R.id.tvMessage)
+    @BindView(R.id.tvMessageBarcode)
     TextView tvMessage;
 
     @BindView(R.id.lvProducts)
@@ -45,9 +46,10 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     CallBackScreens mCallBackScreens;
 
 
-    public static ProductsListScreenFr getInstance() {
+    public static ProductsListScreenFr getInstance(String id) {
         ProductsListScreenFr fragment = new ProductsListScreenFr();
         Bundle args = new Bundle();
+        args.putString(ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,6 +58,9 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_products_screen, container, false);
+
+        Bundle args = getArguments();
+        mPresenter.setID(args.getString(ID));
 
         mCallBackScreens = (CallBackScreens) getActivity();
 
@@ -81,7 +86,7 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
         AdapretProdact adapter = new AdapretProdact(data);
         lvProducts.setAdapter(adapter);
         lvProducts.requestFocus(0);
-        lvProducts.setSelection(0);
+        lvProducts.setSelection(mPresenter.getSelectionPosition());
         lvProducts.setClickable(true);
 
         lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -122,6 +127,11 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     @Override
     public void startDetailProductScreenView(String id) {
         mCallBackScreens.startDetailProductScreenView(id);
+    }
+
+    @Override
+    public void setListPosition() {
+        lvProducts.setSelection(mPresenter.getSelectionPosition());
     }
 
 
