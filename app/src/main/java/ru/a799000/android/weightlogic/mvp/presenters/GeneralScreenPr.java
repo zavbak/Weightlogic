@@ -1,4 +1,4 @@
-package ru.a799000.android.weightlogic.mvp.presenters.generalscreen;
+package ru.a799000.android.weightlogic.mvp.presenters;
 
 import android.content.Context;
 
@@ -37,20 +37,34 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
         return mlist;
     }
 
+
+    void executeCommand(int id) {
+        switch (id) {
+            case 5:
+                getViewState().startTestScreenView();
+                break;
+            case 0:
+                getViewState().startProductsScreenView();
+                break;
+        }
+    }
+
     public void onStart() {
 
         getViewState().refreshView(getListCommands());
     }
 
     public void selectCommand(int position) {
-        getViewState().showMessageView(mlist.get(position));
+        getViewState().showSnackbarView(mlist.get(position));
+        executeCommand(position);
     }
 
     public void pressKey(char number) {
         try {
             int i = Integer.parseInt(Character.toString(number));
-            if ((i != 0) && (i-1 < mlist.size())) {
-                getViewState().showMessageView(mlist.get(i-1));
+            if ((i != 0) && (i - 1 < mlist.size())) {
+                executeCommand(i - 1);
+                getViewState().showSnackbarView(mlist.get(i - 1));
             }
         } catch (Exception e) {
             e.printStackTrace();

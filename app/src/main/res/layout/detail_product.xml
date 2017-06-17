@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/tvId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="(1)"
+                android:textSize="24dp"
+                android:textStyle="bold"/>
+
+        </FrameLayout>
+
+
+        <FrameLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="15"
+                android:text="Настройка"
+                android:textSize="24dp"
+                android:textStyle="bold"/>
+
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            >
+            <EditText
+                android:id="@+id/edBarcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="Штрихкод"
+                android:textSize="24dp"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сим. 10, 1245 ВЕС 12.45"
+            android:layout_margin="8dp"
+            android:textSize="24dp"/>
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilStart"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            >
+            <EditText
+                android:id="@+id/edStart"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="Начало"
+                android:textSize="24dp"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilFinish"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            >
+            <EditText
+                android:id="@+id/edFinish"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="Конец"
+                android:textSize="24dp"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilCoef"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            >
+            <EditText
+                android:id="@+id/edCoef"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="Коэф."
+                android:textSize="24dp"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

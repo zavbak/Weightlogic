@@ -12,7 +12,7 @@ import ru.a799000.android.weightlogic.mvp.presenters.MainAcPr;
 import ru.a799000.android.weightlogic.mvp.view.MainAcView;
 
 
-public class MainActivity extends MvpAppCompatActivity implements MainAcView {
+public class MainActivity extends MvpAppCompatActivity implements MainAcView,CallBackScreens {
 
     @InjectPresenter
     MainAcPr mPresenter;
@@ -41,9 +41,25 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView {
     }
 
 
-
     @Override
     public void startGeneralSreenView() {
         mRouterScreen.startGeneralScreen();
     }
+
+    @Override
+    public void startTestScreenView() {
+        mRouterScreen.startTestScreen();
+    }
+
+    @Override
+    public void startProductsScreenView() {
+        mRouterScreen.startProductsScreen();
+    }
+
+    @Override
+    public void startDetailProductScreenView(String id) {
+        mRouterScreen.startDetailProductScreen(id);
+    }
+
+
 }

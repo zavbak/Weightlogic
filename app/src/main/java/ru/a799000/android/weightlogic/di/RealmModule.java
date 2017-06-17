@@ -6,6 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellAllInteractor;
 import ru.a799000.android.weightlogic.repository.realm.RealmMigration;
 
 
@@ -25,6 +26,5 @@ public class RealmModule {
     Realm provideRealm(){
         return Realm.getDefaultInstance();
     }
-
 
 }

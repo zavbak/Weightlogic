@@ -12,4 +12,14 @@ public interface MainAcView extends MvpView{
 
     @StateStrategyType(OneExecutionStateStrategy.class)
     void startGeneralSreenView();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void startTestScreenView();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void startProductsScreenView();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void startDetailProductScreenView(String id);
+
 }

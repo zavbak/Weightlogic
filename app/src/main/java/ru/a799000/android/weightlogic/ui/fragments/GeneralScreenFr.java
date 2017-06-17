@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -19,8 +18,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.a799000.android.weightlogic.R;
-import ru.a799000.android.weightlogic.mvp.presenters.generalscreen.GeneralScreenPr;
+import ru.a799000.android.weightlogic.mvp.presenters.GeneralScreenPr;
 import ru.a799000.android.weightlogic.mvp.view.GeneralScreenView;
+import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
 import ru.a799000.android.weightlogic.ui.adapters.CommandsAdapter;
 
 /**
@@ -29,6 +29,8 @@ import ru.a799000.android.weightlogic.ui.adapters.CommandsAdapter;
 
 public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScreenView {
     public static final String TAG = "GeneralScreenFr";
+
+    CallBackScreens mCallBackScreens;
 
 
     @InjectPresenter
@@ -51,16 +53,7 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.general_screen, container, false);
 
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-                if(event.getAction()== KeyEvent.ACTION_DOWN){
-                    Toast.makeText(getActivity(),"keyCode = " + keyCode,Toast.LENGTH_LONG).show();
-                }
-                return false;
-            }
-        });
+        mCallBackScreens = (CallBackScreens) getActivity();
 
         return view;
     }
@@ -106,9 +99,19 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
     }
 
     @Override
-    public void showMessageView(String messager) {
+    public void showSnackbarView(String messager) {
         Snackbar.make(getView(), messager, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+    }
+
+    @Override
+    public void startTestScreenView() {
+        mCallBackScreens.startTestScreenView();
+    }
+
+    @Override
+    public void startProductsScreenView() {
+        mCallBackScreens.startProductsScreenView();
     }
 
     @Override
