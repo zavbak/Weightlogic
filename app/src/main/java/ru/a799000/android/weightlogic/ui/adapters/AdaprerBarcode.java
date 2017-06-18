@@ -75,8 +75,11 @@ public class AdaprerBarcode extends RealmBaseAdapter<Barcode> {
             String infoWeightSites = String.format("  Вес: %s, Мест: %s", mBarcode.getWeight(), mBarcode.getPlaces());
             tvInfoWeightSites.setText(infoWeightSites);
 
-            String infoBarcodeDate = String.format("(%s),   %s", mBarcode.getDate()==null?"":mBarcode.getDate()
-                    , mBarcode.getBarcode()==null?"":mBarcode.getBarcode());
+            String infoBarcodeDate = String.format("(%s),   %s"
+                    ,mBarcode.getDate()==null?"":mBarcode.getDate()
+                    ,mBarcode.getBarcode()==null?"":mBarcode.getBarcode());
+
+
             tvInfoBarcodeDate.setText(infoBarcodeDate);
         }
 

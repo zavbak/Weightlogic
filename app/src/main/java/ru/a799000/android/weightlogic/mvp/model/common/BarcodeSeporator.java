@@ -32,7 +32,7 @@ public class BarcodeSeporator {
     public BarcodeSeporator(String barcode, Product product) {
         this.barcode = barcode;
         mProduct = product;
-        countSimbol = barcode.length();
+
 
         error = true;
         text = null;
@@ -43,6 +43,8 @@ public class BarcodeSeporator {
             messError = "Не заполнен ШК";
             return;
         }
+
+        countSimbol = barcode.length();
 
         if(mProduct.getStart()==0){
             messError = "Не верная Начальная позиция";

@@ -3,9 +3,12 @@ package ru.a799000.android.weightlogic.mvp.presenters;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.util.Date;
+
 import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetBarcodeByIDInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
@@ -56,8 +59,6 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
                     getViewState().refresh();
                     refreshBarcode();
                 });
-
-
     }
 
     private void init(Barcode barcode, Product product) {
@@ -86,7 +87,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     }
 
 
-    void refreshBarcode() {
+    public void refreshBarcode() {
         mBarcodeSeporator = new BarcodeSeporator(mBarcode.getBarcode(), mProduct);
         getViewState().refreshBarcodeView(mBarcodeSeporator);
     }
@@ -102,7 +103,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     public CharSequence getBarcode() {
 
-        CharSequence charSequence = mProduct.getInitBarcode() == null ? "" : mProduct.getInitBarcode();
+        CharSequence charSequence = mBarcode.getBarcode() == null ? "" : mBarcode.getBarcode();
 
         if (mBarcodeSeporator != null) {
             if (mBarcodeSeporator.getFormatText() != null) {
@@ -136,21 +137,43 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
         refreshBarcode();
     }
 
-    public void onClickSave() {
+    public void changeWeight(String weight) {
+        float fWeight = 0;
+        try {
+            fWeight = Float.parseFloat(weight.toString());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            fWeight = 0;
+        }
+        mBarcode.setWeight(fWeight);
 
-//        SaveProductInteractor interactor = new SaveProductInteractor(mProduct);
-//        interactor.getObservable()
-//                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(product -> {
-//                            getViewState().showSnackbarView("Сохранено");
-//                        },
-//                        throwable -> {
-//                            getViewState().showSnackbarView(throwable.toString());
-//                        });
-//
-//
-//        getViewState().finishView();
+    }
+
+    public void changeSites(String sites) {
+        int iSites = 0;
+        try {
+            iSites = Integer.parseInt(sites.toString());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            iSites = 0;
+        }
+        mBarcode.setPlaces(iSites);
+    }
+
+    public void onClickSave() {
+        mBarcode.setDate(new Date());
+        SaveBarcodeInteractor interactor = new SaveBarcodeInteractor(mProduct.getId(),mBarcode);
+        interactor.getObservable()
+                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(barcode -> {
+                            getViewState().showSnackbarView("Сохранено");
+                        },
+                        throwable -> {
+                            getViewState().showSnackbarView(throwable.toString());
+                        });
+
+          getViewState().finishView();
     }
 
 

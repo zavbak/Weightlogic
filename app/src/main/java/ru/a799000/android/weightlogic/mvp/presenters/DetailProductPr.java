@@ -5,7 +5,6 @@ import com.arellomobile.mvp.MvpPresenter;
 
 import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.view.DetailProductView;
@@ -31,13 +30,17 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
-        if(mId != null){
+        if (mId != null) {
             GetProductByIdInteractor interactor = new GetProductByIdInteractor(Long.parseLong(mId));
             interactor.getObservable()
+                    .doOnNext(this::initProduct)
                     .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::initProduct,
-                            throwable -> {getViewState().showSnackbarView(throwable.toString());});//AndroidSchedulers.mainThread()
+                    .subscribe(product -> {
+                            },
+                            throwable -> {
+                                getViewState().showSnackbarView(throwable.toString());
+                            });
 
         }
 
@@ -58,14 +61,13 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
                 .build();
 
 
-        getViewState().refreshProduct();
-        refreshBarcode();
+        getViewState().refresh();
 
     }
 
 
-    void refreshBarcode(){
-        mBarcodeSeporator = new BarcodeSeporator(mProduct.getInitBarcode(),mProduct);
+    public void refreshBarcode() {
+        mBarcodeSeporator = new BarcodeSeporator(mProduct.getInitBarcode(), mProduct);
         getViewState().refreshBarcodeView(mBarcodeSeporator);
     }
 
@@ -75,13 +77,12 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
 
 
     public CharSequence getName() {
-        return mProduct.getName()==null?"":mProduct.getName();
+        return mProduct.getName() == null ? "" : mProduct.getName();
     }
 
 
-
     public CharSequence getId() {
-        return mProduct.getId()==0?"( )":Long.toString(mProduct.getId());
+        return mProduct.getId() == 0 ? "( )" : Long.toString(mProduct.getId());
     }
 
     public CharSequence getBarcode() {
@@ -99,7 +100,7 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
     }
 
     public CharSequence getStart() {
-        return mProduct.getStart()==0?"":Integer.toString(mProduct.getStart());
+        return mProduct.getStart() == 0 ? "" : Integer.toString(mProduct.getStart());
     }
 
     public CharSequence getFinish() {
@@ -107,20 +108,20 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
     }
 
     public CharSequence getCoef() {
-        return mProduct.getCoef()==0?"":Float.toString(mProduct.getCoef());
+        return mProduct.getCoef() == 0 ? "" : Float.toString(mProduct.getCoef());
     }
 
     public CharSequence getCodes() {
-        String sCode = mProduct.getCode() ==null? "": "Код 1С: " + mProduct.getCode();
+        String sCode = mProduct.getCode() == null ? "" : "Код 1С: " + mProduct.getCode();
 
-        return "(" + getId()+")" + "    " +  sCode;
+        return "(" + getId() + ")" + "    " + sCode;
     }
 
-    public CharSequence  getSizeBarcode() {
-        return mProduct.getInitBarcode()==null?"":"Сим. " + mProduct.getInitBarcode().length();
+    public CharSequence getSizeBarcode() {
+        return mProduct.getInitBarcode() == null ? "" : "Сим. " + mProduct.getInitBarcode().length();
     }
 
-    public void changeBarcode(String barcode){
+    public void changeBarcode(String barcode) {
         mProduct.setInitBarcode(barcode);
         refreshBarcode();
     }
@@ -171,8 +172,12 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
         interactor.getObservable()
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(product -> {getViewState().showSnackbarView("Сохранено");},
-                        throwable -> {getViewState().showSnackbarView(throwable.toString());});
+                .subscribe(product -> {
+                            getViewState().showSnackbarView("Сохранено");
+                        },
+                        throwable -> {
+                            getViewState().showSnackbarView(throwable.toString());
+                        });
 
 
         getViewState().finishView();

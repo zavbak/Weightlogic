@@ -14,7 +14,7 @@ import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
 public interface DetailProductView extends MvpView{
 
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void refreshProduct();
+    void refresh();
 
     @StateStrategyType(SkipStrategy.class)
     void showSnackbarView(String messager);

@@ -34,10 +34,6 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
     public static final String TAG = "DetailProductScreenFr";
     static final String ID = "id";
 
-
-
-    CallBackScreens mCallBackScreens;
-
     @BindView(R.id.edName)
     EditText edName;
 
@@ -63,6 +59,8 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
     @InjectPresenter
     DetailProductPr mPresenter;
 
+    CallBackScreens mCallBackScreens;
+
     private CompositeSubscription mCompositeSubscription;
 
     public static DetailProductScreenFr getInstance(String id) {
@@ -73,12 +71,6 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,9 +78,7 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
 
         Bundle args = getArguments();
         mPresenter.setID(args.getString(ID));
-
         mCallBackScreens = (CallBackScreens) getActivity();
-
 
         ((MainActivity)getActivity()).getObservableBarcode()
                 .subscribe(s -> {
@@ -98,12 +88,41 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         return view;
     }
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        initSubscription();
+        init();
+    }
+
+    void init(){
+        mCompositeSubscription = new CompositeSubscription();
+
+        mCompositeSubscription.add(RxTextView.textChanges(edBarcode)
+                .skip(1)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getBarcode().toString())))
+                .subscribe(charSequence -> mPresenter.changeBarcode(charSequence.toString())));
+
+        mCompositeSubscription.add(RxTextView.textChanges(edName)
+                .skip(1)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getName().toString())))
+                .subscribe(charSequence -> mPresenter.changeName(charSequence.toString())));
+
+        mCompositeSubscription.add(RxTextView.textChanges(edStart)
+                .skip(1)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getStart())))
+                .subscribe(charSequence -> mPresenter.changeStart(charSequence.toString())));
+
+        mCompositeSubscription.add(RxTextView.textChanges(edFinish)
+                .skip(1)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getFinish())))
+                .subscribe(charSequence -> mPresenter.changeFinish(charSequence.toString())));
+
+        mCompositeSubscription.add(RxTextView.textChanges(edCoef)
+                .skip(1)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getCoef())))
+                .subscribe(charSequence -> mPresenter.changeCoef(charSequence.toString())));
+
     }
 
     @Override
@@ -112,46 +131,18 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         mCompositeSubscription.unsubscribe();
     }
 
-
     @OnClick(R.id.btSave)
     void onClickSave(){
         mPresenter.onClickSave();
     }
-
 
     @OnClick(R.id.btCancel)
     void onClickCancel(){
         mPresenter.onClickCancel();
     }
 
-    void initSubscription(){
-        mCompositeSubscription = new CompositeSubscription();
-
-        mCompositeSubscription.add(RxTextView.textChanges(edBarcode)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getBarcode().toString())))
-                .subscribe(charSequence -> mPresenter.changeBarcode(charSequence.toString())));
-
-        mCompositeSubscription.add(RxTextView.textChanges(edName)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getName().toString())))
-                .subscribe(charSequence -> mPresenter.changeName(charSequence.toString())));
-
-        mCompositeSubscription.add(RxTextView.textChanges(edStart)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getStart())))
-                .subscribe(charSequence -> mPresenter.changeStart(charSequence.toString())));
-
-        mCompositeSubscription.add(RxTextView.textChanges(edFinish)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getFinish())))
-                .subscribe(charSequence -> mPresenter.changeFinish(charSequence.toString())));
-
-        mCompositeSubscription.add(RxTextView.textChanges(edCoef)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getCoef())))
-                .subscribe(charSequence -> mPresenter.changeCoef(charSequence.toString())));
-
-
-    }
-
     @Override
-    public void refreshProduct() {
+    public void refresh() {
 
         tvId.setText(mPresenter.getCodes());
         edName.setText(mPresenter.getName());
@@ -159,6 +150,7 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         edStart.setText(mPresenter.getStart());
         edFinish.setText(mPresenter.getFinish());
         edCoef.setText(mPresenter.getCoef());
+        mPresenter.refreshBarcode();
     }
 
     @Override
