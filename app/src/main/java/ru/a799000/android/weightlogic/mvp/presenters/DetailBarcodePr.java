@@ -102,7 +102,6 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     public CharSequence getBarcode() {
 
-
         CharSequence charSequence = mProduct.getInitBarcode() == null ? "" : mProduct.getInitBarcode();
 
         if (mBarcodeSeporator != null) {
