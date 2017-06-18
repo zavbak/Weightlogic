@@ -23,6 +23,8 @@ public interface MainAcView extends MvpView{
     @StateStrategyType(OneExecutionStateStrategy.class)
     void startSettingsScreenView();
 
+
+
     @StateStrategyType(SkipStrategy.class)
     void showSnackbarView(String messager);
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGrey">
+
+        <TextView
+            android:id="@+id/tvMessageBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Добавить (3), Удалить (9)"
+            android:layout_margin="8dp"
+            />
+    </FrameLayout>
+
+
+
+    <ListView
+        android:id="@+id/lvBarcodes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:listSelector="@drawable/selector"/>
+
+</LinearLayout>

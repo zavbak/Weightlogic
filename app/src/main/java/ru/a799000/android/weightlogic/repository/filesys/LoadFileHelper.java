@@ -43,9 +43,10 @@ public class LoadFileHelper {
 
         sdPath = new File(sdPath.getAbsolutePath());
 
-        File sdFile = new File(sdPath, mFileName);
+
         try {
             // открываем поток для чтения
+            File sdFile = new File(sdPath, mFileName);
             BufferedReader br = new BufferedReader(new FileReader(sdFile));
             String str = "";
 
@@ -60,6 +61,9 @@ public class LoadFileHelper {
             e.printStackTrace();
             return Observable.error(e);
         } catch (IOException e) {
+
+        } catch (Exception e) {
+
             e.printStackTrace();
             return Observable.error(e);
         }

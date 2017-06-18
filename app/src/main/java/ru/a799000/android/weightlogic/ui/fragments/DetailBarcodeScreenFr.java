@@ -17,58 +17,57 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.a799000.android.weightlogic.R;
-
 import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
-import ru.a799000.android.weightlogic.mvp.presenters.DetailProductPr;
-import ru.a799000.android.weightlogic.mvp.view.DetailProductView;
+import ru.a799000.android.weightlogic.mvp.presenters.DetailBarcodePr;
+import ru.a799000.android.weightlogic.mvp.view.DetailBarcodeView;
+
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
 import ru.a799000.android.weightlogic.ui.activityes.MainActivity;
+import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by user on 17.06.2017.
  */
 
-public class DetailProductScreenFr extends MvpAppCompatFragment implements DetailProductView {
+public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements DetailBarcodeView {
 
-    public static final String TAG = "DetailProductScreenFr";
-    static final String ID = "id";
-
+    public static final String TAG = "DetailBarcodeScreenFr";
+    static final String ID_PRODUCT = "id_product";
+    static final String ID_BARCODE = "id_barcode";
 
 
     CallBackScreens mCallBackScreens;
 
-    @BindView(R.id.edName)
-    EditText edName;
-
     @BindView(R.id.tvId)
     TextView tvId;
 
-    @BindView(R.id.tvMessageBarcode)
-    TextView tvMessageBarcode;
+    @BindView(R.id.tvInfoProduct)
+    TextView tvInfoProduct;
 
 
     @BindView(R.id.edBarcode)
     EditText edBarcode;
 
-    @BindView(R.id.edStart)
-    EditText edStart;
+    @BindView(R.id.tvMessageBarcode)
+    TextView tvMessageBarcode;
 
-    @BindView(R.id.edFinish)
-    EditText edFinish;
+    @BindView(R.id.edWeight)
+    EditText edWeight;
 
-    @BindView(R.id.edCoef)
-    EditText edCoef;
+    @BindView(R.id.edSites)
+    EditText edSites;
 
     @InjectPresenter
-    DetailProductPr mPresenter;
+    DetailBarcodePr mPresenter;
 
     private CompositeSubscription mCompositeSubscription;
 
-    public static DetailProductScreenFr getInstance(String id) {
-        DetailProductScreenFr fragment = new DetailProductScreenFr();
+    public static DetailBarcodeScreenFr getInstance(String idProduct,String idBarcode) {
+        DetailBarcodeScreenFr fragment = new DetailBarcodeScreenFr();
         Bundle args = new Bundle();
-        args.putString(ID, id);
+        args.putString(ID_PRODUCT, idProduct);
+        args.putString(ID_BARCODE, idBarcode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,10 +81,10 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.detail_product, container, false);
+        View view = inflater.inflate(R.layout.detail_barcode, container, false);
 
         Bundle args = getArguments();
-        mPresenter.setID(args.getString(ID));
+        mPresenter.setInputData(args.getString(ID_PRODUCT),args.getString(ID_BARCODE));
 
         mCallBackScreens = (CallBackScreens) getActivity();
 
@@ -98,6 +97,10 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -127,38 +130,38 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
     void initSubscription(){
         mCompositeSubscription = new CompositeSubscription();
 
-        mCompositeSubscription.add(RxTextView.textChanges(edBarcode)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getBarcode().toString())))
-                .subscribe(charSequence -> mPresenter.changeBarcode(charSequence.toString())));
+        Subscription subscription = RxTextView.textChanges(edBarcode)
+                .filter(charSequence -> {
 
-        mCompositeSubscription.add(RxTextView.textChanges(edName)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getName().toString())))
-                .subscribe(charSequence -> mPresenter.changeName(charSequence.toString())));
+                    String newStr = null;
+                    String oldSt = null;
+                    try {
+                        newStr = charSequence.toString();
+                        oldSt = mPresenter.getBarcode().toString();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return false;
+                    }
 
-        mCompositeSubscription.add(RxTextView.textChanges(edStart)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getStart())))
-                .subscribe(charSequence -> mPresenter.changeStart(charSequence.toString())));
 
-        mCompositeSubscription.add(RxTextView.textChanges(edFinish)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getFinish())))
-                .subscribe(charSequence -> mPresenter.changeFinish(charSequence.toString())));
+                    return  !oldSt.equals(newStr);
 
-        mCompositeSubscription.add(RxTextView.textChanges(edCoef)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getCoef())))
-                .subscribe(charSequence -> mPresenter.changeCoef(charSequence.toString())));
+                })
+                .subscribe(charSequence -> {
+                    mPresenter.changeBarcode(charSequence.toString());
+                });
 
+        mCompositeSubscription.add(subscription);
 
     }
 
     @Override
-    public void refreshProduct() {
-
-        tvId.setText(mPresenter.getCodes());
-        edName.setText(mPresenter.getName());
+    public void refresh() {
+        tvId.setText(mPresenter.getId());
         edBarcode.setText(mPresenter.getBarcode());
-        edStart.setText(mPresenter.getStart());
-        edFinish.setText(mPresenter.getFinish());
-        edCoef.setText(mPresenter.getCoef());
+        tvInfoProduct.setText(mPresenter.getInfoProduct());
+        edWeight.setText(mPresenter.getWeight());
+        edSites.setText(mPresenter.getSites());
     }
 
     @Override

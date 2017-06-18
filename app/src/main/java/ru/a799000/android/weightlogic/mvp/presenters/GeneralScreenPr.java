@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import ru.a799000.android.weightlogic.R;
 import ru.a799000.android.weightlogic.app.App;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellAllInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.LoadFileseInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.IntitiesLoadObject;
@@ -69,44 +70,60 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
     private void loadFile() {
         getViewState().showProgressDialog(true);
 
-        LoadFileseInteractor interactor = new LoadFileseInteractor();
-        interactor.getObservable()
-                .map(s -> {
-                    GsonBuilder builder = new GsonBuilder();
-                    Gson gson = builder.create();
-                    return gson.fromJson(s, IntitiesLoadObject.class);
-                })
-                .flatMap(intitiesLoadObject -> {
-                    return Observable.from(intitiesLoadObject.getTovars());
-                })
-                .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
+        DellAllInteractor dellAllInteractor = new DellAllInteractor();
+        dellAllInteractor.getObservable()
+                .subscribeOn(AndroidSchedulers.mainThread()) //делаем запрос, преобразование, кэширование в отдельном потоке
                 .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
-                .flatMap(intitiesTovar -> {
-                    Product product = new Product();
-                    product.setCode(intitiesTovar.getCode());
-                    product.setName(intitiesTovar.getName());
-                    product.setUnit(intitiesTovar.getEd());
-
-                    SaveProductInteractor saveProductInteractor = new SaveProductInteractor(product);
-                    return saveProductInteractor.getObservable();
-
-                })
-                .count()
-                .subscribe(integer -> {
-
-                    getViewState().showSnackbarView("Загружено: " + integer);
-                    getViewState().showProgressDialog(false);
+                .subscribe(o -> {
 
                 }, throwable -> {
-
-                    getViewState().showSnackbarView(throwable.getMessage());
                     getViewState().showProgressDialog(false);
-
+                    getViewState().showSnackbarView(throwable.toString());
 
                 }, () -> {
+                    getViewState().showSnackbarView("Удалили");
+                    getViewState().showProgressDialog(true);
+                    LoadFileseInteractor interactor = new LoadFileseInteractor();
+                    interactor.getObservable()
+                            .map(s -> {
+                                GsonBuilder builder = new GsonBuilder();
+                                Gson gson = builder.create();
+                                return gson.fromJson(s, IntitiesLoadObject.class);
+                            })
+                            .flatMap(intitiesLoadObject -> {
+                                return Observable.from(intitiesLoadObject.getTovars());
+                            })
+                            .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
+                            .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
+                            .flatMap(intitiesTovar -> {
+                                Product product = new Product();
+                                product.setCode(intitiesTovar.getCode());
+                                product.setName(intitiesTovar.getName());
+                                product.setUnit(intitiesTovar.getEd());
 
+                                SaveProductInteractor saveProductInteractor = new SaveProductInteractor(product);
+                                return saveProductInteractor.getObservable();
+
+                            })
+                            .count()
+                            .subscribe(integer -> {
+
+                                getViewState().showSnackbarView("Загружено: " + integer);
+                                getViewState().showProgressDialog(false);
+
+                            }, throwable -> {
+
+                                getViewState().showSnackbarView(throwable.getMessage());
+                                getViewState().showProgressDialog(false);
+
+
+                            }, () -> {
+
+
+                            });
 
                 });
+
 
     }
 

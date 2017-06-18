@@ -6,20 +6,19 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
-import java.util.List;
-
 import io.realm.OrderedRealmCollection;
-import ru.a799000.android.weightlogic.mvp.model.intities.Product;
+import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
+
 
 /**
  * Created by user on 17.06.2017.
  */
 
-public interface ProductsListScreenView extends MvpView {
+public interface BarcodesListScreenView extends MvpView {
 
 
     @StateStrategyType(OneExecutionStateStrategy.class)
-    void refreshView(OrderedRealmCollection<Product> list);
+    void refreshView(OrderedRealmCollection<Barcode> list);
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showInfoView(String messager);
@@ -30,13 +29,8 @@ public interface ProductsListScreenView extends MvpView {
 
 
     @StateStrategyType(SkipStrategy.class)
-    void startDetailProductScreenView(String id);
-
-    @StateStrategyType(SkipStrategy.class)
-    void startListScreenBarcodes(String s);
-
+    void startDetailBarcodeScreenView(String idProduct,String idBarcode);
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void setListPosition();
-
 }

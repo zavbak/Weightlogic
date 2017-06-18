@@ -1,5 +1,7 @@
 package ru.a799000.android.weightlogic.mvp.model.intities;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -13,6 +15,7 @@ public class Barcode extends RealmObject {
     String barcode;
     int places;
     float weight;
+    Date date;
 
 
     public Barcode() {
@@ -25,6 +28,7 @@ public class Barcode extends RealmObject {
         this.barcode = barcodeBuilder.barcode;
         this.places = barcodeBuilder.places;
         this.weight = barcodeBuilder.weight;
+        this.date = barcodeBuilder.date;
 
     }
 
@@ -32,6 +36,14 @@ public class Barcode extends RealmObject {
         return new Barcode().new Builder();
     }
 
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public long getId() {
         return id;
@@ -73,9 +85,9 @@ public class Barcode extends RealmObject {
                 ", barcode='" + barcode + '\'' +
                 ", places=" + places +
                 ", weight=" + weight +
+                ", date=" + date +
                 '}';
     }
-
 
     public  class Builder {
 
@@ -83,10 +95,29 @@ public class Barcode extends RealmObject {
         String barcode;
         int places;
         float weight;
+        Date date;
 
         public Builder() {
         }
 
+        public long getId() {
+            return id;
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+
+        public Builder setId(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setDate(Date date) {
+            this.date = date;
+            return this;
+        }
 
         public Builder setBarcode(String barcode) {
             this.barcode = barcode;

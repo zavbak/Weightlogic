@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
-import butterknife.BindView;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
 import ru.a799000.android.weightlogic.R;
@@ -16,11 +14,11 @@ import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 
 
-public class AdapretProdact extends RealmBaseAdapter<Product> {
+public class AdaprerBarcode extends RealmBaseAdapter<Barcode> {
 
     private Context mContext;
 
-    public AdapretProdact(@Nullable OrderedRealmCollection<Product> data) {
+    public AdaprerBarcode(@Nullable OrderedRealmCollection<Barcode> data) {
         super(data);
     }
 
@@ -31,7 +29,7 @@ public class AdapretProdact extends RealmBaseAdapter<Product> {
 
 
             convertView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_products, parent, false);
+                    .inflate(R.layout.item_barcode, parent, false);
 
 
             viewHolder = new ViewHolder(convertView);
@@ -42,7 +40,7 @@ public class AdapretProdact extends RealmBaseAdapter<Product> {
         }
 
         if (adapterData != null) {
-            final Product item = adapterData.get(position);
+            final Barcode item = adapterData.get(position);
             viewHolder.setProduct(item);
         }
         return convertView;
@@ -52,37 +50,34 @@ public class AdapretProdact extends RealmBaseAdapter<Product> {
 
 
         TextView tvId;
-        TextView tvName;
-        TextView tvInfo;
+        TextView tvInfoWeightSites;
+        TextView tvInfoBarcodeDate;
 
 
-        Product mProduct;
-        float mWeight;
-        int mSites;
+        Barcode mBarcode;
+
 
 
         public ViewHolder(View view) {
             tvId = (TextView)view.findViewById(R.id.tvId);
-            tvName = (TextView)view.findViewById(R.id.tvName);
-            tvInfo = (TextView)view.findViewById(R.id.tvInfo);
+            tvInfoWeightSites = (TextView)view.findViewById(R.id.tvInfoWeightSites);
+            tvInfoBarcodeDate = (TextView)view.findViewById(R.id.tvInfoBarcodeDate);
         }
 
-        private void init() {
-            RealmList<Barcode> barcodes = mProduct.getBarcodes();
-            for (Barcode barcode : barcodes) {
-                mSites = mSites + barcode.getPlaces();
-                mWeight = mWeight + barcode.getWeight();
-            }
-        }
 
-        public void setProduct(Product product) {
-            mProduct = product;
-            init();
 
-            tvId.setText(Long.toString(mProduct.getId()));
-            tvName.setText(product.getName() == null ? "" : product.getName());
-            String info = String.format("  Вес: %s, Мест: %s", mWeight, mSites);
-            tvInfo.setText(info);
+        public void setProduct(Barcode barcode) {
+            mBarcode = barcode;
+
+
+            tvId.setText(Long.toString(mBarcode.getId()));
+
+            String infoWeightSites = String.format("  Вес: %s, Мест: %s", mBarcode.getWeight(), mBarcode.getPlaces());
+            tvInfoWeightSites.setText(infoWeightSites);
+
+            String infoBarcodeDate = String.format("(%s),   %s", mBarcode.getDate()==null?"":mBarcode.getDate()
+                    , mBarcode.getBarcode()==null?"":mBarcode.getBarcode());
+            tvInfoBarcodeDate.setText(infoBarcodeDate);
         }
 
     }

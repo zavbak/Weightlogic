@@ -18,36 +18,36 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import ru.a799000.android.weightlogic.R;
-import ru.a799000.android.weightlogic.mvp.model.intities.Product;
-import ru.a799000.android.weightlogic.mvp.presenters.ProductsListScreenPr;
-import ru.a799000.android.weightlogic.mvp.view.ProductsListScreenView;
+import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
+import ru.a799000.android.weightlogic.mvp.presenters.BarcodesListScreenPr;
+import ru.a799000.android.weightlogic.mvp.view.BarcodesListScreenView;
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
-import ru.a799000.android.weightlogic.ui.adapters.AdaprerProdact;
+import ru.a799000.android.weightlogic.ui.adapters.AdaprerBarcode;
 
 /**
  * Created by user on 17.06.2017.
  */
 
-public class ProductsListScreenFr extends MvpAppCompatFragment implements ProductsListScreenView {
-    public static final String TAG = "ProductsListScreenFr";
+public class BarcodesListScreenFr extends MvpAppCompatFragment implements BarcodesListScreenView {
+    public static final String TAG = "BarcodesListScreenFr";
     static final String ID = "id";
 
 
     @InjectPresenter
-    ProductsListScreenPr mPresenter;
+    BarcodesListScreenPr mPresenter;
 
     @BindView(R.id.tvMessageBarcode)
     TextView tvMessage;
 
-    @BindView(R.id.lvProducts)
-    ListView lvProducts;
+    @BindView(R.id.lvBarcodes)
+    ListView lvBarcodes;
 
 
     CallBackScreens mCallBackScreens;
 
 
-    public static ProductsListScreenFr getInstance(String id) {
-        ProductsListScreenFr fragment = new ProductsListScreenFr();
+    public static BarcodesListScreenFr getInstance(String id) {
+        BarcodesListScreenFr fragment = new BarcodesListScreenFr();
         Bundle args = new Bundle();
         args.putString(ID, id);
         fragment.setArguments(args);
@@ -57,10 +57,10 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.list_products_screen, container, false);
+        View view = inflater.inflate(R.layout.list_barcodes_screen, container, false);
 
         Bundle args = getArguments();
-        mPresenter.setID(args.getString(ID));
+        mPresenter.setIdProduct(args.getString(ID));
 
         mCallBackScreens = (CallBackScreens) getActivity();
 
@@ -81,28 +81,28 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
 
 
     @Override
-    public void refreshView(OrderedRealmCollection<Product> data) {
+    public void refreshView(OrderedRealmCollection<Barcode> data) {
 
-        AdaprerProdact adapter = new AdaprerProdact(data);
-        lvProducts.setAdapter(adapter);
-        lvProducts.requestFocus(0);
-        lvProducts.setSelection(mPresenter.getSelectionPosition());
-        lvProducts.setClickable(true);
+        AdaprerBarcode adapter = new AdaprerBarcode(data);
+        lvBarcodes.setAdapter(adapter);
+        lvBarcodes.requestFocus(0);
+        lvBarcodes.setSelection(mPresenter.getSelectionPosition());
+        lvBarcodes.setClickable(true);
 
-        lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvBarcodes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
 
-                mPresenter.onClickProduct(position);
+                mPresenter.onClickBarcode(position);
 
             }
         });
 
-        lvProducts.setOnKeyListener(new View.OnKeyListener() {
+        lvBarcodes.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-                int position =  lvProducts.getSelectedItemPosition();
+                int position =  lvBarcodes.getSelectedItemPosition();
 
                 if(event.getAction()== KeyEvent.ACTION_DOWN){
                     mPresenter.pressKey(event.getNumber(),position);
@@ -125,18 +125,14 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     }
 
     @Override
-    public void startDetailProductScreenView(String id) {
-        mCallBackScreens.startDetailProductScreenView(id);
+    public void startDetailBarcodeScreenView(String idProduct,String idBarcode) {
+        mCallBackScreens.startBarcodeProductScreenView(idProduct,idBarcode);
     }
 
-    @Override
-    public void startListScreenBarcodes(String id) {
-        mCallBackScreens.startListScreenBarcodes(id);
-    }
 
     @Override
     public void setListPosition() {
-        lvProducts.setSelection(mPresenter.getSelectionPosition());
+        lvBarcodes.setSelection(mPresenter.getSelectionPosition());
     }
 
 

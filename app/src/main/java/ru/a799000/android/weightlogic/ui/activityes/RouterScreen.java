@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import ru.a799000.android.weightlogic.R;
 import ru.a799000.android.weightlogic.mvp.view.SettingsScreenView;
+import ru.a799000.android.weightlogic.ui.fragments.BarcodesListScreenFr;
+import ru.a799000.android.weightlogic.ui.fragments.DetailBarcodeScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.DetailProductScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.GeneralScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.ProductsListScreenFr;
@@ -75,5 +77,21 @@ public class RouterScreen {
         } else {
             mActivity.onBackPressed();
         }
+    }
+
+    public void startListScreenBarcodes(String id) {
+        mActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment, BarcodesListScreenFr.getInstance(id), BarcodesListScreenFr.TAG)
+                .addToBackStack("myBackStack")
+                .commit();
+    }
+
+    public void startDetailBarcodeScreen(String idProduct,String idBarcode) {
+        mActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment, DetailBarcodeScreenFr.getInstance(idProduct,idBarcode), DetailBarcodeScreenFr.TAG)
+                .addToBackStack("myBackStack")
+                .commit();
     }
 }

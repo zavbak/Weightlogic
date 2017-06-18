@@ -83,6 +83,17 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
     }
 
     @Override
+    public void startListScreenBarcodes(String id) {
+        mRouterScreen.startListScreenBarcodes(id);
+    }
+
+    @Override
+    public void startBarcodeProductScreenView(String idProduct, String idBarcode) {
+        mRouterScreen.startDetailBarcodeScreen(idProduct,idBarcode);
+    }
+
+
+    @Override
     public void showSnackbarView(String messager) {
         Snackbar.make(findViewById(R.id.root), messager, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();

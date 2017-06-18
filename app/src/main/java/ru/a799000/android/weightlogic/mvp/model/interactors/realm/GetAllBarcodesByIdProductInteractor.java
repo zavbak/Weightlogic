@@ -3,14 +3,17 @@ package ru.a799000.android.weightlogic.mvp.model.interactors.realm;
 import javax.inject.Inject;
 
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 import ru.a799000.android.weightlogic.app.App;
 import ru.a799000.android.weightlogic.mvp.model.interactors.Interactor;
+import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.repository.realm.RealmTable;
 import rx.Observable;
 
 
-public class GetProductByIdInteractor extends Interactor<Product> {
+public class GetAllBarcodesByIdProductInteractor extends Interactor<RealmResults<Barcode>> {
 
     @Inject
     Realm mRealm;
@@ -20,17 +23,19 @@ public class GetProductByIdInteractor extends Interactor<Product> {
     /**
      * get Product by ID
      */
-    public GetProductByIdInteractor(long id) {
-        App.getAppComponent().injectGetProductByIdInteractor(this);
+    public GetAllBarcodesByIdProductInteractor(long id) {
+        App.getAppComponent().injectGetBarcodesByIdProductInteractor(this);
         mId = id;
     }
 
 
     @Override
-    public Observable<Product> getObservable() {
+    public Observable<RealmResults<Barcode>> getObservable() {
         try {
             Product product = mRealm.where(Product.class).equalTo(RealmTable.ID, mId).findFirst();
-            return Observable.just(product);
+            RealmList<Barcode> barcodes = product.getBarcodes();
+            RealmResults<Barcode> results = barcodes.sort(RealmTable.ID);
+            return Observable.just(results);
 
         } catch (Exception e) {
             e.printStackTrace();

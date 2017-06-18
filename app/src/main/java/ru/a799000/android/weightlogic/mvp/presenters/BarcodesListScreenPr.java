@@ -3,55 +3,58 @@ package ru.a799000.android.weightlogic.mvp.presenters;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+
 import io.realm.RealmResults;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByIdInteractor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllProductInteractor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
-import ru.a799000.android.weightlogic.mvp.model.intities.Product;
-import ru.a799000.android.weightlogic.mvp.view.ProductsListScreenView;
+
+
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllBarcodesByIdProductInteractor;
+
+import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
+
+import ru.a799000.android.weightlogic.mvp.view.BarcodesListScreenView;
+
 import rx.android.schedulers.AndroidSchedulers;
 
-/**
- * Created by user on 17.06.2017.
- */
 
 @InjectViewState
-public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
+public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
 
-    RealmResults<Product> mData;
-    String mId;
+    RealmResults<Barcode> mData;
+    String mIdProduct;
+    String mIdPosition;
     int positionCurent;
 
 
-
     private void refreshList() {
-        GetAllProductInteractor interactor = new GetAllProductInteractor();
+
+        GetAllBarcodesByIdProductInteractor interactor = new GetAllBarcodesByIdProductInteractor(Long.parseLong(mIdProduct));
         interactor.getObservable()
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                 .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
                 .subscribe(
                         resultO -> {
-                            mData = (RealmResults<Product>) resultO;
+                            mData = (RealmResults<Barcode>) resultO;
                             getViewState().refreshView(mData);
                             setListPosition();
+
 
                         }
                         , throwable ->
                                 getViewState().showInfoView(throwable.getMessage()));
 
-
     }
 
 
-    void setListPosition(){
-        if(mId != null){
+    void setListPosition() {
+        if (mIdPosition != null) {
             int i = 0;
-            for(Product product:mData){
-                if(product.getId()==Long.parseLong(mId)){
+            for (Barcode barcode : mData) {
+                if (barcode.getId() == Long.parseLong(mIdPosition)) {
                     positionCurent = i;
                     getViewState().setListPosition();
                 }
-                i = i +1;
+                i = i + 1;
             }
         }
     }
@@ -63,16 +66,9 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
 
     void executerCommand(int number, int position) {
         switch (number) {
-            case 1:
 
-                getViewState().startListScreenBarcodes(Long.toString(mData.get(position).getId()));
-                break;
-            case 3:
-
-                getViewState().startDetailProductScreenView(null);
-                break;
             case 9:
-                delleteProduct(position);
+                dellete(position);
                 break;
 
         }
@@ -91,33 +87,34 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
         }
     }
 
-    private void delleteProduct(int position) {
+    private void dellete(int position) {
 
-        DellProductByIdInteractor interactor = new DellProductByIdInteractor(mData.get(position).getId());
-        //DellProductByIdInteractor interactor = new DellProductByIdInteractor(100);
-        interactor.getObservable()
+        DellBarcodeInteractor dellBarcodeInteractor = new DellBarcodeInteractor(mData.get(position).getId());
+        dellBarcodeInteractor.getObservable()
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                 .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
                 .subscribe(
                         resultO -> {
 
+
                         }
-                        , throwable -> {
-                            getViewState().showSnackbarView(throwable.toString());
-                        }
+                        , throwable ->
+                                getViewState().showInfoView(throwable.toString())
                         , () -> {
-                            getViewState().showSnackbarView("Удалено");
-                        }
-                );
+
+                            getViewState().showInfoView("Удалили!");
+                        });
+
+
     }
 
 
-    public void onClickProduct(int position) {
-        getViewState().startDetailProductScreenView(Long.toString(mData.get(position).getId()));
+    public void onClickBarcode(int position) {
+        getViewState().startDetailBarcodeScreenView(mIdProduct,Long.toString(mData.get(position).getId()));
     }
 
-    public void setID(String id) {
-        mId = id;
+    public void setIdProduct(String id) {
+        mIdProduct = id;
     }
 
     public int getSelectionPosition() {

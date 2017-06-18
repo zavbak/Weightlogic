@@ -50,13 +50,13 @@
                     >
 
                     <TextView
-                        android:id="@+id/tvName"
+                        android:id="@+id/tvInfoWeightSites"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:layout_weight="15"
                         android:text="Настройка"
-                        android:textSize="16dp"
+                        android:textSize="20dp"
                         android:textStyle="bold"/>
 
                 </FrameLayout>
@@ -64,7 +64,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvInfo"
+                android:id="@+id/tvInfoBarcodeDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"

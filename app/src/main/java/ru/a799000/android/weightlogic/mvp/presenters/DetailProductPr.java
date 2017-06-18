@@ -1,4 +1,4 @@
-package ru.a799000.android.weightlogic.mvp.presenters.detailpresenter;
+package ru.a799000.android.weightlogic.mvp.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;

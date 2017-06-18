@@ -10,4 +10,8 @@ public interface CallBackScreens {
     void startDetailProductScreenView(String id);
     void startSettingsScreenView();
     void backStack();
+
+    void startListScreenBarcodes(String id);
+
+    void startBarcodeProductScreenView(String idProduct,String idBarcode);
 }

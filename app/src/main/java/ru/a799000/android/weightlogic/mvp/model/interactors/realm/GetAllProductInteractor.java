@@ -11,7 +11,7 @@ import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import rx.Observable;
 
 
-public class GetAllProductInteractor extends Interactor {
+public class GetAllProductInteractor extends Interactor<RealmResults<Product>> {
 
     @Inject
     Realm mRealm;

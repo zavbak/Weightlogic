@@ -124,8 +124,11 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
 
     @Override
     public void showProgressDialog(boolean show ) {
+
         if(show){
-            mProgressDialog = new ProgressDialog(getActivity());
+            if(mProgressDialog == null){
+                mProgressDialog = new ProgressDialog(getActivity());
+            }
             mProgressDialog.setCancelable(false);
             mProgressDialog.setTitle("Выполняем..");
             //mProgressDialog.setMessage("Message");

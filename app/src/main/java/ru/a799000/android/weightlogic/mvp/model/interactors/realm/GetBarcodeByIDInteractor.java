@@ -5,37 +5,36 @@ import javax.inject.Inject;
 import io.realm.Realm;
 import ru.a799000.android.weightlogic.app.App;
 import ru.a799000.android.weightlogic.mvp.model.interactors.Interactor;
+import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.repository.realm.RealmTable;
 import rx.Observable;
 
 
-public class GetProductByIdInteractor extends Interactor<Product> {
+public class GetBarcodeByIDInteractor extends Interactor<Barcode> {
 
     @Inject
     Realm mRealm;
-    long mId;
+    long mIdBarcode;
 
 
     /**
      * get Product by ID
      */
-    public GetProductByIdInteractor(long id) {
-        App.getAppComponent().injectGetProductByIdInteractor(this);
-        mId = id;
+    public GetBarcodeByIDInteractor(long idBarcode) {
+        App.getAppComponent().GetBarcodeByIDInteractor(this);
+        mIdBarcode = idBarcode;
     }
 
 
     @Override
-    public Observable<Product> getObservable() {
+    public Observable<Barcode> getObservable() {
         try {
-            Product product = mRealm.where(Product.class).equalTo(RealmTable.ID, mId).findFirst();
-            return Observable.just(product);
-
+            Barcode barcodeRealm = mRealm.where(Barcode.class).equalTo(RealmTable.ID, mIdBarcode).findFirst();
+            return Observable.just(barcodeRealm);
         } catch (Exception e) {
             e.printStackTrace();
             return Observable.error(e);
-
         }
     }
 
