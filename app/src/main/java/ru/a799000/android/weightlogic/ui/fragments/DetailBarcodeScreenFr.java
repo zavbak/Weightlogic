@@ -87,7 +87,7 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
 
         ((MainActivity)getActivity()).getObservableBarcode()
                 .subscribe(s -> {
-                    mPresenter.changeBarcode(s);
+                    edBarcode.setText(s);
                 });
 
         return view;
@@ -121,20 +121,23 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         mCompositeSubscription = new CompositeSubscription();
 
         mCompositeSubscription.add(RxTextView.textChanges(edBarcode)
-                .skip(1)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getBarcode().toString())))
-                .subscribe(charSequence -> mPresenter.changeBarcode(charSequence.toString())));
+                .map(charSequence -> charSequence.toString())
+                .filter(s -> !s.equals(mPresenter.getBarcode().toString()))
+                .doOnNext(s -> mPresenter.changeBarcode(s))
+                .doOnNext(s -> mPresenter.refreshBarcode())
+                .subscribe());
 
         mCompositeSubscription.add(RxTextView.textChanges(edWeight)
                 .skip(1)
-                .debounce(600, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getBarcode().toString())))
-                .subscribe(charSequence -> mPresenter.changeWeight(charSequence.toString())));
+                .map(charSequence -> charSequence.toString())
+                .filter(s -> !s.equals(mPresenter.getWeight().toString()))
+                .subscribe(s -> mPresenter.changeWeight(s)));
 
         mCompositeSubscription.add(RxTextView.textChanges(edSites)
                 .skip(1)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getBarcode().toString())))
-                .subscribe(charSequence -> mPresenter.changeSites(charSequence.toString())));
+                .map(charSequence -> charSequence.toString())
+                .filter(s -> !s.equals(mPresenter.getSites().toString()))
+                .subscribe(s -> mPresenter.changeSites(s)));
 
     }
 
@@ -172,7 +175,7 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
 
         int sel = edBarcode.getSelectionEnd();
         edBarcode.setText(mPresenter.getBarcode());
-        //edBarcode.setSelection(sel);
+        edBarcode.setSelection(sel);
 
     }
 

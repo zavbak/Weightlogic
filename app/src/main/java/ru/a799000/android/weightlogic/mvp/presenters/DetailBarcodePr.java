@@ -57,7 +57,6 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
                     getViewState().showSnackbarView(throwable.toString());
                 }, () -> {
                     getViewState().refresh();
-                    refreshBarcode();
                 });
     }
 
@@ -134,7 +133,6 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     public void changeBarcode(String barcode) {
         mBarcode.setBarcode(barcode);
-        refreshBarcode();
     }
 
     public void changeWeight(String weight) {

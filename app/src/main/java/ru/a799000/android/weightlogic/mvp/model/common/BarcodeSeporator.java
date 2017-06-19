@@ -92,7 +92,7 @@ public class BarcodeSeporator {
             weight = Float.parseFloat(weightBigDecimal.toString());
             error = false;
 
-            text = new SpannableStringBuilder(mProduct.getInitBarcode());
+            text = new SpannableStringBuilder(barcode);
             ForegroundColorSpan style = new ForegroundColorSpan(Color.rgb(255, 0, 0));
             text.setSpan(style, mProduct.getStart()-1, mProduct.getFinish(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         }
