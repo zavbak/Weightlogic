@@ -3,17 +3,16 @@ package ru.a799000.android.weightlogic.mvp.presenters;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetBarcodeByIDInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.view.DetailBarcodeView;
-import ru.a799000.android.weightlogic.mvp.view.DetailProductView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -24,7 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 @InjectViewState
 public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     String mIdProduct;
-    String mIdBurcode;
+    String mIdBarcode;
 
     Product mProduct;
     Barcode mBarcode;
@@ -41,8 +40,8 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
-        Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mIdProduct)).getObservable();
-        Observable<Barcode> oBarcode = new GetBarcodeByIDInteractor(Long.parseLong(mIdBurcode)).getObservable();
+        Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mIdProduct!=null?mIdProduct:"0")).getObservable();
+        Observable<Barcode> oBarcode = new GetBarcodeByIDInteractor(Long.parseLong(mIdBarcode!=null?mIdBarcode:"0")).getObservable();
 
         Observable.zip(oProduct, oBarcode, (product, barcode) -> {
             init((Barcode) barcode, (Product) product);
@@ -93,7 +92,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     public void setInputData(String idProduct, String idBurcode) {
         mIdProduct = idProduct;
-        mIdBurcode = idBurcode;
+        mIdBarcode = idBurcode;
     }
 
     public CharSequence getId() {
@@ -129,6 +128,13 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     public CharSequence getSites() {
          return mBarcode.getPlaces()!=0?Integer.toString(mBarcode.getPlaces()):"";
+    }
+
+    public CharSequence getDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
+        String str = mBarcode.getDate()==null?"":dateFormat.format(mBarcode.getDate());
+
+        return str;
     }
 
     public void changeBarcode(String barcode) {

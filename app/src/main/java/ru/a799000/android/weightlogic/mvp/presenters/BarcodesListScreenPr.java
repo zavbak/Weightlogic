@@ -67,10 +67,12 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
     void executerCommand(int number, int position) {
         switch (number) {
 
+            case 3:
+                getViewState().startDetailBarcodeScreenView(mIdProduct,null);
+                break;
             case 9:
                 dellete(position);
                 break;
-
         }
     }
 
@@ -99,10 +101,10 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
 
                         }
                         , throwable ->
-                                getViewState().showInfoView(throwable.toString())
+                                getViewState().showSnackbarView(throwable.toString())
                         , () -> {
 
-                            getViewState().showInfoView("Удалили!");
+                            getViewState().showSnackbarView("Удалили!");
                         });
 
 

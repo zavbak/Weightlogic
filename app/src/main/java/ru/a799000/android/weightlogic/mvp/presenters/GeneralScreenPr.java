@@ -57,7 +57,6 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
             case 1:
                 loadFile();
                 break;
-
             case 4:
                 getViewState().startSettingsScreenView();
                 break;

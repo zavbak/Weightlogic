@@ -81,6 +81,26 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
 
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                int position =  lvProducts.getSelectedItemPosition();
+
+                if(event.getAction()== KeyEvent.ACTION_DOWN){
+                    mPresenter.pressKey(event.getNumber(),position);
+                }
+
+                return false;
+            }
+        });
+    }
+
+    @Override
     public void refreshView(OrderedRealmCollection<Product> data) {
 
         AdaprerProdact adapter = new AdaprerProdact(data);
@@ -111,6 +131,8 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
                 return false;
             }
         });
+
+
     }
 
     @Override

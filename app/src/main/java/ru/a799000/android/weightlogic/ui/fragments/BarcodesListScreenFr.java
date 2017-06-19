@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -42,7 +43,6 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     @BindView(R.id.lvBarcodes)
     ListView lvBarcodes;
 
-
     CallBackScreens mCallBackScreens;
 
 
@@ -61,8 +61,9 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
 
         Bundle args = getArguments();
         mPresenter.setIdProduct(args.getString(ID));
-
         mCallBackScreens = (CallBackScreens) getActivity();
+
+
 
         return view;
     }
@@ -71,6 +72,29 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                int position =  lvBarcodes.getSelectedItemPosition();
+
+                if(event.getAction()== KeyEvent.ACTION_DOWN){
+                    mPresenter.pressKey(event.getNumber(),position);
+                }
+
+                return false;
+            }
+        });
     }
 
     @Override

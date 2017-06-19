@@ -43,6 +43,10 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
     @BindView(R.id.tvId)
     TextView tvId;
 
+    @BindView(R.id.tvDate)
+    TextView tvDate;
+
+
     @BindView(R.id.tvInfoProduct)
     TextView tvInfoProduct;
 
@@ -148,6 +152,7 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         tvInfoProduct.setText(mPresenter.getInfoProduct());
         edWeight.setText(mPresenter.getWeight());
         edSites.setText(mPresenter.getSites());
+        tvDate.setText(mPresenter.getDate());
         mPresenter.refreshBarcode();
     }
 

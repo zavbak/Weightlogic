@@ -126,7 +126,18 @@
                 />
         </android.support.design.widget.TextInputLayout>
 
+
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="01.02.17 15:12:15"
+        android:textSize="18dp"
+        android:textStyle="bold"/>
 
     <LinearLayout
         android:layout_width="match_parent"

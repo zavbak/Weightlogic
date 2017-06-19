@@ -30,8 +30,7 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
-        if (mId != null) {
-            GetProductByIdInteractor interactor = new GetProductByIdInteractor(Long.parseLong(mId));
+            GetProductByIdInteractor interactor = new GetProductByIdInteractor(Long.parseLong(mId!=null?mId:"0"));
             interactor.getObservable()
                     .doOnNext(this::initProduct)
                     .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
@@ -41,8 +40,6 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
                             throwable -> {
                                 getViewState().showSnackbarView(throwable.toString());
                             });
-
-        }
 
 
     }

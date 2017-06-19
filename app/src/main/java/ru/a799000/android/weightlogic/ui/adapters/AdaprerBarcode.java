@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
 import ru.a799000.android.weightlogic.R;
@@ -75,8 +77,10 @@ public class AdaprerBarcode extends RealmBaseAdapter<Barcode> {
             String infoWeightSites = String.format("  Вес: %s, Мест: %s", mBarcode.getWeight(), mBarcode.getPlaces());
             tvInfoWeightSites.setText(infoWeightSites);
 
-            String infoBarcodeDate = String.format("(%s),   %s"
-                    ,mBarcode.getDate()==null?"":mBarcode.getDate()
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
+
+            String infoBarcodeDate = String.format("%s  %s"
+                    ,mBarcode.getDate()==null?"":dateFormat.format(mBarcode.getDate())
                     ,mBarcode.getBarcode()==null?"":mBarcode.getBarcode());
 
 
