@@ -126,6 +126,23 @@
                 />
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilPallet"
+            android:layout_width="100dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            >
+
+            <EditText
+                android:id="@+id/edPallet"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="Паллет"
+                android:inputType="numberSigned"
+                android:textSize="24dp"
+                />
+        </android.support.design.widget.TextInputLayout>
+
 
 
     </LinearLayout>

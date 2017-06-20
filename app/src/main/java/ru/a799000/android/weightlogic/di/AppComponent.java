@@ -38,4 +38,5 @@ public interface AppComponent {
     void injectGetBarcodesByIdProductInteractor(GetAllBarcodesByIdProductInteractor getBarcodesByIdProductInteractor);
 
     void GetBarcodeByIDInteractor(GetBarcodeByIDInteractor getBarcodeByIDInteractor);
+
 }

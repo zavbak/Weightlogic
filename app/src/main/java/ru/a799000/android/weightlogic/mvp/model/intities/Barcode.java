@@ -14,6 +14,7 @@ public class Barcode extends RealmObject {
     long id;
     String barcode;
     int places;
+    int pallet;
     float weight;
     Date date;
 
@@ -29,7 +30,16 @@ public class Barcode extends RealmObject {
         this.places = barcodeBuilder.places;
         this.weight = barcodeBuilder.weight;
         this.date = barcodeBuilder.date;
+        this.pallet = barcodeBuilder.pallet;
 
+    }
+
+    public int getPallet() {
+        return pallet;
+    }
+
+    public void setPallet(int pallet) {
+        this.pallet = pallet;
     }
 
     public static Builder getBuilder() {
@@ -84,16 +94,18 @@ public class Barcode extends RealmObject {
                 "id=" + id +
                 ", barcode='" + barcode + '\'' +
                 ", places=" + places +
+                ", pallet=" + pallet +
                 ", weight=" + weight +
                 ", date=" + date +
                 '}';
     }
 
-    public  class Builder {
+    public class Builder {
 
         long id;
         String barcode;
         int places;
+        int pallet;
         float weight;
         Date date;
 
@@ -116,6 +128,12 @@ public class Barcode extends RealmObject {
 
         public Builder setDate(Date date) {
             this.date = date;
+            return this;
+        }
+
+
+        public Builder setPallet(int pallet) {
+            this.pallet = pallet;
             return this;
         }
 
@@ -146,4 +164,7 @@ public class Barcode extends RealmObject {
 
 
     }
+
 }
+
+

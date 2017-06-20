@@ -68,8 +68,12 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
                     .setDate(barcode.getDate())
                     .setWeight(barcode.getWeight())
                     .setPlaces(barcode.getPlaces())
+                    .setPallet(barcode.getPallet())
                     .build();
+        }else{
+            mBarcode.setPlaces(1);
         }
+
         if (product != null) {
             mProduct = Product.getBuilder()
                     .id(product.getId())
@@ -130,6 +134,10 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
          return mBarcode.getPlaces()!=0?Integer.toString(mBarcode.getPlaces()):"";
     }
 
+    public CharSequence getPallet() {
+        return mBarcode.getPallet()!=0?Integer.toString(mBarcode.getPallet()):"";
+    }
+
     public CharSequence getDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
         String str = mBarcode.getDate()==null?"":dateFormat.format(mBarcode.getDate());
@@ -139,6 +147,10 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     public void changeBarcode(String barcode) {
         mBarcode.setBarcode(barcode);
+        mBarcodeSeporator = new BarcodeSeporator(barcode,mProduct);
+        if(!mBarcodeSeporator.getError()){
+            mBarcode.setWeight(mBarcodeSeporator.getWeight());
+        }
     }
 
     public void changeWeight(String weight) {
@@ -164,6 +176,18 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
         mBarcode.setPlaces(iSites);
     }
 
+    public void changePallet(String pallet) {
+        int i = 0;
+        try {
+            i = Integer.parseInt(pallet.toString());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            i = 0;
+        }
+        mBarcode.setPallet(i);
+
+    }
+
     public void onClickSave() {
         mBarcode.setDate(new Date());
         SaveBarcodeInteractor interactor = new SaveBarcodeInteractor(mProduct.getId(),mBarcode);
@@ -183,6 +207,12 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     public void onClickCancel() {
         getViewState().finishView();
+    }
+
+
+    public void scanBarcode(String s) {
+        changeBarcode(s);
+        getViewState().refresh();
     }
 
 

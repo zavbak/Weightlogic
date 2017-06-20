@@ -7,7 +7,6 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.GetSettingsInteracto
 import ru.a799000.android.weightlogic.mvp.model.interactors.SaveSettingsInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.SettingsScreenView;
-import ru.a799000.android.weightlogic.repository.sharedpref.SharedPreferenseHelper;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -36,11 +35,11 @@ public class SettingsScreenPr extends MvpPresenter<SettingsScreenView> {
     }
 
     public String getFileName() {
-        return mSettingsApp.getFileName() == null ? "" : mSettingsApp.getFileName();
+        return mSettingsApp.getFileNameLoad() == null ? "" : mSettingsApp.getFileNameLoad();
     }
 
     public void changeFileName(String s) {
-        mSettingsApp.setFileName(s);
+        mSettingsApp.setFileNameLoad(s);
     }
 
 

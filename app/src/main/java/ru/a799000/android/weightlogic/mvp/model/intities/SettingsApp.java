@@ -7,11 +7,15 @@ package ru.a799000.android.weightlogic.mvp.model.intities;
 public class SettingsApp {
     String mFileName;
 
-    public String getFileName() {
+    public String getFileNameLoad() {
         return mFileName;
     }
 
-    public void setFileName(String fileName) {
+    public void setFileNameLoad(String fileName) {
         mFileName = fileName;
+    }
+
+    public String getFileNameSave(){
+        return "to1C.json";
     }
 }

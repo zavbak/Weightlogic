@@ -14,12 +14,16 @@ import javax.inject.Inject;
 
 import ru.a799000.android.weightlogic.R;
 import ru.a799000.android.weightlogic.app.App;
+import ru.a799000.android.weightlogic.mvp.model.interactors.GetSettingsInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.SaveFileInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellAllInteractor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.LoadFileseInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.LoadFileseInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
-import ru.a799000.android.weightlogic.mvp.model.intities.IntitiesLoadObject;
+import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
+import ru.a799000.android.weightlogic.mvp.model.intities.load.IntitiesLoadObject;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.view.GeneralScreenView;
+import ru.a799000.android.weightlogic.repository.filesys.SaveFileHelper;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -57,6 +61,9 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
             case 1:
                 loadFile();
                 break;
+            case 2:
+                saveFiles();
+                break;
             case 4:
                 getViewState().startSettingsScreenView();
                 break;
@@ -64,6 +71,41 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
                 getViewState().startTestScreenView();
                 break;
         }
+    }
+
+    private void saveFiles() {
+        getViewState().showProgressDialog(true);
+
+        Observable<SettingsApp> settingsAppObservable = new GetSettingsInteractor().getObservable();
+        Observable<String> obsJson = new SaveFileInteractor().getObservable();
+
+        Observable.zip(settingsAppObservable, obsJson, (settingsApp, s) -> {
+
+            String fileName = settingsApp.getFileNameSave();
+            String bodyJson = s;
+
+            return new SaveFileHelper(fileName, s).readStringObservable();
+        })
+                .subscribeOn(AndroidSchedulers.mainThread()) //делаем запрос, преобразование, кэширование в отдельном потоке
+                .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
+                .subscribe(aBoolean -> {
+
+                    if(aBoolean){
+                        getViewState().showSnackbarView("Сохранили");
+                        getViewState().showProgressDialog(false);
+                    }else{
+                        getViewState().showSnackbarView("Ошибка");
+                        getViewState().showProgressDialog(false);
+                    }
+
+                },throwable -> {
+
+                    getViewState().showSnackbarView(throwable.getMessage());
+                    getViewState().showProgressDialog(false);
+
+                });
+
+
     }
 
     private void loadFile() {

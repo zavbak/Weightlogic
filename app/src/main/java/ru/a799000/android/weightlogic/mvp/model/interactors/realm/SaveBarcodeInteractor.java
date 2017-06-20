@@ -58,6 +58,7 @@ public class SaveBarcodeInteractor extends Interactor {
             barcodeRealm.setWeight(mBarcode.getWeight());
             barcodeRealm.setPlaces(mBarcode.getPlaces());
             barcodeRealm.setDate(mBarcode.getDate());
+            barcodeRealm.setPallet(mBarcode.getPallet());
 
             if(isNew) realmProduct.getBarcodes().add(barcodeRealm);
 

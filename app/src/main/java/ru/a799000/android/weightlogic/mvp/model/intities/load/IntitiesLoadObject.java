@@ -1,4 +1,4 @@
-package ru.a799000.android.weightlogic.mvp.model.intities;
+package ru.a799000.android.weightlogic.mvp.model.intities.load;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -63,6 +63,10 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
     @BindView(R.id.edSites)
     EditText edSites;
 
+    @BindView(R.id.edPallet)
+    EditText edPallet;
+
+
     @InjectPresenter
     DetailBarcodePr mPresenter;
 
@@ -91,7 +95,7 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
 
         ((MainActivity)getActivity()).getObservableBarcode()
                 .subscribe(s -> {
-                    edBarcode.setText(s);
+                    mPresenter.scanBarcode(s);
                 });
 
         return view;
@@ -143,6 +147,15 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
                 .filter(s -> !s.equals(mPresenter.getSites().toString()))
                 .subscribe(s -> mPresenter.changeSites(s)));
 
+        mCompositeSubscription.add(RxTextView.textChanges(edPallet)
+                .skip(1)
+                .map(charSequence -> charSequence.toString())
+                .filter(s -> !s.equals(mPresenter.getPallet().toString()))
+                .subscribe(s -> mPresenter.changePallet(s)));
+
+
+
+
     }
 
     @Override
@@ -152,6 +165,7 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         tvInfoProduct.setText(mPresenter.getInfoProduct());
         edWeight.setText(mPresenter.getWeight());
         edSites.setText(mPresenter.getSites());
+        edPallet.setText(mPresenter.getPallet());
         tvDate.setText(mPresenter.getDate());
         mPresenter.refreshBarcode();
     }

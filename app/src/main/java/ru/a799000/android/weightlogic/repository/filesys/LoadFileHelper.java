@@ -2,18 +2,15 @@ package ru.a799000.android.weightlogic.repository.filesys;
 
 import android.os.Environment;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 
-import ru.a799000.android.weightlogic.mvp.model.intities.IntitiesLoadObject;
-import ru.a799000.android.weightlogic.mvp.model.intities.IntitiesTovarLoad;
 import rx.Observable;
 
 /**
@@ -32,19 +29,21 @@ public class LoadFileHelper {
 
         String fullString = "";
 
-        String state = Environment.getExternalStorageState();
-        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-
-            return Observable.error(new Throwable("Нет доступа для чтения и записи"));
-        }
-
-        File sdPath = Environment.getExternalStorageDirectory();
-
-
-        sdPath = new File(sdPath.getAbsolutePath());
-
-
         try {
+
+
+            String state = Environment.getExternalStorageState();
+            if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+                return Observable.error(new Throwable("Нет доступа для чтения и записи"));
+            }
+
+            File sdPath = Environment.getExternalStorageDirectory();
+
+
+            sdPath = new File(sdPath.getAbsolutePath());
+
+
             // открываем поток для чтения
             File sdFile = new File(sdPath, mFileName);
             BufferedReader br = new BufferedReader(new FileReader(sdFile));
@@ -71,4 +70,6 @@ public class LoadFileHelper {
         return Observable.just(fullString);
 
     }
+
+
 }
