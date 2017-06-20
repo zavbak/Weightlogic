@@ -31,6 +31,9 @@ public interface BarcodesListScreenView extends MvpView {
     @StateStrategyType(SkipStrategy.class)
     void startDetailBarcodeScreenView(String idProduct,String idBarcode);
 
+    @StateStrategyType(SkipStrategy.class)
+    void startDetailBarcodeForNewBarcodeScreenView(String idProduct, String barcode);
+
     @StateStrategyType(AddToEndSingleStrategy.class)
     void setListPosition();
 }

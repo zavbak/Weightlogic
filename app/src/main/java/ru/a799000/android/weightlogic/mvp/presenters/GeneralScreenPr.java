@@ -80,32 +80,23 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
         Observable<String> obsJson = new SaveFileInteractor().getObservable();
 
         Observable.zip(settingsAppObservable, obsJson, (settingsApp, s) -> {
-
             String fileName = settingsApp.getFileNameSave();
             String bodyJson = s;
-
-            return new SaveFileHelper(fileName, s).readStringObservable();
+            return new SaveFileHelper(fileName, s);
         })
+                .flatMap(saveFileHelper -> {
+                    return saveFileHelper.getObservable();
+                })
                 .subscribeOn(AndroidSchedulers.mainThread()) //делаем запрос, преобразование, кэширование в отдельном потоке
                 .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
-                .subscribe(aBoolean -> {
-
-                    if(aBoolean){
-                        getViewState().showSnackbarView("Сохранили");
-                        getViewState().showProgressDialog(false);
-                    }else{
-                        getViewState().showSnackbarView("Ошибка");
-                        getViewState().showProgressDialog(false);
-                    }
-
-                },throwable -> {
-
-                    getViewState().showSnackbarView(throwable.getMessage());
+                .subscribe(o -> {}, throwable -> {
+                    getViewState().showSnackbarView(throwable.toString());
                     getViewState().showProgressDialog(false);
 
+                }, () -> {
+                    getViewState().showSnackbarView("Записали!");
+                    getViewState().showProgressDialog(false);
                 });
-
-
     }
 
     private void loadFile() {

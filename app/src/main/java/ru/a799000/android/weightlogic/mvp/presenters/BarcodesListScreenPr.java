@@ -122,4 +122,8 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
     public int getSelectionPosition() {
         return positionCurent;
     }
+
+    public void scanBarcode(String s) {
+        getViewState().startDetailBarcodeForNewBarcodeScreenView(mIdProduct,s);
+    }
 }

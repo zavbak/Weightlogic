@@ -80,10 +80,6 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         mPresenter.setID(args.getString(ID));
         mCallBackScreens = (CallBackScreens) getActivity();
 
-        ((MainActivity)getActivity()).getObservableBarcode()
-                .subscribe(s -> {
-                    mPresenter.changeBarcode(s);
-                });
 
         return view;
     }
@@ -95,7 +91,7 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         init();
     }
 
-    void init(){
+    void init() {
         mCompositeSubscription = new CompositeSubscription();
 
         mCompositeSubscription.add(RxTextView.textChanges(edBarcode)
@@ -123,6 +119,13 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
                 .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getCoef())))
                 .subscribe(charSequence -> mPresenter.changeCoef(charSequence.toString())));
 
+        mCompositeSubscription.add(
+                ((MainActivity) getActivity()).getObservableBarcode()
+                        .subscribe(s -> {
+                            mPresenter.changeBarcode(s);
+                        }));
+
+
     }
 
     @Override
@@ -132,12 +135,12 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
     }
 
     @OnClick(R.id.btSave)
-    void onClickSave(){
+    void onClickSave() {
         mPresenter.onClickSave();
     }
 
     @OnClick(R.id.btCancel)
-    void onClickCancel(){
+    void onClickCancel() {
         mPresenter.onClickCancel();
     }
 
@@ -150,7 +153,7 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         edStart.setText(mPresenter.getStart());
         edFinish.setText(mPresenter.getFinish());
         edCoef.setText(mPresenter.getCoef());
-        mPresenter.refreshBarcode();
+
     }
 
     @Override
@@ -164,12 +167,13 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
 
         CharSequence mess = mPresenter.getSizeBarcode();
 
-        if(barcodeSeporator.getError() ){
+        if (barcodeSeporator.getError()) {
             mess = mess + ", " + barcodeSeporator.getMessError();
-        }else{
+        } else {
 
-            String strMess =  "Вес: " + Float.toString(barcodeSeporator.getWeight());
 
+
+            String strMess = "Вес: " + Float.toString(barcodeSeporator.getWeight());
             mess = mess + ", " + strMess;
         }
 

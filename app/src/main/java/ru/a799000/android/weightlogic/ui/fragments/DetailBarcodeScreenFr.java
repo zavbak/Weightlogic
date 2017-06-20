@@ -3,6 +3,7 @@ package ru.a799000.android.weightlogic.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import ru.a799000.android.weightlogic.R;
 import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
 import ru.a799000.android.weightlogic.mvp.presenters.DetailBarcodePr;
@@ -33,11 +35,12 @@ import rx.subscriptions.CompositeSubscription;
  * Created by user on 17.06.2017.
  */
 
-public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements DetailBarcodeView {
+public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements DetailBarcodeView, View.OnKeyListener {
 
     public static final String TAG = "DetailBarcodeScreenFr";
     static final String ID_PRODUCT = "id_product";
     static final String ID_BARCODE = "id_barcode";
+    static final String BARCODE    = "barcode";
 
 
     @BindView(R.id.tvId)
@@ -74,11 +77,12 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
 
     private CompositeSubscription mCompositeSubscription;
 
-    public static DetailBarcodeScreenFr getInstance(String idProduct,String idBarcode) {
+    public static DetailBarcodeScreenFr getInstance(String idProduct, String idBarcode,String barcode) {
         DetailBarcodeScreenFr fragment = new DetailBarcodeScreenFr();
         Bundle args = new Bundle();
         args.putString(ID_PRODUCT, idProduct);
         args.putString(ID_BARCODE, idBarcode);
+        args.putString(BARCODE   , barcode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -90,13 +94,11 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         View view = inflater.inflate(R.layout.detail_barcode, container, false);
 
         Bundle args = getArguments();
-        mPresenter.setInputData(args.getString(ID_PRODUCT),args.getString(ID_BARCODE));
-        mCallBackScreens = (CallBackScreens) getActivity();
+        mPresenter.setInputData(args.getString(ID_PRODUCT)
+                , args.getString(ID_BARCODE)
+                , args.getString(BARCODE));
 
-        ((MainActivity)getActivity()).getObservableBarcode()
-                .subscribe(s -> {
-                    mPresenter.scanBarcode(s);
-                });
+        mCallBackScreens = (CallBackScreens) getActivity();
 
         return view;
     }
@@ -115,17 +117,17 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
     }
 
     @OnClick(R.id.btSave)
-    void onClickSave(){
+    void onClickSave() {
         mPresenter.onClickSave();
     }
 
 
     @OnClick(R.id.btCancel)
-    void onClickCancel(){
+    void onClickCancel() {
         mPresenter.onClickCancel();
     }
 
-    void init(){
+    void init() {
         mCompositeSubscription = new CompositeSubscription();
 
         mCompositeSubscription.add(RxTextView.textChanges(edBarcode)
@@ -153,9 +155,21 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
                 .filter(s -> !s.equals(mPresenter.getPallet().toString()))
                 .subscribe(s -> mPresenter.changePallet(s)));
 
+        mCompositeSubscription.add(((MainActivity) getActivity()).getObservableBarcode()
+                .subscribe(s -> {
+                    mPresenter.scanBarcode(s);
+                }));
 
 
+        getView().setFocusableInTouchMode(true);
 
+        getView().setOnKeyListener(this);
+        edWeight.setOnKeyListener(this);
+        edPallet.setOnKeyListener(this);
+        edSites.setOnKeyListener(this);
+
+        //Focus
+        edPallet.requestFocus();
     }
 
     @Override
@@ -168,6 +182,9 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         edPallet.setText(mPresenter.getPallet());
         tvDate.setText(mPresenter.getDate());
         mPresenter.refreshBarcode();
+
+        onFocusChange(edPallet, true);
+
     }
 
     @Override
@@ -181,15 +198,15 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
 
         CharSequence mess = mPresenter.getSizeBarcode();
 
-        if(barcodeSeporator.getError() ){
+        if (barcodeSeporator.getError()) {
             mess = mess + ", " + barcodeSeporator.getMessError();
-        }else{
+        } else {
 
-            String strMess =  "Вес: " + Float.toString(barcodeSeporator.getWeight());
-
+            String strMess = "Вес: " + Float.toString(barcodeSeporator.getWeight());
             mess = mess + ", " + strMess;
         }
 
+        edWeight.setText(mPresenter.getWeight());
         tvMessageBarcode.setText(mess);
 
         int sel = edBarcode.getSelectionEnd();
@@ -201,5 +218,19 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
     @Override
     public void finishView() {
         mCallBackScreens.backStack();
+    }
+
+
+    @OnFocusChange({R.id.edWeight,R.id.edBarcode,R.id.edSites,R.id.edPallet})
+    public void onFocusChange(View v, boolean hasFocus){
+        if(hasFocus){
+            EditText ed = (EditText) v;
+            ed.setSelection(ed.getText().length());
+        }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return mPresenter.onKeyListner(keyCode,event);
     }
 }

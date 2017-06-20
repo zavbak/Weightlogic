@@ -12,6 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.f2prateek.rx.receivers.RxBroadcastReceiver;
 
 
+import java.util.concurrent.TimeUnit;
 
 import io.realm.RealmResults;
 import ru.a799000.android.weightlogic.R;
@@ -32,6 +33,10 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
     BarcodeDataBroadcastReceiver mBarcodeDataBroadcastReceiver;
     Observable<String> mObservableBarcode;
 
+
+    BarcodeDataBroadcastReceiver mBarcodeDataBroadcastReceiver1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +46,21 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
 
         IntentFilter intentFilter = new IntentFilter("DATA_SCAN");
         mObservableBarcode =   RxBroadcastReceiver.create(this, intentFilter)
-                .map(intent -> intent.getStringExtra("com.hht.emdk.datawedge.data_string"));
+                .map(
+                        intent -> {
+                           return    intent.getStringExtra("com.hht.emdk.datawedge.data_string");
+                        }
+                )
+        .debounce(150, TimeUnit.MILLISECONDS);
+
+
+        mBarcodeDataBroadcastReceiver1 = new BarcodeDataBroadcastReceiver(barcode -> {
+            String g = barcode;
+        });
+
+        IntentFilter intentFilter1 = new IntentFilter("DATA_SCAN");
+        registerReceiver(mBarcodeDataBroadcastReceiver1, intentFilter1);
+
     }
 
     @Override
@@ -49,6 +68,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
         return mObservableBarcode;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mBarcodeDataBroadcastReceiver1);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -90,6 +115,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
     @Override
     public void startBarcodeProductScreenView(String idProduct, String idBarcode) {
         mRouterScreen.startDetailBarcodeScreen(idProduct,idBarcode);
+    }
+
+    @Override
+    public void startDetailBarcodeForNewBarcodeScreenView(String idProduct, String barcode) {
+        mRouterScreen.startDetailBarcodeForNewBarcodeScreenView(idProduct,barcode);
     }
 
 

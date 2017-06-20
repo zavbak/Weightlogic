@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,13 +22,15 @@ import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.presenters.BarcodesListScreenPr;
 import ru.a799000.android.weightlogic.mvp.view.BarcodesListScreenView;
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
+import ru.a799000.android.weightlogic.ui.activityes.MainActivity;
 import ru.a799000.android.weightlogic.ui.adapters.AdaprerBarcode;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by user on 17.06.2017.
  */
 
-public class BarcodesListScreenFr extends MvpAppCompatFragment implements BarcodesListScreenView {
+public class BarcodesListScreenFr extends MvpAppCompatFragment implements BarcodesListScreenView, View.OnKeyListener {
     public static final String TAG = "BarcodesListScreenFr";
     static final String ID = "id";
 
@@ -44,6 +45,8 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     ListView lvBarcodes;
 
     CallBackScreens mCallBackScreens;
+
+    private CompositeSubscription mCompositeSubscription;
 
 
     public static BarcodesListScreenFr getInstance(String id) {
@@ -72,9 +75,15 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        init();
+    }
 
-
-
+    void init() {
+        mCompositeSubscription = new CompositeSubscription();
+        mCompositeSubscription.add(((MainActivity) getActivity()).getObservableBarcode()
+                .subscribe(s -> {
+                    mPresenter.scanBarcode(s);
+                }));
     }
 
     @Override
@@ -82,19 +91,13 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+        getView().setOnKeyListener(this);
+    }
 
-                int position =  lvBarcodes.getSelectedItemPosition();
-
-                if(event.getAction()== KeyEvent.ACTION_DOWN){
-                    mPresenter.pressKey(event.getNumber(),position);
-                }
-
-                return false;
-            }
-        });
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mCompositeSubscription.unsubscribe();
     }
 
     @Override
@@ -122,19 +125,7 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
             }
         });
 
-        lvBarcodes.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-                int position =  lvBarcodes.getSelectedItemPosition();
-
-                if(event.getAction()== KeyEvent.ACTION_DOWN){
-                    mPresenter.pressKey(event.getNumber(),position);
-                }
-
-                return false;
-            }
-        });
+        lvBarcodes.setOnKeyListener(this);
     }
 
     @Override
@@ -153,10 +144,26 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
         mCallBackScreens.startBarcodeProductScreenView(idProduct,idBarcode);
     }
 
+    @Override
+    public void startDetailBarcodeForNewBarcodeScreenView(String idProduct, String barcode) {
+        mCallBackScreens.startDetailBarcodeForNewBarcodeScreenView(idProduct,barcode);
+    }
 
     @Override
     public void setListPosition() {
         lvBarcodes.setSelection(mPresenter.getSelectionPosition());
+    }
+
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        int position =  lvBarcodes.getSelectedItemPosition();
+
+        if(event.getAction()== KeyEvent.ACTION_DOWN){
+            mPresenter.pressKey(event.getNumber(),position);
+        }
+
+        return false;
     }
 
 

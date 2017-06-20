@@ -22,14 +22,14 @@ public class SaveFileHelper {
         mBody = body;
     }
 
-    public Boolean readStringObservable() {
+    public Observable getObservable() {
 
 
         try {
 
             String state = Environment.getExternalStorageState();
             if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                return false;
+                return Observable.error(new IOException("Нет доступа к CD"));
             }
 
 
@@ -49,11 +49,11 @@ public class SaveFileHelper {
             myOutWriter.write(mBody);
             myOutWriter.close();
             fOut.close();
-            return true;
+            return Observable.empty();
 
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return Observable.error(e);
         }
 
     }

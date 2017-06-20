@@ -123,4 +123,8 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
     public int getSelectionPosition() {
         return positionCurent;
     }
+
+    public void scanBarcode(String s) {
+        getViewState().showSnackbarView(s);
+    }
 }

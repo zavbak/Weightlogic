@@ -22,7 +22,9 @@ import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.presenters.ProductsListScreenPr;
 import ru.a799000.android.weightlogic.mvp.view.ProductsListScreenView;
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
+import ru.a799000.android.weightlogic.ui.activityes.MainActivity;
 import ru.a799000.android.weightlogic.ui.adapters.AdaprerProdact;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by user on 17.06.2017.
@@ -44,6 +46,8 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
 
 
     CallBackScreens mCallBackScreens;
+
+    private CompositeSubscription mCompositeSubscription;
 
 
     public static ProductsListScreenFr getInstance(String id) {
@@ -67,11 +71,24 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
         return view;
     }
 
+
+
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        init();
     }
+
+    void init() {
+        mCompositeSubscription = new CompositeSubscription();
+        mCompositeSubscription.add(((MainActivity) getActivity()).getObservableBarcode()
+                .subscribe(s -> {
+                    mPresenter.scanBarcode(s);
+                }));
+    }
+
 
     @Override
     public void onStart() {
@@ -98,6 +115,14 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
                 return false;
             }
         });
+    }
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mCompositeSubscription.unsubscribe();
     }
 
     @Override

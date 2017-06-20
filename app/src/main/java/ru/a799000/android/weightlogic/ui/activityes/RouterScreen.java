@@ -90,8 +90,17 @@ public class RouterScreen {
     public void startDetailBarcodeScreen(String idProduct,String idBarcode) {
         mActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment, DetailBarcodeScreenFr.getInstance(idProduct,idBarcode), DetailBarcodeScreenFr.TAG)
+                .replace(R.id.fragment, DetailBarcodeScreenFr.getInstance(idProduct,idBarcode,null), DetailBarcodeScreenFr.TAG)
                 .addToBackStack("myBackStack")
                 .commit();
+    }
+
+    public void startDetailBarcodeForNewBarcodeScreenView(String idProduct, String barcode) {
+        mActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment, DetailBarcodeScreenFr.getInstance(idProduct,null,barcode), DetailBarcodeScreenFr.TAG)
+                .addToBackStack("myBackStack")
+                .commit();
+
     }
 }

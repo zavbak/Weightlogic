@@ -1,5 +1,7 @@
 package ru.a799000.android.weightlogic.mvp.presenters;
 
+import android.view.KeyEvent;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
@@ -22,13 +24,15 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @InjectViewState
 public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
-    String mIdProduct;
-    String mIdBarcode;
+    String mParamIdProduct;
+    String mParamIdBarcode;
+    String mParamBarcode;
 
     Product mProduct;
     Barcode mBarcode;
 
     BarcodeSeporator mBarcodeSeporator;
+
 
 
     public DetailBarcodePr() {
@@ -40,8 +44,8 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
-        Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mIdProduct!=null?mIdProduct:"0")).getObservable();
-        Observable<Barcode> oBarcode = new GetBarcodeByIDInteractor(Long.parseLong(mIdBarcode!=null?mIdBarcode:"0")).getObservable();
+        Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mParamIdProduct !=null? mParamIdProduct :"0")).getObservable();
+        Observable<Barcode> oBarcode = new GetBarcodeByIDInteractor(Long.parseLong(mParamIdBarcode !=null? mParamIdBarcode :"0")).getObservable();
 
         Observable.zip(oProduct, oBarcode, (product, barcode) -> {
             init((Barcode) barcode, (Product) product);
@@ -61,19 +65,6 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     private void init(Barcode barcode, Product product) {
 
-        if (barcode != null) {
-            mBarcode = Barcode.getBuilder()
-                    .setId(barcode.getId())
-                    .setBarcode(barcode.getBarcode())
-                    .setDate(barcode.getDate())
-                    .setWeight(barcode.getWeight())
-                    .setPlaces(barcode.getPlaces())
-                    .setPallet(barcode.getPallet())
-                    .build();
-        }else{
-            mBarcode.setPlaces(1);
-        }
-
         if (product != null) {
             mProduct = Product.getBuilder()
                     .id(product.getId())
@@ -86,6 +77,24 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
                     .coef(product.getCoef())
                     .build();
         }
+
+        if (barcode != null) {
+            mBarcode = Barcode.getBuilder()
+                    .setId(barcode.getId())
+                    .setBarcode(barcode.getBarcode())
+                    .setDate(barcode.getDate())
+                    .setWeight(barcode.getWeight())
+                    .setPlaces(barcode.getPlaces())
+                    .setPallet(barcode.getPallet())
+                    .build();
+        }else{
+            mBarcode.setPlaces(1);
+            if(mParamBarcode !=null){
+                changeBarcode(mParamBarcode);
+            }
+        }
+
+
     }
 
 
@@ -94,9 +103,10 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
         getViewState().refreshBarcodeView(mBarcodeSeporator);
     }
 
-    public void setInputData(String idProduct, String idBurcode) {
-        mIdProduct = idProduct;
-        mIdBarcode = idBurcode;
+    public void setInputData(String idProduct, String idBurcode,String barcode) {
+        mParamIdProduct = idProduct;
+        mParamIdBarcode = idBurcode;
+        mParamBarcode =  barcode;
     }
 
     public CharSequence getId() {
@@ -216,5 +226,10 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     }
 
 
-
+    public boolean onKeyListner(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_ENTER){
+            onClickSave();
+        }
+        return false;
+    }
 }
