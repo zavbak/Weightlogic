@@ -110,9 +110,11 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         init();
     }
 
+
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         mCompositeSubscription.unsubscribe();
     }
 

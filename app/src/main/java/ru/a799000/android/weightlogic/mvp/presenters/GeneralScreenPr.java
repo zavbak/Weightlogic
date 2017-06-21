@@ -165,7 +165,6 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
     }
 
     public void selectCommand(int position) {
-        getViewState().showSnackbarView(mlist.get(position));
         executeCommand(position);
     }
 

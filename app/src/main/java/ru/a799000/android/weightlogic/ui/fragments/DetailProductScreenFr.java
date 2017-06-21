@@ -3,6 +3,7 @@ package ru.a799000.android.weightlogic.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import ru.a799000.android.weightlogic.R;
 
 import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
@@ -29,7 +31,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by user on 17.06.2017.
  */
 
-public class DetailProductScreenFr extends MvpAppCompatFragment implements DetailProductView {
+public class DetailProductScreenFr extends MvpAppCompatFragment implements DetailProductView, View.OnKeyListener {
 
     public static final String TAG = "DetailProductScreenFr";
     static final String ID = "id";
@@ -94,43 +96,63 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
     void init() {
         mCompositeSubscription = new CompositeSubscription();
 
-        mCompositeSubscription.add(RxTextView.textChanges(edBarcode)
-                .skip(1)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getBarcode().toString())))
-                .subscribe(charSequence -> mPresenter.changeBarcode(charSequence.toString())));
-
         mCompositeSubscription.add(RxTextView.textChanges(edName)
-                .skip(1)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getName().toString())))
-                .subscribe(charSequence -> mPresenter.changeName(charSequence.toString())));
+                .map(charSequence -> charSequence.toString())
+                .filter(s -> !s.equals(mPresenter.getName().toString()))
+                .doOnNext(s -> mPresenter.changeName(s))
+                .subscribe());
+
+        mCompositeSubscription.add(RxTextView.textChanges(edBarcode)
+                .map(charSequence -> charSequence.toString())
+                .filter(s -> !s.equals(mPresenter.getBarcode().toString()))
+                .doOnNext(s -> mPresenter.changeBarcode(s))
+                .doOnNext(s -> mPresenter.refreshBarcode())
+                .subscribe());
 
         mCompositeSubscription.add(RxTextView.textChanges(edStart)
-                .skip(1)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getStart())))
-                .subscribe(charSequence -> mPresenter.changeStart(charSequence.toString())));
+                .map(charSequence -> charSequence.toString())
+                .filter(s -> !s.equals(mPresenter.getStart().toString()))
+                .doOnNext(s -> mPresenter.changeStart(s))
+                .doOnNext(s -> mPresenter.refreshBarcode())
+                .subscribe());
 
         mCompositeSubscription.add(RxTextView.textChanges(edFinish)
-                .skip(1)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getFinish())))
-                .subscribe(charSequence -> mPresenter.changeFinish(charSequence.toString())));
+                .map(charSequence -> charSequence.toString())
+                .filter(s -> !s.equals(mPresenter.getFinish().toString()))
+                .doOnNext(s -> mPresenter.changeFinish(s))
+                .doOnNext(s -> mPresenter.refreshBarcode())
+                .subscribe());
 
         mCompositeSubscription.add(RxTextView.textChanges(edCoef)
-                .skip(1)
-                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getCoef())))
-                .subscribe(charSequence -> mPresenter.changeCoef(charSequence.toString())));
+                .map(charSequence -> charSequence.toString())
+                .filter(s -> !s.equals(mPresenter.getCoef().toString()))
+                .doOnNext(s -> mPresenter.changeCoef(s))
+                .doOnNext(s -> mPresenter.refreshBarcode())
+                .subscribe());
 
-        mCompositeSubscription.add(
-                ((MainActivity) getActivity()).getObservableBarcode()
-                        .subscribe(s -> {
-                            mPresenter.changeBarcode(s);
-                        }));
+
+        mCompositeSubscription.add(((MainActivity) getActivity()).getObservableBarcode()
+                .doOnNext(s -> mPresenter.scanBarcode(s))
+                .doOnNext(s -> mPresenter.refreshBarcode())
+                .subscribe());
+
+        getView().setOnKeyListener(this);
+        edName.setOnKeyListener(this);
+        edBarcode.setOnKeyListener(this);
+        edStart.setOnKeyListener(this);
+        edFinish.setOnKeyListener(this);
+        edCoef.setOnKeyListener(this);
+
+        //Focus
+        edStart.requestFocus();
+
 
 
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         mCompositeSubscription.unsubscribe();
     }
 
@@ -144,6 +166,14 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         mPresenter.onClickCancel();
     }
 
+    @OnFocusChange({R.id.edName,R.id.edBarcode,R.id.edStart,R.id.edFinish,R.id.edCoef})
+    public void onFocusChange(View v, boolean hasFocus){
+        if(hasFocus){
+            EditText ed = (EditText) v;
+            ed.setSelection(ed.getText().length());
+        }
+    }
+
     @Override
     public void refresh() {
 
@@ -153,6 +183,8 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
         edStart.setText(mPresenter.getStart());
         edFinish.setText(mPresenter.getFinish());
         edCoef.setText(mPresenter.getCoef());
+
+        onFocusChange(edStart, true);
 
     }
 
@@ -171,8 +203,6 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
             mess = mess + ", " + barcodeSeporator.getMessError();
         } else {
 
-
-
             String strMess = "Вес: " + Float.toString(barcodeSeporator.getWeight());
             mess = mess + ", " + strMess;
         }
@@ -188,5 +218,11 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
     @Override
     public void finishView() {
         mCallBackScreens.backStack();
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return mPresenter.onKeyListner(keyCode,event);
+
     }
 }

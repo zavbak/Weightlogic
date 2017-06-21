@@ -229,6 +229,8 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     public boolean onKeyListner(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_ENTER){
             onClickSave();
+        }else if(keyCode == KeyEvent.KEYCODE_ESCAPE){
+            onClickCancel();
         }
         return false;
     }

@@ -1,5 +1,7 @@
 package ru.a799000.android.weightlogic.mvp.presenters;
 
+import android.view.KeyEvent;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
@@ -30,16 +32,18 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
-            GetProductByIdInteractor interactor = new GetProductByIdInteractor(Long.parseLong(mId!=null?mId:"0"));
-            interactor.getObservable()
-                    .doOnNext(this::initProduct)
-                    .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(product -> {
-                            },
-                            throwable -> {
-                                getViewState().showSnackbarView(throwable.toString());
-                            });
+        GetProductByIdInteractor interactor = new GetProductByIdInteractor(Long.parseLong(mId != null ? mId : "0"));
+        interactor.getObservable()
+                .doOnNext(this::initProduct)
+                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(product -> {
+                        },
+                        throwable -> {
+                            getViewState().showSnackbarView(throwable.toString());
+                        }, () -> {
+                            getViewState().refresh();
+                        });
 
 
     }
@@ -56,10 +60,6 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
                 .finish(product.getFinish())
                 .coef(product.getCoef())
                 .build();
-
-
-        getViewState().refresh();
-
     }
 
 
@@ -83,13 +83,12 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
     }
 
     public CharSequence getBarcode() {
-
+        mBarcodeSeporator = new BarcodeSeporator(mProduct.getInitBarcode(),mProduct);
         CharSequence charSequence = mProduct.getInitBarcode() == null ? "" : mProduct.getInitBarcode();
 
         if (mBarcodeSeporator != null) {
             if (mBarcodeSeporator.getFormatText() != null) {
                 charSequence = mBarcodeSeporator.getFormatText();
-
             }
         }
         return charSequence;
@@ -120,7 +119,7 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
 
     public void changeBarcode(String barcode) {
         mProduct.setInitBarcode(barcode);
-        refreshBarcode();
+        mBarcodeSeporator = new BarcodeSeporator(barcode,mProduct);
     }
 
     public void changeName(String name) {
@@ -136,7 +135,7 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
             iStars = 0;
         }
         mProduct.setStart(iStars);
-        refreshBarcode();
+        mBarcodeSeporator = new BarcodeSeporator(mProduct.getInitBarcode(),mProduct);
     }
 
     public void changeFinish(String finish) {
@@ -148,7 +147,7 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
             iFinish = 0;
         }
         mProduct.setFinish(iFinish);
-        refreshBarcode();
+        mBarcodeSeporator = new BarcodeSeporator(mProduct.getInitBarcode(),mProduct);
     }
 
     public void changeCoef(String coef) {
@@ -160,7 +159,7 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
             iCoef = 0;
         }
         mProduct.setCoef(iCoef);
-        refreshBarcode();
+        mBarcodeSeporator = new BarcodeSeporator(mProduct.getInitBarcode(),mProduct);
     }
 
     public void onClickSave() {
@@ -183,5 +182,19 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
 
     public void onClickCancel() {
         getViewState().finishView();
+    }
+
+    public boolean onKeyListner(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            onClickSave();
+        } else if (keyCode == KeyEvent.KEYCODE_ESCAPE) {
+            onClickCancel();
+        }
+        return false;
+    }
+
+    public void scanBarcode(String s) {
+        changeBarcode(s);
+        getViewState().refresh();
     }
 }

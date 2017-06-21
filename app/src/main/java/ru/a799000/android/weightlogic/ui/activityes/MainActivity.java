@@ -12,6 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.f2prateek.rx.receivers.RxBroadcastReceiver;
 
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.RealmResults;
@@ -21,6 +22,8 @@ import ru.a799000.android.weightlogic.mvp.presenters.MainAcPr;
 import ru.a799000.android.weightlogic.mvp.view.MainAcView;
 import ru.a799000.android.weightlogic.repository.barcode.BarcodeDataBroadcastReceiver;
 import rx.Observable;
+import rx.subjects.AsyncSubject;
+import rx.subjects.PublishSubject;
 
 
 public class MainActivity extends MvpAppCompatActivity implements MainAcView,CallBackScreens,GetDataActivity {
@@ -30,11 +33,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
 
     RouterScreen mRouterScreen;
 
+    //BarcodeDataBroadcastReceiver mBarcodeDataBroadcastReceiver;
+    //Observable<String> mObservableBarcode;
+
+
     BarcodeDataBroadcastReceiver mBarcodeDataBroadcastReceiver;
-    Observable<String> mObservableBarcode;
-
-
-    BarcodeDataBroadcastReceiver mBarcodeDataBroadcastReceiver1;
+    PublishSubject<String> mBarcodeSubject = PublishSubject.create();
 
 
     @Override
@@ -44,42 +48,31 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
         mRouterScreen = new RouterScreen(this);
 
 
-        IntentFilter intentFilter = new IntentFilter("DATA_SCAN");
-        mObservableBarcode =   RxBroadcastReceiver.create(this, intentFilter)
-                .map(
-                        intent -> {
-                           return    intent.getStringExtra("com.hht.emdk.datawedge.data_string");
-                        }
-                )
-        .debounce(150, TimeUnit.MILLISECONDS);
 
-
-        mBarcodeDataBroadcastReceiver1 = new BarcodeDataBroadcastReceiver(barcode -> {
+        mBarcodeDataBroadcastReceiver = new BarcodeDataBroadcastReceiver(barcode -> {
             String g = barcode;
+            mBarcodeSubject.onNext(barcode);
         });
 
         IntentFilter intentFilter1 = new IntentFilter("DATA_SCAN");
-        registerReceiver(mBarcodeDataBroadcastReceiver1, intentFilter1);
+        registerReceiver(mBarcodeDataBroadcastReceiver, intentFilter1);
 
     }
 
     @Override
-    public Observable<String> getObservableBarcode() {
-        return mObservableBarcode;
+    public PublishSubject<String> getObservableBarcode() {
+        return mBarcodeSubject;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(mBarcodeDataBroadcastReceiver1);
-
+        unregisterReceiver(mBarcodeDataBroadcastReceiver);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

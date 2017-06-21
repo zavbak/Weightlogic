@@ -110,7 +110,7 @@
             android:id="@+id/tvMessageBarcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Сим. 10, 1245 ВЕС 12.45"
+            android:text=""
             android:layout_margin="8dp"
             android:textSize="18dp"
             android:textStyle="bold"/>
@@ -129,12 +129,13 @@
             android:layout_margin="8dp"
 
             >
+
             <EditText
                 android:id="@+id/edStart"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:inputType="numberSigned"
                 android:hint="Начало"
+                android:inputType="numberSigned"
                 android:textSize="24dp"
                 />
         </android.support.design.widget.TextInputLayout>
@@ -145,12 +146,13 @@
             android:layout_height="64dp"
             android:layout_margin="8dp"
             >
+
             <EditText
                 android:id="@+id/edFinish"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:inputType="numberSigned"
                 android:hint="Конец"
+                android:inputType="numberSigned"
                 android:textSize="24dp"
                 />
         </android.support.design.widget.TextInputLayout>
@@ -161,12 +163,13 @@
             android:layout_height="64dp"
             android:layout_margin="8dp"
             >
+
             <EditText
                 android:id="@+id/edCoef"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
                 android:hint="Коэф."
+                android:inputType="numberDecimal"
                 android:textSize="24dp"
                 />
         </android.support.design.widget.TextInputLayout>
@@ -181,7 +184,7 @@
             android:id="@+id/tvMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Зап. 15, В. 105, M. 50"
+            android:text=""
             android:layout_margin="8dp"
             android:textSize="24dp"/>
     </LinearLayout>
@@ -197,14 +200,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Отмена"/>
+            android:text="Отмена (ESC)"/>
 
         <Button
             android:id="@+id/btSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Сохранить"/>
+            android:text="Сохранить (ENT)"/>
     </LinearLayout>
 
 </LinearLayout>

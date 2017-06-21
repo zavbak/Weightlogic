@@ -95,9 +95,15 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        mCompositeSubscription.unsubscribe();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        mCompositeSubscription.unsubscribe();
+
     }
 
     @Override
