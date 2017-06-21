@@ -98,6 +98,7 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     public void onPause() {
         super.onPause();
         mCompositeSubscription.unsubscribe();
+        mPresenter.saveSettings(lvBarcodes.getSelectedItemPosition());
     }
 
     @Override
@@ -119,7 +120,6 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
         AdaprerBarcode adapter = new AdaprerBarcode(data);
         lvBarcodes.setAdapter(adapter);
         lvBarcodes.requestFocus(0);
-        lvBarcodes.setSelection(mPresenter.getSelectionPosition());
         lvBarcodes.setClickable(true);
 
         lvBarcodes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,6 +132,12 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
         });
 
         lvBarcodes.setOnKeyListener(this);
+
+        try {
+            lvBarcodes.setSelection(mPresenter.getSelectionPosition());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -155,10 +161,7 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
         mCallBackScreens.startDetailBarcodeForNewBarcodeScreenView(idProduct,barcode);
     }
 
-    @Override
-    public void setListPosition() {
-        lvBarcodes.setSelection(mPresenter.getSelectionPosition());
-    }
+
 
 
     @Override

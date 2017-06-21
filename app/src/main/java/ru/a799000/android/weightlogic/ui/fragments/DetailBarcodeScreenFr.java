@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.MvpPresenter;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
@@ -111,11 +112,17 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.onStart();
+    }
 
     @Override
     public void onPause() {
         super.onPause();
         mCompositeSubscription.unsubscribe();
+        mPresenter.saveSettings();
     }
 
     @OnClick(R.id.btSave)

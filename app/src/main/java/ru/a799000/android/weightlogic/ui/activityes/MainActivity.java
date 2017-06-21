@@ -47,16 +47,18 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
         setContentView(R.layout.activity_main);
         mRouterScreen = new RouterScreen(this);
 
-
-
         mBarcodeDataBroadcastReceiver = new BarcodeDataBroadcastReceiver(barcode -> {
             String g = barcode;
             mBarcodeSubject.onNext(barcode);
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         IntentFilter intentFilter1 = new IntentFilter("DATA_SCAN");
         registerReceiver(mBarcodeDataBroadcastReceiver, intentFilter1);
-
     }
 
     @Override
@@ -64,11 +66,13 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
         return mBarcodeSubject;
     }
 
+
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         unregisterReceiver(mBarcodeDataBroadcastReceiver);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

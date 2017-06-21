@@ -72,8 +72,6 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     }
 
 
-
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -100,16 +98,17 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     @Override
     public void onResume() {
         super.onResume();
+        mPresenter.onStart();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
         getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-                int position =  lvProducts.getSelectedItemPosition();
+                int position = lvProducts.getSelectedItemPosition();
 
-                if(event.getAction()== KeyEvent.ACTION_DOWN){
-                    mPresenter.pressKey(event.getNumber(),position);
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    mPresenter.pressKey(event.getNumber(), position);
                 }
 
                 return false;
@@ -118,11 +117,11 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     }
 
 
-
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         mCompositeSubscription.unsubscribe();
+        mPresenter.saveCurentPosition(lvProducts.getSelectedItemPosition());
     }
 
     @Override
@@ -147,15 +146,22 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-                int position =  lvProducts.getSelectedItemPosition();
+                int position = lvProducts.getSelectedItemPosition();
 
-                if(event.getAction()== KeyEvent.ACTION_DOWN){
-                    mPresenter.pressKey(event.getNumber(),position);
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    mPresenter.pressKey(event.getNumber(), position);
                 }
 
                 return false;
             }
         });
+
+
+        try {
+            lvProducts.setSelection(mPresenter.getSelectionPosition());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -179,11 +185,6 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     @Override
     public void startListScreenBarcodes(String id) {
         mCallBackScreens.startListScreenBarcodes(id);
-    }
-
-    @Override
-    public void setListPosition() {
-        lvProducts.setSelection(mPresenter.getSelectionPosition());
     }
 
 

@@ -9,11 +9,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
+import ru.a799000.android.weightlogic.mvp.model.interactors.GetSettingsInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.SaveSettingsInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetBarcodeByIDInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
+import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.DetailBarcodeView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,6 +36,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     BarcodeSeporator mBarcodeSeporator;
 
+    int mCarrentPallet;
 
 
     public DetailBarcodePr() {
@@ -44,8 +48,8 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
-        Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mParamIdProduct !=null? mParamIdProduct :"0")).getObservable();
-        Observable<Barcode> oBarcode = new GetBarcodeByIDInteractor(Long.parseLong(mParamIdBarcode !=null? mParamIdBarcode :"0")).getObservable();
+        Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mParamIdProduct != null ? mParamIdProduct : "0")).getObservable();
+        Observable<Barcode> oBarcode = new GetBarcodeByIDInteractor(Long.parseLong(mParamIdBarcode != null ? mParamIdBarcode : "0")).getObservable();
 
         Observable.zip(oProduct, oBarcode, (product, barcode) -> {
             init((Barcode) barcode, (Product) product);
@@ -64,6 +68,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     }
 
     private void init(Barcode barcode, Product product) {
+        loadSettings();
 
         if (product != null) {
             mProduct = Product.getBuilder()
@@ -87,12 +92,15 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
                     .setPlaces(barcode.getPlaces())
                     .setPallet(barcode.getPallet())
                     .build();
-        }else{
+        } else {
             mBarcode.setPlaces(1);
-            if(mParamBarcode !=null){
+            if (mParamBarcode != null) {
                 changeBarcode(mParamBarcode);
             }
+
+            mBarcode.setPallet(mCarrentPallet);
         }
+
 
 
     }
@@ -103,10 +111,10 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
         getViewState().refreshBarcodeView(mBarcodeSeporator);
     }
 
-    public void setInputData(String idProduct, String idBurcode,String barcode) {
+    public void setInputData(String idProduct, String idBurcode, String barcode) {
         mParamIdProduct = idProduct;
         mParamIdBarcode = idBurcode;
-        mParamBarcode =  barcode;
+        mParamBarcode = barcode;
     }
 
     public CharSequence getId() {
@@ -128,7 +136,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     }
 
     public CharSequence getInfoProduct() {
-        return mProduct.getName()!=null? mProduct.getName():"";
+        return mProduct.getName() != null ? mProduct.getName() : "";
     }
 
 
@@ -137,28 +145,28 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     }
 
     public CharSequence getWeight() {
-        return mBarcode.getWeight()!=0?Float.toString(mBarcode.getWeight()):"";
+        return mBarcode.getWeight() != 0 ? Float.toString(mBarcode.getWeight()) : "";
     }
 
     public CharSequence getSites() {
-         return mBarcode.getPlaces()!=0?Integer.toString(mBarcode.getPlaces()):"";
+        return mBarcode.getPlaces() != 0 ? Integer.toString(mBarcode.getPlaces()) : "";
     }
 
     public CharSequence getPallet() {
-        return mBarcode.getPallet()!=0?Integer.toString(mBarcode.getPallet()):"";
+        return mBarcode.getPallet() != 0 ? Integer.toString(mBarcode.getPallet()) : "";
     }
 
     public CharSequence getDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
-        String str = mBarcode.getDate()==null?"":dateFormat.format(mBarcode.getDate());
+        String str = mBarcode.getDate() == null ? "" : dateFormat.format(mBarcode.getDate());
 
         return str;
     }
 
     public void changeBarcode(String barcode) {
         mBarcode.setBarcode(barcode);
-        mBarcodeSeporator = new BarcodeSeporator(barcode,mProduct);
-        if(!mBarcodeSeporator.getError()){
+        mBarcodeSeporator = new BarcodeSeporator(barcode, mProduct);
+        if (!mBarcodeSeporator.getError()) {
             mBarcode.setWeight(mBarcodeSeporator.getWeight());
         }
     }
@@ -196,11 +204,13 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
         }
         mBarcode.setPallet(i);
 
+        mCarrentPallet = mBarcode.getPallet();
+
     }
 
     public void onClickSave() {
         mBarcode.setDate(new Date());
-        SaveBarcodeInteractor interactor = new SaveBarcodeInteractor(mProduct.getId(),mBarcode);
+        SaveBarcodeInteractor interactor = new SaveBarcodeInteractor(mProduct.getId(), mBarcode);
         interactor.getObservable()
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -211,7 +221,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
                             getViewState().showSnackbarView(throwable.toString());
                         });
 
-          getViewState().finishView();
+        getViewState().finishView();
     }
 
 
@@ -227,11 +237,47 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
 
     public boolean onKeyListner(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_ENTER){
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
             onClickSave();
-        }else if(keyCode == KeyEvent.KEYCODE_ESCAPE){
+        } else if (keyCode == KeyEvent.KEYCODE_ESCAPE) {
             onClickCancel();
         }
         return false;
+    }
+
+
+    public void saveSettings() {
+
+        SettingsApp settingsApp;
+        GetSettingsInteractor interactor = new GetSettingsInteractor();
+        interactor.getObservable()
+                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
+                .flatMap(settings -> {
+                    settings.setCurentPallet(mBarcode.getPallet());
+                    return new SaveSettingsInteractor(settings).getObservable();
+                })
+                .subscribe();
+
+    }
+
+    public void loadSettings() {
+
+        mCarrentPallet = 0;
+        GetSettingsInteractor interactor = new GetSettingsInteractor();
+        interactor.getObservable()
+                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(settingsApp -> {
+                    return settingsApp != null;
+                })
+                .map(settingsApp -> settingsApp.getCurentPallet())
+                .subscribe(integer -> {
+                    mCarrentPallet = integer;
+                });
+    }
+
+    public void onStart() {
+        loadSettings();
     }
 }

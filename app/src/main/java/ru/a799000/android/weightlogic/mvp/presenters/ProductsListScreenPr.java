@@ -4,10 +4,12 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
 import io.realm.RealmResults;
+import ru.a799000.android.weightlogic.mvp.model.interactors.GetSettingsInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.SaveSettingsInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllProductInteractor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
+import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.ProductsListScreenView;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -20,7 +22,7 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
 
     RealmResults<Product> mData;
     String mId;
-    int positionCurent;
+    int mPositionCurent;
 
 
 
@@ -33,7 +35,6 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
                         resultO -> {
                             mData = (RealmResults<Product>) resultO;
                             getViewState().refreshView(mData);
-                            setListPosition();
 
                         }
                         , throwable ->
@@ -43,21 +44,8 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
     }
 
 
-    void setListPosition(){
-        if(mId != null){
-            int i = 0;
-            for(Product product:mData){
-                if(product.getId()==Long.parseLong(mId)){
-                    positionCurent = i;
-                    getViewState().setListPosition();
-                }
-                i = i +1;
-            }
-        }
-    }
-
-
     public void onStart() {
+        setCurentPosition();
         refreshList();
     }
 
@@ -121,10 +109,54 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
     }
 
     public int getSelectionPosition() {
-        return positionCurent;
+        return mPositionCurent;
     }
 
     public void scanBarcode(String s) {
         getViewState().showSnackbarView(s);
     }
+
+    public void saveCurentPosition(int selectedItemPosition) {
+
+        mPositionCurent = selectedItemPosition;
+
+        SettingsApp settingsApp;
+        GetSettingsInteractor interactor = new GetSettingsInteractor();
+        interactor.getObservable()
+                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
+                .flatMap(settings -> {
+                    settings.setCurentProduct(selectedItemPosition);
+                    settings.setCurentBarcode(0);
+                    return new SaveSettingsInteractor(settings).getObservable();
+                })
+                .subscribe();
+
+    }
+
+
+    public void setCurentPosition() {
+
+        mPositionCurent = 0;
+        GetSettingsInteractor interactor = new GetSettingsInteractor();
+        interactor.getObservable()
+                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(settingsApp -> {
+                    return settingsApp != null;
+                })
+                .map(settingsApp -> settingsApp.getCurentProduct())
+                .map(integer -> {
+                    if(integer < 0){
+                        return 0;
+                    }else{
+                        return integer;
+                    }
+                })
+                .subscribe(integer -> {
+                    mPositionCurent = integer;
+                });
+    }
+
+
 }

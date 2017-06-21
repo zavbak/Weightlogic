@@ -34,9 +34,7 @@ public interface AppComponent {
     void injectGetProductByIdInteractor(GetProductByIdInteractor getProductByIdInteractor);
     void injectSaveBarcodeInteractor(SaveBarcodeInteractor saveBarcodeInteractor);
     void injectGetAllProductInteractor(GetAllProductInteractor getAllProductInteractor);
-
     void injectGetBarcodesByIdProductInteractor(GetAllBarcodesByIdProductInteractor getBarcodesByIdProductInteractor);
-
     void GetBarcodeByIDInteractor(GetBarcodeByIDInteractor getBarcodeByIDInteractor);
 
 }

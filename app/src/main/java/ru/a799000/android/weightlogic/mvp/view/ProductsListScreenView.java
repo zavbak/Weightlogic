@@ -36,7 +36,7 @@ public interface ProductsListScreenView extends MvpView {
     void startListScreenBarcodes(String s);
 
 
-    @StateStrategyType(AddToEndSingleStrategy.class)
-    void setListPosition();
+
+
 
 }

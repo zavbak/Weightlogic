@@ -7,11 +7,14 @@ import com.arellomobile.mvp.MvpPresenter;
 import io.realm.RealmResults;
 
 
+import ru.a799000.android.weightlogic.mvp.model.interactors.GetSettingsInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.SaveSettingsInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllBarcodesByIdProductInteractor;
 
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 
+import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.BarcodesListScreenView;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,7 +26,7 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
     RealmResults<Barcode> mData;
     String mIdProduct;
     String mIdPosition;
-    int positionCurent;
+    int mPositionCurent;
 
 
     private void refreshList() {
@@ -36,9 +39,6 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
                         resultO -> {
                             mData = (RealmResults<Barcode>) resultO;
                             getViewState().refreshView(mData);
-                            setListPosition();
-
-
                         }
                         , throwable ->
                                 getViewState().showInfoView(throwable.getMessage()));
@@ -46,21 +46,11 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
     }
 
 
-    void setListPosition() {
-        if (mIdPosition != null) {
-            int i = 0;
-            for (Barcode barcode : mData) {
-                if (barcode.getId() == Long.parseLong(mIdPosition)) {
-                    positionCurent = i;
-                    getViewState().setListPosition();
-                }
-                i = i + 1;
-            }
-        }
-    }
+
 
 
     public void onStart() {
+        loadSettings();
         refreshList();
     }
 
@@ -119,11 +109,52 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
         mIdProduct = id;
     }
 
-    public int getSelectionPosition() {
-        return positionCurent;
-    }
 
     public void scanBarcode(String s) {
         getViewState().startDetailBarcodeForNewBarcodeScreenView(mIdProduct,s);
+    }
+
+    public void saveSettings(int selectedItemPosition) {
+
+        mPositionCurent = selectedItemPosition;
+
+        SettingsApp settingsApp;
+        GetSettingsInteractor interactor = new GetSettingsInteractor();
+        interactor.getObservable()
+                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
+                .flatMap(settings -> {
+                    settings.setCurentBarcode(selectedItemPosition);
+                    return new SaveSettingsInteractor(settings).getObservable();
+                })
+                .subscribe();
+
+    }
+
+    public void loadSettings() {
+
+        mPositionCurent = 0;
+        GetSettingsInteractor interactor = new GetSettingsInteractor();
+        interactor.getObservable()
+                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(settingsApp -> {
+                    return settingsApp != null;
+                })
+                .map(settingsApp -> settingsApp.getCurentBarcode())
+                .map(integer -> {
+                    if(integer < 0){
+                        return 0;
+                    }else{
+                        return integer;
+                    }
+                })
+                .subscribe(integer -> {
+                    mPositionCurent = integer;
+                });
+    }
+
+    public int getSelectionPosition() {
+        return mPositionCurent;
     }
 }

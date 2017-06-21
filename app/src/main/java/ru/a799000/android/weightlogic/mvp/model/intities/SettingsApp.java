@@ -6,6 +6,41 @@ package ru.a799000.android.weightlogic.mvp.model.intities;
 
 public class SettingsApp {
     String mFileName;
+    int mCurentProduct;
+    int mCurentBarcode;
+    int mCurentPallet;
+
+    public int getCurentPallet() {
+        return mCurentPallet;
+    }
+
+    public void setCurentPallet(int curentPallet) {
+        mCurentPallet = curentPallet;
+    }
+
+    public int getCurentBarcode() {
+        return mCurentBarcode;
+    }
+
+    public void setCurentBarcode(int curentBarcode) {
+        mCurentBarcode = curentBarcode;
+    }
+
+    public String getFileName() {
+        return mFileName;
+    }
+
+    public void setFileName(String fileName) {
+        mFileName = fileName;
+    }
+
+    public int getCurentProduct() {
+        return mCurentProduct;
+    }
+
+    public void setCurentProduct(int curentProduct) {
+        mCurentProduct = curentProduct;
+    }
 
     public String getFileNameLoad() {
         return mFileName;
