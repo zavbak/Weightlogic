@@ -1,4 +1,4 @@
-package ru.a799000.android.weightlogic.mvp.model.intities.load;
+package ru.a799000.android.weightlogic.mvp.model.intities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by user on 28.06.2017.
  */
 
-public class IntitiesParamLoadHttp {
+public class IntitiesParamHttp {
 
     @SerializedName("command")
     @Expose

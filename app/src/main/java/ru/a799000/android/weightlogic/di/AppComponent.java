@@ -7,7 +7,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import ru.a799000.android.weightlogic.mvp.model.interactors.LoadHttpInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.HttpInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellAllInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByIdInteractor;
@@ -39,5 +39,6 @@ public interface AppComponent {
     void GetBarcodeByIDInteractor(GetBarcodeByIDInteractor getBarcodeByIDInteractor);
 
 
-    void injectLoadHttpInteractor(LoadHttpInteractor loadHttpInteractor);
+    void injectLoadHttpInteractor(HttpInteractor loadHttpInteractor);
+    void injectHttpInteractor(HttpInteractor httpInteractor);
 }

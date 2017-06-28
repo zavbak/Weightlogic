@@ -3,7 +3,8 @@ package ru.a799000.android.weightlogic.repository.net;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
-import ru.a799000.android.weightlogic.mvp.model.intities.load.IntitiesParamLoadHttp;
+import retrofit2.http.Path;
+import ru.a799000.android.weightlogic.mvp.model.intities.IntitiesParamHttp;
 import rx.Observable;
 
 
@@ -12,10 +13,11 @@ import rx.Observable;
  */
 
 public interface ApiService {
-    @POST("/Api/hs/api/")
+    @POST("/{namebase}/hs/api/")
     Observable<ResponseModelDataServiceLoad> getResponseModelDataServiceObservable(
+            @Path("namebase") String namebase,
             @Header("Authorization") String auth,
-            @Body IntitiesParamLoadHttp sendParamJson);
+            @Body IntitiesParamHttp sendParamJson);
 
 }
 

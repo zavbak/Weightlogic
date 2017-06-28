@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import ru.a799000.android.weightlogic.R;
 import ru.a799000.android.weightlogic.app.App;
 import ru.a799000.android.weightlogic.mvp.model.interactors.GetSettingsInteractor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.SaveFileInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.GetDataSendInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellAllInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.LoadFileseInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
@@ -77,7 +77,7 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
         getViewState().showProgressDialog(true);
 
         Observable<SettingsApp> settingsAppObservable = new GetSettingsInteractor().getObservable();
-        Observable<String> obsJson = new SaveFileInteractor().getObservable();
+        Observable<String> obsJson = new GetDataSendInteractor().getObservable();
 
         Observable.zip(settingsAppObservable, obsJson, (settingsApp, s) -> {
             String fileName = settingsApp.getFileNameSave();

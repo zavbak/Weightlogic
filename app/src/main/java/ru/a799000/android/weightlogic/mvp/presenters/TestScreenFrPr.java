@@ -10,8 +10,8 @@ import org.json.JSONObject;
 
 import io.realm.RealmList;
 import io.realm.RealmResults;
-import ru.a799000.android.weightlogic.mvp.model.interactors.Interactor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.LoadHttpInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.GetDataSendInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.HttpInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellAllInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByIdInteractor;
@@ -22,9 +22,10 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInt
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.model.intities.load.IntitiesLoadObject;
-import ru.a799000.android.weightlogic.mvp.model.intities.load.IntitiesParamLoadHttp;
+import ru.a799000.android.weightlogic.mvp.model.intities.IntitiesParamHttp;
 import ru.a799000.android.weightlogic.mvp.view.TestScreenFrView;
 import ru.a799000.android.weightlogic.repository.net.AutoritationManager;
+import ru.a799000.android.weightlogic.repository.net.ResponseModelDataServiceLoad;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -152,7 +153,12 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
     }
 
 
-    IntitiesParamLoadHttp getTestSendModel(String strFilter) {
+    String getAuthTest() {
+        return AutoritationManager.getStringAutorization("Admin", "123");
+    }
+
+    public void onClickBtLoadNet() {
+
         JSONObject dataJson = new JSONObject();
         String dataString = null;
         try {
@@ -162,20 +168,12 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
             e.printStackTrace();
         }
 
-        IntitiesParamLoadHttp testModelSendData = new IntitiesParamLoadHttp();
-        testModelSendData.setCommand("command_data_to_tsd");
-        testModelSendData.setStrDataIn(dataString);
+        IntitiesParamHttp intitiesParamHttp = new IntitiesParamHttp();
+        intitiesParamHttp.setCommand("command_data_to_tsd");
+        intitiesParamHttp.setStrDataIn(dataString);
 
-        return testModelSendData;
-    }
 
-    String getAuthTest() {
-        return AutoritationManager.getStringAutorization("Admin", "123");
-    }
-
-    public void onClickBtLoadNet() {
-
-        LoadHttpInteractor interactor = new LoadHttpInteractor(getAuthTest(), getTestSendModel("Новоторг"));
+        HttpInteractor interactor = new HttpInteractor(getAuthTest(), intitiesParamHttp);
         interactor.getObservable()
                 .flatMap(responseModelDataServiceLoad -> {
                     try {
@@ -222,5 +220,66 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
 
 
                 });
+    }
+
+    public void onClickBtSendHTTP() {
+
+
+        Observable<String> oDataSendStrInteractor = new GetDataSendInteractor().getObservable();
+
+
+        Observable<IntitiesParamHttp> oIntitiesParamHttp = Observable.just(new IntitiesParamHttp())
+                .map(intitiesParamHttp1 -> {
+                    intitiesParamHttp1.setCommand("command_data_from_tsd");
+                    return intitiesParamHttp1;
+                })
+                .zipWith(oDataSendStrInteractor, (intitiesParamHttp, strData) -> {
+                    intitiesParamHttp.setStrDataIn(strData); //Добавили данные
+                    return intitiesParamHttp;
+                })
+                .subscribeOn(AndroidSchedulers.mainThread()); //Schedulers.io()
+                //.observeOn(AndroidSchedulers.mainThread()); //AndroidSchedulers.mainThread()
+
+        oIntitiesParamHttp
+                .map(intitiesParamHttp -> {
+                    return new HttpInteractor(getAuthTest(), intitiesParamHttp);
+                })
+                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                .flatMap(httpInteractor -> {
+                    return httpInteractor.getObservable();
+                })
+                .map(responseModelDataServiceLoad -> {
+                    return responseModelDataServiceLoad;
+                })
+                .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
+                .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
+                .subscribe(o -> {
+                    String s = "s";
+                });
+
+
+
+//        oIntitiesParamHttp
+//                .flatMap(intitiesParamHttp -> {
+//                    return new HttpInteractor(getAuthTest(), intitiesParamHttp).getObservable();
+//                })
+//                .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
+//                .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
+//                .subscribe(responseModelDataServiceLoad -> {
+//
+//                    getViewState().showTvMessageView(responseModelDataServiceLoad.toString());
+//
+//
+//                }, throwable -> {
+//
+//                    getViewState().showTvMessageView(throwable.getMessage());
+//
+//
+//                }, () -> {
+//
+//
+//                });
+
+
     }
 }

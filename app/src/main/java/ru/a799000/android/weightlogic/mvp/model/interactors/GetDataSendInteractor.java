@@ -20,7 +20,7 @@ import rx.Observable;
  * Created by user on 20.06.2017.
  */
 
-public class SaveFileInteractor extends Interactor {
+public class GetDataSendInteractor extends Interactor<String> {
 
 
     IntitiesBarcodeSend getIntitiesBarcodeSend(Barcode barcode) {
@@ -63,7 +63,7 @@ public class SaveFileInteractor extends Interactor {
 
     }
 
-    public String getIntitiesSendObject(RealmResults<Product> listProduct) {
+    String getIntitiesSendObject(RealmResults<Product> listProduct) {
 
 
         List<IntitiesTovarSend> listTovar = new ArrayList<>();
@@ -82,13 +82,13 @@ public class SaveFileInteractor extends Interactor {
 
 
     @Override
-    public Observable getObservable() {
+    public Observable<String> getObservable() {
 
         GetAllProductInteractor interactor = new GetAllProductInteractor();
         return interactor.getObservable()
-                .map(products -> {
+                .flatMap(products -> {
                     try {
-                        return getIntitiesSendObject(products);
+                        return Observable.just(getIntitiesSendObject(products));
                     } catch (Exception e) {
                         e.printStackTrace();
                         return Observable.error(e);
