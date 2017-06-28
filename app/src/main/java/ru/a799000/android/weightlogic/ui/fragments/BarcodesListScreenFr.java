@@ -41,6 +41,13 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     @BindView(R.id.tvMessageBarcode)
     TextView tvMessage;
 
+    @BindView(R.id.tvInfoProduct)
+    TextView tvInfoProduct;
+
+    @BindView(R.id.tvInfoBarcodes)
+    TextView tvInfoBarcodes;
+
+
     @BindView(R.id.lvBarcodes)
     ListView lvBarcodes;
 
@@ -63,7 +70,7 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
         View view = inflater.inflate(R.layout.list_barcodes_screen, container, false);
 
         Bundle args = getArguments();
-        mPresenter.setIdProduct(args.getString(ID));
+        mPresenter.setParamIdProduct(args.getString(ID));
         mCallBackScreens = (CallBackScreens) getActivity();
 
 
@@ -138,6 +145,11 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+        tvInfoProduct.setText(mPresenter.getInfoProduct());
+        tvInfoBarcodes.setText(mPresenter.getInfoBarcodes());
+
     }
 
     @Override

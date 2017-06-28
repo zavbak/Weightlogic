@@ -22,4 +22,11 @@ public class IntitiesLoadObject {
     public void setTovars(List<IntitiesTovarLoad> tovars) {
         this.tovars = tovars;
     }
+
+    @Override
+    public String toString() {
+        return "IntitiesLoadObject{" +
+                "tovars=" + tovars +
+                '}';
+    }
 }

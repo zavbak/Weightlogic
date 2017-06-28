@@ -12,11 +12,14 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.SaveSettingsInteract
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllBarcodesByIdProductInteractor;
 
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 
+import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.BarcodesListScreenView;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 
@@ -24,29 +27,36 @@ import rx.android.schedulers.AndroidSchedulers;
 public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
 
     RealmResults<Barcode> mData;
-    String mIdProduct;
+    String mParamIdProduct;
     String mIdPosition;
     int mPositionCurent;
+
+    Product mProduct;
 
 
     private void refreshList() {
 
-        GetAllBarcodesByIdProductInteractor interactor = new GetAllBarcodesByIdProductInteractor(Long.parseLong(mIdProduct));
-        interactor.getObservable()
+        Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mParamIdProduct != null ? mParamIdProduct : "0")).getObservable();
+        Observable<RealmResults<Barcode>> oBarcodes = new GetAllBarcodesByIdProductInteractor(Long.parseLong(mParamIdProduct)).getObservable();
+
+        Observable.zip(oBarcodes, oProduct, (barcodes, product) -> {
+            init(barcodes, product);
+            return Observable.empty();
+        })
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                 .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
-                .subscribe(
-                        resultO -> {
-                            mData = (RealmResults<Barcode>) resultO;
-                            getViewState().refreshView(mData);
-                        }
-                        , throwable ->
-                                getViewState().showInfoView(throwable.getMessage()));
-
+                .subscribe(objectObservable -> {
+                }, throwable -> {
+                    getViewState().showInfoView(throwable.getMessage());
+                });
     }
 
 
-
+    void init(RealmResults<Barcode> barcodes, Product product) {
+        mData = (RealmResults<Barcode>) barcodes;
+        mProduct = product;
+        getViewState().refreshView(mData);
+    }
 
 
     public void onStart() {
@@ -58,7 +68,7 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
         switch (number) {
 
             case 3:
-                getViewState().startDetailBarcodeScreenView(mIdProduct,null);
+                getViewState().startDetailBarcodeScreenView(mParamIdProduct, null);
                 break;
             case 9:
                 dellete(position);
@@ -102,16 +112,16 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
 
 
     public void onClickBarcode(int position) {
-        getViewState().startDetailBarcodeScreenView(mIdProduct,Long.toString(mData.get(position).getId()));
+        getViewState().startDetailBarcodeScreenView(mParamIdProduct, Long.toString(mData.get(position).getId()));
     }
 
-    public void setIdProduct(String id) {
-        mIdProduct = id;
+    public void setParamIdProduct(String id) {
+        mParamIdProduct = id;
     }
 
 
     public void scanBarcode(String s) {
-        getViewState().startDetailBarcodeForNewBarcodeScreenView(mIdProduct,s);
+        getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct, s);
     }
 
     public void saveSettings(int selectedItemPosition) {
@@ -143,9 +153,9 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
                 })
                 .map(settingsApp -> settingsApp.getCurentBarcode())
                 .map(integer -> {
-                    if(integer < 0){
+                    if (integer < 0) {
                         return 0;
-                    }else{
+                    } else {
                         return integer;
                     }
                 })
@@ -156,5 +166,38 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
 
     public int getSelectionPosition() {
         return mPositionCurent;
+    }
+
+    public CharSequence getInfoProduct() {
+        if (mProduct == null) {
+            return "";
+        } else {
+
+            String str = mProduct.getName();
+            return str;
+        }
+
+    }
+
+    public CharSequence getInfoBarcodes() {
+        if(mProduct.getBarcodes().size() == 0){
+            return "";
+        }else{
+            String str = "";
+
+            float weight = 0;
+            int plases = 0;
+            int count = 0;
+            for(Barcode barcode:mData){
+                weight = weight + barcode.getWeight();
+                plases = plases + barcode.getPlaces();
+                count++;
+
+            }
+
+            return String.format("Вес %.2f Mест %d Кол. %d",weight,plases,count);
+
+        }
+
     }
 }

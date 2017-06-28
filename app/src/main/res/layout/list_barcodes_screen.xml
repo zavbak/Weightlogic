@@ -10,13 +10,42 @@
         android:layout_height="wrap_content"
         android:background="@color/colorGrey">
 
-        <TextView
-            android:id="@+id/tvMessageBarcode"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Добавить (3), Удалить (9)"
-            android:layout_margin="8dp"
-            />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvMessageBarcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="Добавить (3), Удалить (9)"/>
+
+            <TextView
+                android:id="@+id/tvInfoProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:text=""/>
+
+            <TextView
+                android:id="@+id/tvInfoBarcodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:text=""
+                android:textSize="16dp"
+                android:textStyle="bold"/>
+
+
+        </LinearLayout>
+
     </FrameLayout>
 
 

@@ -96,5 +96,8 @@ public class TestScreenFr extends MvpAppCompatFragment implements TestScreenFrVi
         mPresenter.onClickBtDellAll();
     }
 
-
+    @OnClick(R.id.btLoadNet)
+    void onClickBtLoadNet(){
+        mPresenter.onClickBtLoadNet();
+    }
 }

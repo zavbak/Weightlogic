@@ -2,10 +2,16 @@ package ru.a799000.android.weightlogic.mvp.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import ru.a799000.android.weightlogic.mvp.model.interactors.Interactor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.LoadHttpInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellAllInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByIdInteractor;
@@ -15,20 +21,25 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInt
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
+import ru.a799000.android.weightlogic.mvp.model.intities.load.IntitiesLoadObject;
+import ru.a799000.android.weightlogic.mvp.model.intities.load.IntitiesParamLoadHttp;
 import ru.a799000.android.weightlogic.mvp.view.TestScreenFrView;
+import ru.a799000.android.weightlogic.repository.net.AutoritationManager;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by user on 17.06.2017.
  */
 
 @InjectViewState
-public class TestScreenFrPr extends MvpPresenter<TestScreenFrView>{
+public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
 
 
-    private String printBarcodes(RealmList<Barcode> barcodes){
-        String str = "\nBarcodes(" + barcodes.size() +  "): \n";
-        for(Barcode barcode:barcodes){
+    private String printBarcodes(RealmList<Barcode> barcodes) {
+        String str = "\nBarcodes(" + barcodes.size() + "): \n";
+        for (Barcode barcode : barcodes) {
             str = str + "   " + barcode.toString() + "\n";
         }
 
@@ -46,7 +57,7 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView>{
                             RealmResults<Product> results = (RealmResults<Product>) resultO;
                             String str = "Result: \n";
                             for (Product product : results) {
-                                str = str + "\n" + product.toString() + " "  + printBarcodes(product.getBarcodes()) + "\n" ;
+                                str = str + "\n" + product.toString() + " " + printBarcodes(product.getBarcodes()) + "\n";
                             }
                             getViewState().showTvMessageView(str);
 
@@ -138,5 +149,78 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView>{
                     getViewState().showTvMessageView(throwable.toString());
                 });
 
+    }
+
+
+    IntitiesParamLoadHttp getTestSendModel(String strFilter) {
+        JSONObject dataJson = new JSONObject();
+        String dataString = null;
+        try {
+            dataJson.put("code_tsd", "В0023");
+            dataString = dataJson.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        IntitiesParamLoadHttp testModelSendData = new IntitiesParamLoadHttp();
+        testModelSendData.setCommand("command_data_to_tsd");
+        testModelSendData.setStrDataIn(dataString);
+
+        return testModelSendData;
+    }
+
+    String getAuthTest() {
+        return AutoritationManager.getStringAutorization("Admin", "123");
+    }
+
+    public void onClickBtLoadNet() {
+
+        LoadHttpInteractor interactor = new LoadHttpInteractor(getAuthTest(), getTestSendModel("Новоторг"));
+        interactor.getObservable()
+                .flatMap(responseModelDataServiceLoad -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseModelDataServiceLoad.getResponse());
+                        String dataStr = jsonObject.getString("data");
+
+                        GsonBuilder builder = new GsonBuilder();
+                        Gson gson = builder.create();
+                        return Observable.just(gson.fromJson(dataStr, IntitiesLoadObject.class));
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return Observable.error(e);
+                    }
+                })
+                .flatMap(intitiesLoadObject -> {
+                    return Observable.from(intitiesLoadObject.getTovars());
+                })
+                .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
+                .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
+                .flatMap(intitiesTovar -> {
+                    Product product = new Product();
+                    product.setCode(intitiesTovar.getCode());
+                    product.setName(intitiesTovar.getName());
+                    product.setUnit(intitiesTovar.getEd());
+
+                    SaveProductInteractor saveProductInteractor = new SaveProductInteractor(product);
+                    return saveProductInteractor.getObservable();
+
+                })
+                .count()
+                .subscribe(integer -> {
+
+                    getViewState().showTvMessageView("Загружено: " + integer);
+
+
+                }, throwable -> {
+
+                    getViewState().showTvMessageView(throwable.getMessage());
+
+
+                }, () -> {
+
+
+                });
     }
 }

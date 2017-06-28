@@ -6,6 +6,7 @@ import io.realm.Realm;
 import ru.a799000.android.weightlogic.di.AppComponent;
 import ru.a799000.android.weightlogic.di.AppModule;
 import ru.a799000.android.weightlogic.di.DaggerAppComponent;
+import ru.a799000.android.weightlogic.di.NetworkingModule;
 
 
 /**
@@ -30,6 +31,7 @@ public class App extends Application{
     void init(){
         mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
+                .networkingModule(new NetworkingModule("http://192.168.170.2/"))
                 .build();
 
         Realm.init(this);

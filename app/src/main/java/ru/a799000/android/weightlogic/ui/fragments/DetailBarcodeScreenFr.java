@@ -122,7 +122,6 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
     public void onPause() {
         super.onPause();
         mCompositeSubscription.unsubscribe();
-        mPresenter.saveSettings();
     }
 
     @OnClick(R.id.btSave)

@@ -36,7 +36,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     BarcodeSeporator mBarcodeSeporator;
 
-    int mCarrentPallet;
+
 
 
     public DetailBarcodePr() {
@@ -50,9 +50,12 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
         Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mParamIdProduct != null ? mParamIdProduct : "0")).getObservable();
         Observable<Barcode> oBarcode = new GetBarcodeByIDInteractor(Long.parseLong(mParamIdBarcode != null ? mParamIdBarcode : "0")).getObservable();
+        Observable<SettingsApp> oSettingsApp = new GetSettingsInteractor().getObservable();
 
-        Observable.zip(oProduct, oBarcode, (product, barcode) -> {
-            init((Barcode) barcode, (Product) product);
+
+
+        Observable.zip(oProduct, oBarcode,oSettingsApp, (product, barcode, settingsApp) -> {
+            init((Barcode) barcode, (Product) product, settingsApp);
             return Observable.empty();
         })
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
@@ -67,8 +70,8 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
                 });
     }
 
-    private void init(Barcode barcode, Product product) {
-        loadSettings();
+    private void init(Barcode barcode, Product product,SettingsApp settingsApp) {
+
 
         if (product != null) {
             mProduct = Product.getBuilder()
@@ -98,7 +101,11 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
                 changeBarcode(mParamBarcode);
             }
 
-            mBarcode.setPallet(mCarrentPallet);
+            if(settingsApp != null){
+                mBarcode.setPallet(settingsApp.getCurentPallet());
+            }
+
+
         }
 
 
@@ -204,11 +211,16 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
         }
         mBarcode.setPallet(i);
 
-        mCarrentPallet = mBarcode.getPallet();
+
 
     }
 
     public void onClickSave() {
+
+        if(mBarcode.getId()==0){
+            saveSettings();
+        }
+
         mBarcode.setDate(new Date());
         SaveBarcodeInteractor interactor = new SaveBarcodeInteractor(mProduct.getId(), mBarcode);
         interactor.getObservable()
@@ -261,23 +273,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     }
 
-    public void loadSettings() {
-
-        mCarrentPallet = 0;
-        GetSettingsInteractor interactor = new GetSettingsInteractor();
-        interactor.getObservable()
-                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(settingsApp -> {
-                    return settingsApp != null;
-                })
-                .map(settingsApp -> settingsApp.getCurentPallet())
-                .subscribe(integer -> {
-                    mCarrentPallet = integer;
-                });
-    }
-
     public void onStart() {
-        loadSettings();
+
     }
 }
