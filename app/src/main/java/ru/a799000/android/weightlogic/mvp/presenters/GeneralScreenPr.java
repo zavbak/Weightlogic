@@ -77,6 +77,10 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
             case 4:
                 saveFiles();
                 break;
+            case 5:
+                DellAllInteractor dellAllInteractor = new DellAllInteractor();
+                dellAllInteractor.getObservable().subscribe();
+                break;
             case 6:
                 getViewState().startSettingsScreenView();
                 break;

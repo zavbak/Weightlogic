@@ -108,6 +108,10 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
                         });
 
 
+
+        refreshList();
+
+
     }
 
 
