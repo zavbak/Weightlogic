@@ -66,4 +66,44 @@ public class SettingsScreenPr extends MvpPresenter<SettingsScreenView> {
                 );
 
     }
+
+    public String getServerName() {
+        return mSettingsApp.getNameServer() == null ? "" : mSettingsApp.getNameServer();
+    }
+
+    public void changeServerName(String s) {
+        mSettingsApp.setNameServer(s);
+    }
+
+    public String getNameBase() {
+        return mSettingsApp.getNameBase() == null ? "" : mSettingsApp.getNameBase();
+    }
+
+    public void changeNameBase(String s) {
+        mSettingsApp.setNameBase(s);
+    }
+
+    public String getCode() {
+        return mSettingsApp.getCode1C() == null ? "" : mSettingsApp.getCode1C();
+    }
+
+    public void changeCode(String s) {
+        mSettingsApp.setCode1C(s);
+    }
+
+    public String getLogin() {
+        return mSettingsApp.getLogin() == null ? "" : mSettingsApp.getLogin();
+    }
+
+    public void changeLogin(String s) {
+        mSettingsApp.setLogin(s);
+    }
+
+    public String getPass() {
+        return mSettingsApp.getPass() == null ? "" : mSettingsApp.getPass();
+    }
+
+    public void changePass(String s) {
+        mSettingsApp.setPass(s);
+    }
 }

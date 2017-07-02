@@ -3,8 +3,10 @@
 
     <string-array name="commands_array">
         <item>Товары</item>
-        <item>Загрузить</item>
-        <item>Выгрузить</item>
+        <item>Загрузить из 1С</item>
+        <item>Выгрузить в 1С</item>
+        <item>Загрузить из файла</item>
+        <item>Выгрузить в файл</item>
         <item>Удалить</item>
         <item>Настройки</item>
         <item>Тестируем</item>

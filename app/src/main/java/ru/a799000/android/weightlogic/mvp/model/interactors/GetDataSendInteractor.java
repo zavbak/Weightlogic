@@ -8,6 +8,7 @@ import java.util.List;
 
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import ru.a799000.android.weightlogic.app.App;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllProductInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
@@ -76,6 +77,7 @@ public class GetDataSendInteractor extends Interactor<String> {
         IntitiesSendObject sendObject = new IntitiesSendObject();
         sendObject.setDate(new Date());
         sendObject.setTovars(listTovar);
+        sendObject.setCodeTSD(App.getAppComponent().getSettingsApp().getCode1C());
 
         return new Gson().toJson(sendObject);
     }

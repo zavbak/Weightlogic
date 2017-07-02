@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Replay Auth
  */
 
-public class ResponseModelDataServiceLoad {
+public class ResponseModel {
     @SerializedName("time_reseption")
     @Expose
     private String timeReseption;
@@ -83,7 +83,7 @@ public class ResponseModelDataServiceLoad {
 
     @Override
     public String toString() {
-        return "ResponseModelDataServiceLoad{" +
+        return "ResponseModel{" +
                 "timeReseption='" + timeReseption + '\'' +
                 ", command='" + command + '\'' +
                 ", timeResponse='" + timeResponse + '\'' +

@@ -17,15 +17,18 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetBarcodeByID
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
+import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.presenters.GeneralScreenPr;
 
 
 @Singleton
-@Component(modules={AppModule.class,RealmModule.class,NetworkingModule.class})
+@Component(modules={AppModule.class,RealmModule.class,NetworkingModule.class,SettingsModule.class})
 public interface AppComponent {
     Context getContext();
     RealmConfiguration getRealmConfiguration();
     Realm getRealm();
+    SettingsApp getSettingsApp();
+
 
     void injectGeneralScreenPr(GeneralScreenPr generalScreenPr);
     void injectSaveProductInteractor(SaveProductInteractor saveProductInteractor);

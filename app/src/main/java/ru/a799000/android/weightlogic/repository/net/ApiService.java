@@ -4,7 +4,6 @@ import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import ru.a799000.android.weightlogic.mvp.model.intities.IntitiesParamHttp;
 import rx.Observable;
 
 
@@ -14,10 +13,10 @@ import rx.Observable;
 
 public interface ApiService {
     @POST("/{namebase}/hs/api/")
-    Observable<ResponseModelDataServiceLoad> getResponseModelDataServiceObservable(
+    Observable<ResponseModel> getResponseModelDataServiceObservable(
             @Path("namebase") String namebase,
             @Header("Authorization") String auth,
-            @Body IntitiesParamHttp sendParamJson);
+            @Body SendModel sendParamJson);
 
 }
 

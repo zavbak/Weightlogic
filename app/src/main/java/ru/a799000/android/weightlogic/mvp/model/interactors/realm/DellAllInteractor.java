@@ -13,7 +13,7 @@ import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import rx.Observable;
 
-public class DellAllInteractor extends Interactor {
+public class DellAllInteractor extends Interactor<Boolean> {
 
     @Inject
     Realm mRealm;
@@ -24,7 +24,7 @@ public class DellAllInteractor extends Interactor {
     }
 
     @Override
-    public Observable getObservable() {
+    public Observable<Boolean> getObservable() {
 
         try {
             mRealm.beginTransaction();
@@ -36,11 +36,11 @@ public class DellAllInteractor extends Interactor {
 
             RealmQuery<Barcode> queryBarcode = mRealm.where(Barcode.class);
             RealmResults<Barcode> resultsBarcode = queryBarcode.findAll();
-            resultsBarcode.deleteAllFromRealm();
+            Boolean aBoolean = resultsBarcode.deleteAllFromRealm();
 
             mRealm.commitTransaction();
 
-            return Observable.empty();
+            return Observable.just(aBoolean);
 
         } catch (Exception e) {
             e.printStackTrace();

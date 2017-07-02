@@ -1,39 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="10">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilServerName"
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:layout_margin="8dp"
+                >
+
+                <EditText
+                    android:id="@+id/edServerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="сервер http://192.168.1.199/"
+                    android:inputType="textEmailAddress"
+                    android:textSize="24dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilNameBase"
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:layout_margin="8dp"
+                >
+
+                <EditText
+                    android:id="@+id/edNameBase"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="имя публикации базы"
+                    android:inputType="textEmailAddress"
+                    android:textSize="24dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilCode"
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:layout_margin="8dp"
+                >
+
+                <EditText
+                    android:id="@+id/edCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="код ТСД в 1C"
+                    android:inputType="textEmailAddress"
+                    android:textSize="24dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilLogin"
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:layout_margin="8dp"
+                >
+
+                <EditText
+                    android:id="@+id/edLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="пользователь 1С"
+                    android:inputType="textEmailAddress"
+                    android:textSize="24dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilPass"
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:layout_margin="8dp"
+                >
+
+                <EditText
+                    android:id="@+id/edPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="пароль"
+                    android:inputType="textPassword"
+                    android:textSize="24dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilFileName"
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:layout_margin="8dp"
+                >
+
+                <EditText
+                    android:id="@+id/edFileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="имя файла загрузки на cd"
+                    android:inputType="textEmailAddress"
+                    android:textSize="24dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilFileName"
-            android:layout_width="match_parent"
-            android:layout_height="68dp"
-            android:layout_margin="8dp"
-            >
-            <EditText
-                android:id="@+id/edFileName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="имя файла на cd"
-                android:inputType="textEmailAddress"
-                android:textSize="24dp"
-                />
-        </android.support.design.widget.TextInputLayout>
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        >
 
         <Button
             android:id="@+id/btCancel"

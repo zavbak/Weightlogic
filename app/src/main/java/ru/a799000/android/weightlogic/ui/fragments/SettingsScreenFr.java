@@ -19,7 +19,6 @@ import ru.a799000.android.weightlogic.R;
 import ru.a799000.android.weightlogic.mvp.presenters.SettingsScreenPr;
 import ru.a799000.android.weightlogic.mvp.view.SettingsScreenView;
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
-import ru.a799000.android.weightlogic.ui.activityes.MainActivity;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -34,6 +33,21 @@ public class SettingsScreenFr extends MvpAppCompatFragment implements SettingsSc
 
     @BindView(R.id.edFileName)
     EditText edFileName;
+
+    @BindView(R.id.edServerName)
+    EditText edServerName;
+
+    @BindView(R.id.edNameBase)
+    EditText edNameBase;
+
+    @BindView(R.id.edCode)
+    EditText edCode;
+
+    @BindView(R.id.edLogin)
+    EditText edLogin;
+
+    @BindView(R.id.edPass)
+    EditText edPass;
 
     CallBackScreens mCallBackScreens;
 
@@ -70,11 +84,43 @@ public class SettingsScreenFr extends MvpAppCompatFragment implements SettingsSc
                 .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getFileName())))
                 .subscribe(charSequence -> mPresenter.changeFileName(charSequence.toString())));
 
+        mCompositeSubscription.add(RxTextView.textChanges(edServerName)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getServerName())))
+                .subscribe(charSequence -> mPresenter.changeServerName(charSequence.toString())));
+
+        mCompositeSubscription.add(RxTextView.textChanges(edNameBase)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getNameBase())))
+                .subscribe(charSequence -> mPresenter.changeNameBase(charSequence.toString())));
+
+
+        mCompositeSubscription.add(RxTextView.textChanges(edCode)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getCode())))
+                .subscribe(charSequence -> mPresenter.changeCode(charSequence.toString())));
+
+
+        mCompositeSubscription.add(RxTextView.textChanges(edLogin)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getLogin())))
+                .subscribe(charSequence -> mPresenter.changeLogin(charSequence.toString())));
+
+        mCompositeSubscription.add(RxTextView.textChanges(edPass)
+                .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getPass())))
+                .subscribe(charSequence -> mPresenter.changePass(charSequence.toString())));
+
+
+
+
+
     }
 
     @Override
     public void refresh() {
         edFileName.setText(mPresenter.getFileName());
+        edServerName.setText(mPresenter.getServerName());
+        edNameBase.setText(mPresenter.getNameBase());
+        edCode.setText(mPresenter.getCode());
+        edLogin.setText(mPresenter.getLogin());
+        edPass.setText(mPresenter.getPass());
+
     }
 
     @OnClick(R.id.btSave)
@@ -89,10 +135,12 @@ public class SettingsScreenFr extends MvpAppCompatFragment implements SettingsSc
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         mCompositeSubscription.unsubscribe();
     }
+
+
 
     @Override
     public void showSnackbarView(String messager) {

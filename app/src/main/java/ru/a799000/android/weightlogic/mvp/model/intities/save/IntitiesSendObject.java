@@ -12,13 +12,25 @@ import java.util.List;
 
 public class IntitiesSendObject {
 
-    @SerializedName("Дата")
+    @SerializedName("date")
     @Expose
     Date date;
 
-    @SerializedName("Номенклатура")
+    @SerializedName("tovar")
     @Expose
     List<IntitiesTovarSend> tovars = null;
+
+    @SerializedName("code_tsd")
+    @Expose
+    String codeTSD;
+
+    public String getCodeTSD() {
+        return codeTSD;
+    }
+
+    public void setCodeTSD(String codeTSD) {
+        this.codeTSD = codeTSD;
+    }
 
     public Date getDate() {
         return date;

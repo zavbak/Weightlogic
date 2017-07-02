@@ -22,10 +22,9 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInt
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.model.intities.load.IntitiesLoadObject;
-import ru.a799000.android.weightlogic.mvp.model.intities.IntitiesParamHttp;
+import ru.a799000.android.weightlogic.repository.net.SendModel;
 import ru.a799000.android.weightlogic.mvp.view.TestScreenFrView;
 import ru.a799000.android.weightlogic.repository.net.AutoritationManager;
-import ru.a799000.android.weightlogic.repository.net.ResponseModelDataServiceLoad;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -168,7 +167,7 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
             e.printStackTrace();
         }
 
-        IntitiesParamHttp intitiesParamHttp = new IntitiesParamHttp();
+        SendModel intitiesParamHttp = new SendModel();
         intitiesParamHttp.setCommand("command_data_to_tsd");
         intitiesParamHttp.setStrDataIn(dataString);
 
@@ -222,13 +221,38 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
                 });
     }
 
+
+
+    public void sendHTTP(String auth, SendModel intitiesParamLoadHttp){
+        HttpInteractor interactor = new HttpInteractor(auth, intitiesParamLoadHttp);
+        interactor.getObservable()
+                .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
+                .observeOn(AndroidSchedulers.mainThread())// обработка результата - в main thread
+                .subscribe(responseModelDataServiceLoad -> {
+
+                    getViewState().showTvMessageView(responseModelDataServiceLoad.getResponse());
+
+
+                }, throwable -> {
+
+                    getViewState().showTvMessageView(throwable.getMessage());
+
+
+                }, () -> {
+
+
+                });
+
+
+    }
+
     public void onClickBtSendHTTP() {
 
 
         Observable<String> oDataSendStrInteractor = new GetDataSendInteractor().getObservable();
 
 
-        Observable<IntitiesParamHttp> oIntitiesParamHttp = Observable.just(new IntitiesParamHttp())
+        Observable.just(new SendModel())
                 .map(intitiesParamHttp1 -> {
                     intitiesParamHttp1.setCommand("command_data_from_tsd");
                     return intitiesParamHttp1;
@@ -237,25 +261,31 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
                     intitiesParamHttp.setStrDataIn(strData); //Добавили данные
                     return intitiesParamHttp;
                 })
-                .subscribeOn(AndroidSchedulers.mainThread()); //Schedulers.io()
-                //.observeOn(AndroidSchedulers.mainThread()); //AndroidSchedulers.mainThread()
-
-        oIntitiesParamHttp
-                .map(intitiesParamHttp -> {
-                    return new HttpInteractor(getAuthTest(), intitiesParamHttp);
-                })
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
-                .flatMap(httpInteractor -> {
-                    return httpInteractor.getObservable();
-                })
-                .map(responseModelDataServiceLoad -> {
-                    return responseModelDataServiceLoad;
-                })
-                .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
-                .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
-                .subscribe(o -> {
-                    String s = "s";
+                .observeOn(AndroidSchedulers.mainThread())//AndroidSchedulers.mainThread()
+                .subscribe(intitiesParamHttp -> {
+                    getViewState().showTvMessageView(intitiesParamHttp.getStrDataIn());
+                    sendHTTP(getAuthTest(), intitiesParamHttp);
+
+                }, throwable -> {
                 });
+
+//        oIntitiesParamHttp
+//                .map(intitiesParamHttp -> {
+//                    return new HttpInteractor(getAuthTest(), intitiesParamHttp);
+//                })
+//                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+//                .flatMap(httpInteractor -> {
+//                    return httpInteractor.getObservable();
+//                })
+//                .map(responseModelDataServiceLoad -> {
+//                    return responseModelDataServiceLoad;
+//                })
+//                .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
+//                .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
+//                .subscribe(o -> {
+//                    String s = "s";
+//                });
 
 
 

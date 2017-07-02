@@ -29,7 +29,6 @@ public class App extends Application{
     void init(){
         mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .networkingModule(new NetworkingModule("http://192.168.170.2/"))
                 .build();
 
         Realm.init(this);
