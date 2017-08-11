@@ -9,6 +9,7 @@ import ru.a799000.android.weightlogic.ui.fragments.DetailBarcodeScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.DetailProductScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.GeneralScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.ProductsListScreenFr;
+import ru.a799000.android.weightlogic.ui.fragments.ReportPaletListScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.SettingsScreenFr;
 import ru.a799000.android.weightlogic.ui.fragments.TestScreenFr;
 
@@ -102,5 +103,13 @@ public class RouterScreen {
                 .addToBackStack("myBackStack")
                 .commit();
 
+    }
+
+    public void startReportPaletScreenView(String paramIdProduct) {
+        mActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment, ReportPaletListScreenFr.getInstance(paramIdProduct), ReportPaletListScreenFr.TAG)
+                .addToBackStack("myBackStack")
+                .commit();
     }
 }

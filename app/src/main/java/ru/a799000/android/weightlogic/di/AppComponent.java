@@ -14,6 +14,7 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByI
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllProductInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllBarcodesByIdProductInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetBarcodeByIDInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetPaletSummInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
@@ -44,4 +45,6 @@ public interface AppComponent {
 
     void injectLoadHttpInteractor(HttpInteractor loadHttpInteractor);
     void injectHttpInteractor(HttpInteractor httpInteractor);
+
+    void injectGetPaletSummInteractor(GetPaletSummInteractor getPaletSummInteractor);
 }

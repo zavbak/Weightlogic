@@ -106,5 +106,11 @@ public class TestScreenFr extends MvpAppCompatFragment implements TestScreenFrVi
         mPresenter.onClickBtSendHTTP();
     }
 
+    @OnClick(R.id.btSummPallet)
+    void onClickBtSummPallet(){
+        mPresenter.onClickBtSummPallet();
+    }
+
+
 
 }

@@ -159,7 +159,15 @@
         </LinearLayout>
     </ScrollView>
 
-
+    <Button
+        android:id="@+id/btSummPallet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sum pallet"
+        app:layout_constraintLeft_toRightOf="@+id/btSendHTTP"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/btDellBarcode"/>
 
 
 </android.support.constraint.ConstraintLayout>

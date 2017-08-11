@@ -119,6 +119,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainAcView,Cal
         mRouterScreen.startDetailBarcodeForNewBarcodeScreenView(idProduct,barcode);
     }
 
+    @Override
+    public void startReportPaletScreenView(String paramIdProduct) {
+        mRouterScreen.startReportPaletScreenView(paramIdProduct);
+    }
+
 
     @Override
     public void showSnackbarView(String messager) {

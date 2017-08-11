@@ -108,10 +108,8 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
                 })
                 .observeOn(Schedulers.io())
                 .flatMap(sendModel -> {
-                    String auth = AutoritationManager.getStringAutorization(App.getAppComponent().getSettingsApp().getLogin(),
-                            App.getAppComponent().getSettingsApp().getPass());
 
-                    return new HttpInteractor(auth, (SendModel) sendModel).getObservable();
+                    return new HttpInteractor((SendModel) sendModel).getObservable();
 
                 })
                 .subscribeOn(AndroidSchedulers.mainThread());//Schedulers.io()
@@ -172,10 +170,9 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
                     return sendModel;
                 })
                 .flatMap(sendModel -> {
-                    String auth = AutoritationManager.getStringAutorization(App.getAppComponent().getSettingsApp().getLogin(),
-                            App.getAppComponent().getSettingsApp().getPass());
 
-                    return new HttpInteractor(auth, (SendModel) sendModel).getObservable();
+
+                    return new HttpInteractor((SendModel) sendModel).getObservable();
 
                 });
 

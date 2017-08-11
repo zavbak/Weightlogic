@@ -16,6 +16,7 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellAllInterac
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllProductInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetPaletSummInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
@@ -172,7 +173,7 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
         intitiesParamHttp.setStrDataIn(dataString);
 
 
-        HttpInteractor interactor = new HttpInteractor(getAuthTest(), intitiesParamHttp);
+        HttpInteractor interactor = new HttpInteractor(intitiesParamHttp);
         interactor.getObservable()
                 .flatMap(responseModelDataServiceLoad -> {
                     try {
@@ -222,9 +223,8 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
     }
 
 
-
-    public void sendHTTP(String auth, SendModel intitiesParamLoadHttp){
-        HttpInteractor interactor = new HttpInteractor(auth, intitiesParamLoadHttp);
+    public void sendHTTP(String auth, SendModel intitiesParamLoadHttp) {
+        HttpInteractor interactor = new HttpInteractor(intitiesParamLoadHttp);
         interactor.getObservable()
                 .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
                 .observeOn(AndroidSchedulers.mainThread())// обработка результата - в main thread
@@ -288,7 +288,6 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
 //                });
 
 
-
 //        oIntitiesParamHttp
 //                .flatMap(intitiesParamHttp -> {
 //                    return new HttpInteractor(getAuthTest(), intitiesParamHttp).getObservable();
@@ -309,6 +308,24 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
 //
 //
 //                });
+
+
+    }
+
+    public void onClickBtSummPallet() {
+
+        String mess = "";
+
+        GetPaletSummInteractor getPaletSummInteractor = new GetPaletSummInteractor(1);
+        getPaletSummInteractor.getObservable()
+                .reduce(mess,(paletSumResult, paletSumResult2) -> {
+                    paletSumResult = paletSumResult + "\n" +  paletSumResult2.toString();
+                    return paletSumResult;
+                })
+                .doOnNext(o -> {
+                    getViewState().showTvMessageView("" + o);
+                })
+                .subscribe();
 
 
     }

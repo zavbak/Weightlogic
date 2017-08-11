@@ -14,4 +14,5 @@ public interface CallBackScreens {
     void startListScreenBarcodes(String id);
     void startBarcodeProductScreenView(String idProduct,String idBarcode);
     void startDetailBarcodeForNewBarcodeScreenView(String idProduct, String barcode);
+    void startReportPaletScreenView(String paramIdProduct);
 }

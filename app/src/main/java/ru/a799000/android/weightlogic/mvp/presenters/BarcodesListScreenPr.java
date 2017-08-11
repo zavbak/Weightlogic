@@ -70,6 +70,9 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
             case 3:
                 getViewState().startDetailBarcodeScreenView(mParamIdProduct, null);
                 break;
+            case 5:
+                getViewState().startReportPalet(mParamIdProduct);
+                break;
             case 9:
                 dellete(position);
                 break;

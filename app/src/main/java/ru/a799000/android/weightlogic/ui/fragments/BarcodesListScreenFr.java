@@ -173,7 +173,10 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
         mCallBackScreens.startDetailBarcodeForNewBarcodeScreenView(idProduct,barcode);
     }
 
-
+    @Override
+    public void startReportPalet(String paramIdProduct) {
+        mCallBackScreens.startReportPaletScreenView(paramIdProduct);
+    }
 
 
     @Override
