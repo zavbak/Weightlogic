@@ -1,5 +1,7 @@
 package ru.a799000.android.weightlogic.mvp.model.interactors.realm;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import io.realm.Realm;
@@ -54,10 +56,13 @@ public class SaveBarcodeInteractor extends Interactor {
                 barcodeRealm = mRealm.where(Barcode.class).equalTo(RealmTable.ID, mBarcode.getId()).findFirst();
             }
 
+
+            barcodeRealm.setDate(new Date());
             barcodeRealm.setBarcode(mBarcode.getBarcode());
             barcodeRealm.setWeight(mBarcode.getWeight());
             barcodeRealm.setPlaces(mBarcode.getPlaces());
             barcodeRealm.setDate(mBarcode.getDate());
+            barcodeRealm.setDate(new Date());
             barcodeRealm.setPallet(mBarcode.getPallet());
 
             if(isNew) realmProduct.getBarcodes().add(barcodeRealm);

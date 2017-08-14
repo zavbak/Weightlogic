@@ -19,6 +19,7 @@ import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.DetailBarcodeView;
 import rx.Observable;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -39,6 +40,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
 
 
+
     public DetailBarcodePr() {
         mProduct = new Product();
         mBarcode = new Barcode();
@@ -47,67 +49,88 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
+        init();
+    }
 
-        Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mParamIdProduct != null ? mParamIdProduct : "0")).getObservable();
+
+
+
+
+    private void init() {
+
+
         Observable<Barcode> oBarcode = new GetBarcodeByIDInteractor(Long.parseLong(mParamIdBarcode != null ? mParamIdBarcode : "0")).getObservable();
+        Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mParamIdProduct != null ? mParamIdProduct : "0")).getObservable();
         Observable<SettingsApp> oSettingsApp = new GetSettingsInteractor().getObservable();
 
 
 
-        Observable.zip(oProduct, oBarcode,oSettingsApp, (product, barcode, settingsApp) -> {
-            init((Barcode) barcode, (Product) product, settingsApp);
-            return Observable.empty();
+        Observable.zip(oProduct, oBarcode, oSettingsApp, (product, barcode, settingsApp) -> {
+
+
+            if (product != null) {
+                mProduct = Product.getBuilder()
+                        .id(product.getId())
+                        .code(product.getCode())
+                        .name(product.getName())
+                        .initBarcode(product.getInitBarcode())
+                        .unit(product.getUnit())
+                        .start(product.getStart())
+                        .finish(product.getFinish())
+                        .coef(product.getCoef())
+                        .build();
+            }
+
+            if (barcode != null) {
+                mBarcode = Barcode.getBuilder()
+                        .setId(barcode.getId())
+                        .setBarcode(barcode.getBarcode())
+                        .setDate(barcode.getDate())
+                        .setWeight(barcode.getWeight())
+                        .setPlaces(barcode.getPlaces())
+                        .setPallet(barcode.getPallet())
+                        .build();
+            } else {
+                mBarcode.setPlaces(1);
+                if (mParamBarcode != null) {
+                    changeBarcode(mParamBarcode);
+                }
+
+                if (settingsApp != null) {
+                    mBarcode.setPallet(settingsApp.getCurentPallet());
+                }
+
+            }
+
+            return mBarcode;
         })
+                .flatMap(barcode -> {
+                    if(barcode.getId() !=0){
+                        return Observable.just(barcode);
+                    }else{
+                        return new SaveBarcodeInteractor(mProduct.getId(), barcode).getObservable();
+                    }
+                })
+                .doOnNext(barcode -> {
+                    mBarcode = Barcode.getBuilder()
+                            .setId(barcode.getId())
+                            .setBarcode(barcode.getBarcode())
+                            .setDate(barcode.getDate())
+                            .setWeight(barcode.getWeight())
+                            .setPlaces(barcode.getPlaces())
+                            .setPallet(barcode.getPallet())
+                            .build();
+                })
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                 .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
-
                 .subscribe(objectObservable -> {
+
 
                 }, throwable -> {
                     getViewState().showSnackbarView(throwable.toString());
                 }, () -> {
                     getViewState().refresh();
                 });
-    }
-
-    private void init(Barcode barcode, Product product,SettingsApp settingsApp) {
-
-
-        if (product != null) {
-            mProduct = Product.getBuilder()
-                    .id(product.getId())
-                    .code(product.getCode())
-                    .name(product.getName())
-                    .initBarcode(product.getInitBarcode())
-                    .unit(product.getUnit())
-                    .start(product.getStart())
-                    .finish(product.getFinish())
-                    .coef(product.getCoef())
-                    .build();
-        }
-
-        if (barcode != null) {
-            mBarcode = Barcode.getBuilder()
-                    .setId(barcode.getId())
-                    .setBarcode(barcode.getBarcode())
-                    .setDate(barcode.getDate())
-                    .setWeight(barcode.getWeight())
-                    .setPlaces(barcode.getPlaces())
-                    .setPallet(barcode.getPallet())
-                    .build();
-        } else {
-            mBarcode.setPlaces(1);
-            if (mParamBarcode != null) {
-                changeBarcode(mParamBarcode);
-            }
-
-            if(settingsApp != null){
-                mBarcode.setPallet(settingsApp.getCurentPallet());
-            }
-
-
-        }
-
 
 
     }
@@ -211,29 +234,27 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
         }
         mBarcode.setPallet(i);
 
-
-
     }
 
-    public void onClickSave() {
 
-        if(mBarcode.getId()==0){
+
+
+    public void onClickSave() {
+        if (mBarcode.getId() == 0) {
             saveSettings();
         }
 
-        mBarcode.setDate(new Date());
         SaveBarcodeInteractor interactor = new SaveBarcodeInteractor(mProduct.getId(), mBarcode);
         interactor.getObservable()
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(barcode -> {
                             getViewState().showSnackbarView("Сохранено");
+                            getViewState().finishView();
                         },
                         throwable -> {
                             getViewState().showSnackbarView(throwable.toString());
                         });
-
-        getViewState().finishView();
     }
 
 
@@ -243,8 +264,13 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
 
     public void scanBarcode(String s) {
-        changeBarcode(s);
-        getViewState().refresh();
+        //changeBarcode(s);
+        //getViewState().refresh();
+        getViewState().finishView();
+        getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct,s);
+
+
+
     }
 
 

@@ -228,6 +228,11 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         mCallBackScreens.backStack();
     }
 
+    @Override
+    public void startDetailBarcodeForNewBarcodeScreenView(String idProduct, String barcode) {
+        mCallBackScreens.startDetailBarcodeForNewBarcodeScreenView(idProduct,barcode);
+    }
+
 
     @OnFocusChange({R.id.edWeight,R.id.edBarcode,R.id.edSites,R.id.edPallet})
     public void onFocusChange(View v, boolean hasFocus){

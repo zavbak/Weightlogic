@@ -24,4 +24,7 @@ public interface DetailBarcodeView extends MvpView{
 
     @StateStrategyType(SkipStrategy.class)
     void finishView();
+
+    @StateStrategyType(SkipStrategy.class)
+    void startDetailBarcodeForNewBarcodeScreenView(String idProduct, String barcode);
 }
