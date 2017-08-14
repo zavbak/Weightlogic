@@ -13,8 +13,19 @@ public class PaletSumResult {
     int mPlaces;
     float mWeight;
 
-    public PaletSumResult(int pullet) {
+    Product mProduct;
+
+    public Product getProduct() {
+        return mProduct;
+    }
+
+    public void setProduct(Product product) {
+        mProduct = product;
+    }
+
+    public PaletSumResult(int pullet, Product product) {
         mPullet = pullet;
+        mProduct = product;
     }
 
     public int getPlaces() {
@@ -31,6 +42,10 @@ public class PaletSumResult {
 
     public void setWeight(float weight) {
         mWeight = weight;
+    }
+
+    public int getPullet() {
+        return mPullet;
     }
 
     @Override

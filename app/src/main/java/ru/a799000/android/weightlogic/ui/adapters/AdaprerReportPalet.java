@@ -18,7 +18,7 @@ public class AdaprerReportPalet extends BaseAdapter {
     private Context mContext;
     private List<PaletSumResult> mData;
 
-    public AdaprerReportPalet(Context context, List data) {
+    public AdaprerReportPalet(Context context, List<PaletSumResult> data) {
         mContext = context;
         mData = data;
     }
@@ -39,15 +39,23 @@ public class AdaprerReportPalet extends BaseAdapter {
         if (convertView == null){
             LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_palet_report_screen, viewGroup, false);
+
+            convertView = inflater.inflate(R.layout.item_report_palet, viewGroup, false);
+
             viewHolder = new ViewHolder();
-            //viewHolder.txtItem = (TextView) convertView.findViewById(R.id.txtItem);
+            viewHolder.txtItem = (TextView) convertView.findViewById(R.id.tvInfo);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        //viewHolder.txtItem.setText(getItem(position));
+
+        PaletSumResult paletSumResult = getItem(position);
+        String info = paletSumResult.getPullet() + " п. " + paletSumResult.getWeight() + " " + paletSumResult.getProduct().getUnit() +
+                ". " + paletSumResult.getPlaces() + " м.";
+
+        viewHolder.txtItem.setText(info);
 
         return convertView;
     }

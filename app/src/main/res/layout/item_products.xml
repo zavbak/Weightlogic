@@ -17,7 +17,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -37,8 +38,8 @@
                         android:layout_margin="8dp"
                         android:layout_weight="1"
                         android:text="1"
-                        android:textSize="16dp"
-                        android:textStyle="bold"/>
+                        style="@android:style/TextAppearance.Medium"
+                        />
 
                 </FrameLayout>
 
@@ -56,8 +57,7 @@
                         android:layout_margin="8dp"
                         android:layout_weight="15"
                         android:text="Настройка"
-                        android:textSize="16dp"
-                        android:textStyle="bold"/>
+                        style="@android:style/TextAppearance.Medium"/>
 
                 </FrameLayout>
 
@@ -71,7 +71,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:text="tvInfo"
-                android:textSize="16dp"/>
+                style="@android:style/TextAppearance.Small"/>
 
         </LinearLayout>
 

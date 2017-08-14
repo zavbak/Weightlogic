@@ -19,8 +19,7 @@
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:text="(1)"
-            android:textSize="24dp"
-            android:textStyle="bold"/>
+            style="@android:style/TextAppearance.Medium"/>
 
 
         <TextView
@@ -30,8 +29,9 @@
             android:layout_margin="8dp"
             android:layout_weight="100"
             android:text="Мясо на кости"
-            android:textSize="24dp"
-            android:textStyle="bold"/>
+            style="@android:style/TextAppearance.Medium"
+            android:maxLines="2"
+            />
 
 
     </LinearLayout>
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Штрихкод"
                 android:inputType="textEmailAddress"
-                android:textSize="24dp"
+                style="@android:style/TextAppearance.Large"
                 />
         </android.support.design.widget.TextInputLayout>
 
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="Сим. 10, 1245 ВЕС 12.45"
-            android:textSize="18dp"
+            style="@android:style/TextAppearance.Medium"
             android:textStyle="bold"/>
     </FrameLayout>
 
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Вес"
                 android:inputType="numberDecimal"
-                android:textSize="24dp"
+                style="@android:style/TextAppearance.Large"
                 />
         </android.support.design.widget.TextInputLayout>
 
@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Мест"
                 android:inputType="numberSigned"
-                android:textSize="24dp"
+                style="@android:style/TextAppearance.Large"
                 />
         </android.support.design.widget.TextInputLayout>
 
@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Паллет"
                 android:inputType="numberSigned"
-                android:textSize="24dp"
+                style="@android:style/TextAppearance.Large"
                 />
         </android.support.design.widget.TextInputLayout>
 
@@ -153,7 +153,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="01.02.17 15:12:15"
-        android:textSize="18dp"
+        style="@android:style/TextAppearance.Medium"
         android:textStyle="bold"/>
 
 

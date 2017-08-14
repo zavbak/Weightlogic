@@ -18,23 +18,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginLeft="16dp"
+            >
 
             <TextView
-                android:id="@+id/tvId"
+                android:id="@+id/tvInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="1 палет"
+                tools:text="1 п. 100 кг.  5 мест"
                 style="@android:style/TextAppearance.Medium"/>
 
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="15"
-                android:text="100 кг.  5 мест"
-                style="@android:style/TextAppearance.Medium"/>/>
 
         </LinearLayout>
 

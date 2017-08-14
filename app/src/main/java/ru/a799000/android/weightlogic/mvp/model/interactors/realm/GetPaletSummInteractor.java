@@ -43,7 +43,7 @@ public class GetPaletSummInteractor extends Interactor {
 
 
          return Observable.from(results)
-                .reduce(new PaletSumResult(pallet),(r, barcode) -> {
+                .reduce(new PaletSumResult(pallet,product),(r, barcode) -> {
 
                      int plases = ((PaletSumResult) r).getPlaces() + barcode.getPlaces();
                      float weights = ((PaletSumResult) r).getWeight() + barcode.getWeight();
