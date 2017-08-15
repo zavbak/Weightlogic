@@ -19,12 +19,13 @@ import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.BarcodesListScreenView;
 
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 
 @InjectViewState
-public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
+public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> implements OkCancelDialog.CallBackOkCancelDialog {
 
     RealmResults<Barcode> mData;
     String mParamIdProduct;
@@ -32,6 +33,14 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
     int mPositionCurent;
 
     Product mProduct;
+
+
+
+    OkCancelDialog.BuilderInterface mOkCancelDialog;
+    final int OK_CANCEL_DI_DELL = 1;
+
+    int mPositionForDell;
+
 
 
     private void refreshList() {
@@ -94,26 +103,29 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
 
     private void dellete(int position) {
 
-        DellBarcodeInteractor dellBarcodeInteractor = new DellBarcodeInteractor(mData.get(position).getId());
-        dellBarcodeInteractor.getObservable()
-                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
-                .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
-                .subscribe(
-                        resultO -> {
+        mPositionForDell = position;
+
+        mOkCancelDialog = new OkCancelDialog.BuilderInterface() {
+            @Override
+            public int getId() {
+                return OK_CANCEL_DI_DELL;
+            }
+
+            @Override
+            public String getTitle() {
+                return "Удалить ?";
+            }
+
+            @Override
+            public String getMessage() {
+                return null;
+            }
+        };
 
 
-                        }
-                        , throwable ->
-                                getViewState().showSnackbarView(throwable.toString())
-                        , () -> {
-
-                            getViewState().showSnackbarView("Удалили!");
-                        });
+        getViewState().startOkCancelDialog();
 
 
-
-        refreshList();
-        
 
 
     }
@@ -188,24 +200,76 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> {
     }
 
     public CharSequence getInfoBarcodes() {
-        if(mProduct.getBarcodes().size() == 0){
+        if (mProduct.getBarcodes().size() == 0) {
             return "";
-        }else{
+        } else {
             String str = "";
 
             float weight = 0;
             int plases = 0;
             int count = 0;
-            for(Barcode barcode:mData){
+            for (Barcode barcode : mData) {
                 weight = weight + barcode.getWeight();
                 plases = plases + barcode.getPlaces();
                 count++;
 
             }
 
-            return String.format("Вес %.2f Mест %d Кол. %d",weight,plases,count);
+            return String.format("Вес %.2f Mест %d Кол. %d", weight, plases, count);
 
         }
 
+    }
+
+    @Override
+    public void chouiceDialog(int id, Boolean positive) {
+        if (id == OK_CANCEL_DI_DELL) {
+            if (positive) {
+
+
+                long idDell = 0;
+                try {
+                    idDell = mData.get(mPositionForDell).getId();
+
+                    DellBarcodeInteractor dellBarcodeInteractor = new DellBarcodeInteractor(idDell);
+                    dellBarcodeInteractor.getObservable()
+                            .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                            .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
+                            .subscribe(
+                                    resultO -> {
+
+
+                                    }
+                                    , throwable ->
+                                            getViewState().showSnackbarView(throwable.toString())
+                                    , () -> {
+
+                                        getViewState().showSnackbarView("Удалили!");
+                                    });
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    getViewState().showSnackbarView(e.getMessage());
+                }
+
+                refreshList();
+
+            }
+        }
+
+
+        mOkCancelDialog = null;
+
+        getViewState().startOkCancelDialog();
+
+
+    }
+
+
+
+
+    public OkCancelDialog.BuilderInterface getOkCancelDialog() {
+        return mOkCancelDialog;
     }
 }

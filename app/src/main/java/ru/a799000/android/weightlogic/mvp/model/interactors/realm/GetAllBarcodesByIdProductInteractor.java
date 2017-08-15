@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import ru.a799000.android.weightlogic.app.App;
 import ru.a799000.android.weightlogic.mvp.model.interactors.Interactor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
@@ -34,7 +35,7 @@ public class GetAllBarcodesByIdProductInteractor extends Interactor<RealmResults
         try {
             Product product = mRealm.where(Product.class).equalTo(RealmTable.ID, mId).findFirst();
             RealmList<Barcode> barcodes = product.getBarcodes();
-            RealmResults<Barcode> results = barcodes.sort(RealmTable.ID);
+            RealmResults<Barcode> results = barcodes.sort(RealmTable.ID, Sort.DESCENDING);
             return Observable.just(results);
 
         } catch (Exception e) {

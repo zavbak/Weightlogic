@@ -24,6 +24,7 @@ import ru.a799000.android.weightlogic.mvp.view.ProductsListScreenView;
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
 import ru.a799000.android.weightlogic.ui.activityes.MainActivity;
 import ru.a799000.android.weightlogic.ui.adapters.AdaprerProdact;
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -185,6 +186,15 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     @Override
     public void startListScreenBarcodes(String id) {
         mCallBackScreens.startListScreenBarcodes(id);
+    }
+
+    @Override
+    public void startOkCancelDialog() {
+        OkCancelDialog.BuilderInterface okCancelDialogBuilderdata = mPresenter.getOkCancelDialog();
+        if(okCancelDialogBuilderdata != null){
+            OkCancelDialog okCancelDialog = OkCancelDialog.getInstance(okCancelDialogBuilderdata,mPresenter);
+            okCancelDialog.show(getActivity().getSupportFragmentManager(),OkCancelDialog.TAG);
+        }
     }
 
 

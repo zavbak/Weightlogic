@@ -28,20 +28,25 @@ import ru.a799000.android.weightlogic.mvp.model.intities.load.IntitiesLoadObject
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.view.GeneralScreenView;
 import ru.a799000.android.weightlogic.repository.filesys.SaveFileHelper;
-import ru.a799000.android.weightlogic.repository.net.AutoritationManager;
 import ru.a799000.android.weightlogic.repository.net.ResponseModel;
 import ru.a799000.android.weightlogic.repository.net.SendModel;
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
 @InjectViewState
-public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
+public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> implements OkCancelDialog.CallBackOkCancelDialog {
 
     @Inject
     Context mContext;
     List<String> mlist;
+
+    OkCancelDialog.BuilderInterface mOkCancelDialog;
+    final int OK_CANCEL_DI_LOAD_FILE = 1;
+    final int OK_CANCEL_DI_LOAD_FROM_1C = 2;
+    final int OK_CANCEL_DI_DELL = 3;
 
     public GeneralScreenPr() {
         App.getAppComponent().injectGeneralScreenPr(this);
@@ -66,20 +71,22 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
                 getViewState().startProductsScreenView();
                 break;
             case 1:
-                loadFrom1C();
+                clickLoadFrom1C();
+
                 break;
             case 2:
                 sendTo1C();
                 break;
             case 3:
-                loadFile();
+                clickloadFile();
                 break;
             case 4:
                 saveFiles();
                 break;
             case 5:
-                DellAllInteractor dellAllInteractor = new DellAllInteractor();
-                dellAllInteractor.getObservable().subscribe();
+
+                clickDell();
+
                 break;
             case 6:
                 getViewState().startSettingsScreenView();
@@ -88,6 +95,74 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
                 getViewState().startTestScreenView();
                 break;
         }
+    }
+
+    private void clickDell() {
+        mOkCancelDialog = new OkCancelDialog.BuilderInterface() {
+            @Override
+            public int getId() {
+                return OK_CANCEL_DI_DELL;
+            }
+
+            @Override
+            public String getTitle() {
+                return "Удалить? ?";
+            }
+
+            @Override
+            public String getMessage() {
+                return "Удалим все!!!";
+            }
+        };
+
+
+        getViewState().startOkCancelDialog();
+    }
+
+    private void clickLoadFrom1C() {
+        mOkCancelDialog = new OkCancelDialog.BuilderInterface() {
+            @Override
+            public int getId() {
+                return OK_CANCEL_DI_LOAD_FROM_1C;
+            }
+
+            @Override
+            public String getTitle() {
+                return "Загрузить из 1C ?";
+            }
+
+            @Override
+            public String getMessage() {
+                return "Старые данные затруться";
+            }
+        };
+
+
+        getViewState().startOkCancelDialog();
+
+    }
+
+    private void clickloadFile() {
+
+        mOkCancelDialog = new OkCancelDialog.BuilderInterface() {
+            @Override
+            public int getId() {
+                return OK_CANCEL_DI_LOAD_FILE;
+            }
+
+            @Override
+            public String getTitle() {
+                return "Загрузить из файла ?";
+            }
+
+            @Override
+            public String getMessage() {
+                return "Старые данные затруться";
+            }
+        };
+
+
+        getViewState().startOkCancelDialog();
     }
 
     private void sendTo1C() {
@@ -115,10 +190,6 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
                 .subscribeOn(AndroidSchedulers.mainThread());//Schedulers.io()
 
 
-
-
-
-
         responseModelObservable
 
                 .subscribe(responseModel -> {
@@ -126,15 +197,10 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
                     getViewState().showProgressDialog(false);
                     getViewState().showSnackbarView("Выгрузили");
 
-                },throwable -> {
+                }, throwable -> {
                     getViewState().showProgressDialog(false);
                     getViewState().showSnackbarView(throwable.toString());
                 });
-
-
-
-
-
 
 
     }
@@ -146,9 +212,7 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
 
 
         DellAllInteractor dellAllInteractor = new DellAllInteractor();
-        dellAllInteractor.getObservable().subscribe();
-
-
+        Observable<Boolean> observableDell = dellAllInteractor.getObservable();
 
 
         Observable<ResponseModel> responseModelObservable = Observable.just(new SendModel())
@@ -177,8 +241,9 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
                 });
 
 
-
-        responseModelObservable
+        Observable.zip(observableDell, responseModelObservable, (aBoolean, responseModel) -> {
+            return responseModel;
+        })
                 .flatMap(responseModelDataServiceLoad -> {
                     try {
                         JSONObject jsonObject = new JSONObject(responseModelDataServiceLoad.getResponse());
@@ -224,7 +289,7 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
 
                 }, () -> {
 
-
+                    getViewState().showProgressDialog(false);
                 });
 
 
@@ -257,66 +322,65 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
                 });
     }
 
+
+    private void dellData() {
+        getViewState().showProgressDialog(true);
+        DellAllInteractor dellAllInteractor = new DellAllInteractor();
+        dellAllInteractor.getObservable()
+                .subscribe(aBoolean -> {
+
+                },throwable -> {
+                    getViewState().showSnackbarView(throwable.getMessage());
+                    getViewState().showProgressDialog(false);
+                },() -> {
+                    getViewState().showProgressDialog(false);
+                });
+    }
     private void loadFile() {
         getViewState().showProgressDialog(true);
+
 
         DellAllInteractor dellAllInteractor = new DellAllInteractor();
         dellAllInteractor.getObservable()
                 .subscribeOn(AndroidSchedulers.mainThread()) //делаем запрос, преобразование, кэширование в отдельном потоке
                 .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
-                .subscribe(o -> {
+                .flatMap(aBoolean -> {
+                    return new LoadFileseInteractor().getObservable();
+                })
+                .map(s -> {
+                    GsonBuilder builder = new GsonBuilder();
+                    Gson gson = builder.create();
+                    return gson.fromJson(s, IntitiesLoadObject.class);
+                })
+                .flatMap(intitiesLoadObject -> {
+                    return Observable.from(intitiesLoadObject.getTovars());
+                })
+                .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
+                .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
+                .flatMap(intitiesTovar -> {
+                    Product product = new Product();
+                    product.setCode(intitiesTovar.getCode());
+                    product.setName(intitiesTovar.getName());
+                    product.setUnit(intitiesTovar.getEd());
 
-                    getViewState().showSnackbarView("Удалили");
-                    getViewState().showProgressDialog(true);
-                    LoadFileseInteractor interactor = new LoadFileseInteractor();
-                    interactor.getObservable()
-                            .map(s -> {
-                                GsonBuilder builder = new GsonBuilder();
-                                Gson gson = builder.create();
-                                return gson.fromJson(s, IntitiesLoadObject.class);
-                            })
-                            .flatMap(intitiesLoadObject -> {
-                                return Observable.from(intitiesLoadObject.getTovars());
-                            })
-                            .subscribeOn(Schedulers.io()) //делаем запрос, преобразование, кэширование в отдельном потоке
-                            .observeOn(AndroidSchedulers.mainThread()) // обработка результата - в main thread
-                            .flatMap(intitiesTovar -> {
-                                Product product = new Product();
-                                product.setCode(intitiesTovar.getCode());
-                                product.setName(intitiesTovar.getName());
-                                product.setUnit(intitiesTovar.getEd());
+                    SaveProductInteractor saveProductInteractor = new SaveProductInteractor(product);
+                    return saveProductInteractor.getObservable();
 
-                                SaveProductInteractor saveProductInteractor = new SaveProductInteractor(product);
-                                return saveProductInteractor.getObservable();
+                })
+                .count()
+                .subscribe(integer -> {
 
-                            })
-                            .count()
-                            .subscribe(integer -> {
-
-                                getViewState().showSnackbarView("Загружено: " + integer);
-                                getViewState().showProgressDialog(false);
-
-                            }, throwable -> {
-
-                                getViewState().showSnackbarView(throwable.getMessage());
-                                getViewState().showProgressDialog(false);
-
-
-                            }, () -> {
-
-
-                            });
-
+                    getViewState().showSnackbarView("Загружено: " + integer);
+                    getViewState().showProgressDialog(false);
 
                 }, throwable -> {
+                    getViewState().showSnackbarView(throwable.getMessage());
                     getViewState().showProgressDialog(false);
-                    getViewState().showSnackbarView(throwable.toString());
 
                 }, () -> {
 
-
+                    getViewState().showProgressDialog(false);
                 });
-
 
     }
 
@@ -341,4 +405,35 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> {
         }
 
     }
+
+    public OkCancelDialog.BuilderInterface getOkCancelDialog() {
+        return mOkCancelDialog;
+    }
+
+    @Override
+    public void chouiceDialog(int id, Boolean positive) {
+        switch (id) {
+            case OK_CANCEL_DI_LOAD_FILE:
+                if (positive) {
+                    loadFile();
+                }
+                break;
+            case OK_CANCEL_DI_LOAD_FROM_1C:
+                if (positive) {
+                    loadFrom1C();
+                }
+                break;
+
+            case OK_CANCEL_DI_DELL:
+                if (positive) {
+                    dellData();
+                }
+                break;
+        }
+
+        mOkCancelDialog = null;
+        getViewState().startOkCancelDialog();
+    }
+
+
 }

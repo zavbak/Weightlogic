@@ -35,6 +35,9 @@ public interface ProductsListScreenView extends MvpView {
     @StateStrategyType(SkipStrategy.class)
     void startListScreenBarcodes(String s);
 
+    @StateStrategyType(AddToEndSingleStrategy .class)
+    void startOkCancelDialog();
+
 
 
 

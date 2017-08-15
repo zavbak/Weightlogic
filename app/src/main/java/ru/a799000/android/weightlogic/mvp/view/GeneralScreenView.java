@@ -30,4 +30,7 @@ public interface GeneralScreenView extends MvpView{
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showProgressDialog(boolean show);
+
+    @StateStrategyType(AddToEndSingleStrategy .class)
+    void startOkCancelDialog();
 }

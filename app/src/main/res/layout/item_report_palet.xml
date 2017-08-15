@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 tools:text="1 п. 100 кг.  5 мест"
-                style="@android:style/TextAppearance.Medium"/>
+                style="@android:style/TextAppearance.Large"/>
 
 
         </LinearLayout>

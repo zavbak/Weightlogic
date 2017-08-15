@@ -25,6 +25,7 @@ import ru.a799000.android.weightlogic.mvp.presenters.GeneralScreenPr;
 import ru.a799000.android.weightlogic.mvp.view.GeneralScreenView;
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
 import ru.a799000.android.weightlogic.ui.adapters.CommandsAdapter;
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 
 /**
  * Created by Alex on 16.06.2017.
@@ -73,7 +74,7 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
     @Override
     public void refreshView(List<String> list) {
 
-        CommandsAdapter adapter = new CommandsAdapter(getActivity(),list);
+        CommandsAdapter adapter = new CommandsAdapter(getActivity(), list);
         lvCommands.setAdapter(adapter);
         lvCommands.requestFocus(0);
         lvCommands.setSelection(0);
@@ -92,7 +93,7 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-                if(event.getAction()== KeyEvent.ACTION_DOWN){
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     mPresenter.pressKey(event.getNumber());
                 }
 
@@ -123,10 +124,10 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
     }
 
     @Override
-    public void showProgressDialog(boolean show ) {
+    public void showProgressDialog(boolean show) {
 
-        if(show){
-            if(mProgressDialog == null){
+        if (show) {
+            if (mProgressDialog == null) {
                 mProgressDialog = new ProgressDialog(getActivity());
             }
             mProgressDialog.setCancelable(false);
@@ -134,12 +135,23 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
             //mProgressDialog.setMessage("Message");
             mProgressDialog.show();
 
-        }else{
-            if(mProgressDialog.isShowing()){
-                mProgressDialog.dismiss();
+        } else {
+            if (mProgressDialog != null) {
+                if (mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
             }
         }
 
+    }
+
+    @Override
+    public void startOkCancelDialog() {
+        OkCancelDialog.BuilderInterface okCancelDialogBuilderdata = mPresenter.getOkCancelDialog();
+        if (okCancelDialogBuilderdata != null) {
+            OkCancelDialog okCancelDialog = OkCancelDialog.getInstance(okCancelDialogBuilderdata, mPresenter);
+            okCancelDialog.show(getActivity().getSupportFragmentManager(), OkCancelDialog.TAG);
+        }
     }
 
     @Override
@@ -147,12 +159,6 @@ public class GeneralScreenFr extends MvpAppCompatFragment implements GeneralScre
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
     }
-
-
-
-
-
-
 
 
 }

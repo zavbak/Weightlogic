@@ -42,6 +42,7 @@ public class DetailProductPr extends MvpPresenter<DetailProductView> {
                         throwable -> {
                             getViewState().showSnackbarView(throwable.toString());
                         }, () -> {
+                            refreshBarcode();
                             getViewState().refresh();
                         });
 

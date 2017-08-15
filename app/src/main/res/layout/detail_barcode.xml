@@ -5,6 +5,31 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGrey">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="Удалить (9)"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +55,7 @@
             android:layout_weight="100"
             android:text="Мясо на кости"
             style="@android:style/TextAppearance.Medium"
-            android:maxLines="2"
+            android:maxLines="3"
             />
 
 
@@ -153,10 +178,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="01.02.17 15:12:15"
+        android:textAlignment="center"
         style="@android:style/TextAppearance.Medium"
         android:textStyle="bold"/>
-
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -164,18 +188,27 @@
         android:orientation="horizontal">
 
         <Button
+            android:layout_marginLeft="16dp"
             android:id="@+id/btCancel"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Отмена (ESC)"/>
+            android:layout_weight="5"
+            android:text="Отмена\n(ESC)"/>
+
+        <Button
+            android:id="@+id/btDell"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="Удалить \n"/>
 
         <Button
             android:id="@+id/btSave"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Сохранить (ENT)"/>
+            android:text="Сохранить\n(ENT)"
+            android:layout_marginRight="16dp"/>
     </LinearLayout>
 
 </LinearLayout>

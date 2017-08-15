@@ -8,6 +8,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import io.realm.OrderedRealmCollection;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 
 
 /**
@@ -19,6 +20,9 @@ public interface BarcodesListScreenView extends MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy.class)
     void refreshView(OrderedRealmCollection<Barcode> list);
+
+    @StateStrategyType(AddToEndSingleStrategy .class)
+    void startOkCancelDialog();
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showInfoView(String messager);

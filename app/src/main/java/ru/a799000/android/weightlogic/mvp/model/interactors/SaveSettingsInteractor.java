@@ -21,7 +21,7 @@ public class SaveSettingsInteractor extends Interactor<SettingsApp> {
     public Observable getObservable() {
         try {
             SharedPreferenseHelper.getInstance(App.getAppComponent().getContext()).saveSettings(mSettingsApp);
-            return  Observable.empty();
+            return  Observable.just(true);
         } catch (Exception e) {
             e.printStackTrace();
             return Observable.error(e);

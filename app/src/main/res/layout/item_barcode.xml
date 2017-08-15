@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="5dp"
-        card_view:contentPadding="10dp"
+
         >
 
         <LinearLayout
@@ -37,8 +37,8 @@
                         android:layout_margin="8dp"
                         android:layout_weight="1"
                         android:text="1"
-                        android:textSize="16dp"
-                        android:textStyle="bold"/>
+                        style="@android:style/TextAppearance.Medium"
+                        />
 
                 </FrameLayout>
 
@@ -55,23 +55,41 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:layout_weight="15"
-                        android:text="Настройка"
-                        android:textSize="20dp"
-                        android:textStyle="bold"/>
+                        android:text="Вес 10.2 Мест 5"
+                        style="@android:style/TextAppearance.Medium"/>
 
                 </FrameLayout>
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvInfoBarcodeDate"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_weight="1"
-                android:text="tvInfo"
-                android:textSize="16dp"/>
+                android:orientation="horizontal"
+                >
+
+
+                <TextView
+                    android:id="@+id/tvPalet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_weight="1"
+                    android:text="Палет № 10 "
+                    style="@android:style/TextAppearance.Small"/>
+
+                <TextView
+                    android:id="@+id/tvInfoBarcodeDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:text="01.01.2017 "
+                    style="@android:style/TextAppearance.Small"/>
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

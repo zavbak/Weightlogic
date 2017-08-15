@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="5dp"
-        card_view:contentPadding="10dp"
+
         >
 
         <LinearLayout
@@ -38,7 +38,7 @@
                         android:layout_margin="8dp"
                         android:layout_weight="1"
                         android:text="1"
-                        style="@android:style/TextAppearance.Medium"
+                        style="@android:style/TextAppearance.Large"
                         />
 
                 </FrameLayout>
@@ -68,10 +68,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
-                android:layout_marginTop="8dp"
+
                 android:layout_weight="1"
                 android:text="tvInfo"
-                style="@android:style/TextAppearance.Small"/>
+                style="@android:style/TextAppearance.Small"
+                android:textStyle="bold"
+                />
 
         </LinearLayout>
 

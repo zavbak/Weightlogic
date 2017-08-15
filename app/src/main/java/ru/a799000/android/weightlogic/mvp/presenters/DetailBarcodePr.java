@@ -11,6 +11,7 @@ import java.util.Date;
 import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
 import ru.a799000.android.weightlogic.mvp.model.interactors.GetSettingsInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.SaveSettingsInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetBarcodeByIDInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
@@ -18,6 +19,7 @@ import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.DetailBarcodeView;
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,7 +29,7 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 
 @InjectViewState
-public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
+public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements OkCancelDialog.CallBackOkCancelDialog {
     String mParamIdProduct;
     String mParamIdBarcode;
     String mParamBarcode;
@@ -37,8 +39,8 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     BarcodeSeporator mBarcodeSeporator;
 
-
-
+    OkCancelDialog.BuilderInterface mOkCancelDialog;
+    final int OK_CANCEL_DI_DELL = 1;
 
 
     public DetailBarcodePr() {
@@ -52,17 +54,12 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
         init();
     }
 
-
-
-
-
     private void init() {
 
 
         Observable<Barcode> oBarcode = new GetBarcodeByIDInteractor(Long.parseLong(mParamIdBarcode != null ? mParamIdBarcode : "0")).getObservable();
         Observable<Product> oProduct = new GetProductByIdInteractor(Long.parseLong(mParamIdProduct != null ? mParamIdProduct : "0")).getObservable();
         Observable<SettingsApp> oSettingsApp = new GetSettingsInteractor().getObservable();
-
 
 
         Observable.zip(oProduct, oBarcode, oSettingsApp, (product, barcode, settingsApp) -> {
@@ -105,9 +102,9 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
             return mBarcode;
         })
                 .flatMap(barcode -> {
-                    if(barcode.getId() !=0){
+                    if (barcode.getId() != 0) {
                         return Observable.just(barcode);
-                    }else{
+                    } else {
                         return new SaveBarcodeInteractor(mProduct.getId(), barcode).getObservable();
                     }
                 })
@@ -236,14 +233,8 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
 
     }
 
-
-
-
     public void onClickSave() {
-        if (mBarcode.getId() == 0) {
-            saveSettings();
-        }
-
+        saveSettings();
         SaveBarcodeInteractor interactor = new SaveBarcodeInteractor(mProduct.getId(), mBarcode);
         interactor.getObservable()
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
@@ -258,6 +249,11 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     }
 
 
+    public void onClickDell() {
+        dell();
+    }
+
+
     public void onClickCancel() {
         getViewState().finishView();
     }
@@ -266,11 +262,30 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     public void scanBarcode(String s) {
         //changeBarcode(s);
         //getViewState().refresh();
-        getViewState().finishView();
-        getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct,s);
+
+        Observable<Boolean> booleanObservable = new GetSettingsInteractor().getObservable()
+                .flatMap(settingsApp -> {
+                    settingsApp.setCurentPallet(mBarcode.getPallet());
+                    return new SaveSettingsInteractor(settingsApp).getObservable();
+                })
+                .flatMap(o -> {
+                    return new SaveBarcodeInteractor(mProduct.getId(), mBarcode).getObservable();
+                })
+                .map(o -> {
+                    return true;
+                });
 
 
 
+        Observable.zip(booleanObservable, Observable.just(s), (barcodeSave, scancode) -> {
+            return scancode;
+        })
+                .subscribe(s1 -> {
+                    getViewState().finishView();
+                    getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct, s1);
+                }, throwable -> {
+                    getViewState().showSnackbarView(throwable.getMessage());
+                });
     }
 
 
@@ -279,8 +294,49 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
             onClickSave();
         } else if (keyCode == KeyEvent.KEYCODE_ESCAPE) {
             onClickCancel();
+        } else {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+
+
+                try {
+                    int i = Integer.parseInt(Character.toString(event.getNumber()));
+                    executerCommand(i);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
         return false;
+    }
+
+    private void executerCommand(int number) {
+
+    }
+
+    private void dell() {
+
+
+        mOkCancelDialog = new OkCancelDialog.BuilderInterface() {
+            @Override
+            public int getId() {
+                return OK_CANCEL_DI_DELL;
+            }
+
+            @Override
+            public String getTitle() {
+                return "Удалить ?";
+            }
+
+            @Override
+            public String getMessage() {
+                return null;
+            }
+        };
+
+
+        getViewState().startOkCancelDialog();
+
     }
 
 
@@ -302,4 +358,54 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> {
     public void onStart() {
 
     }
+
+    public OkCancelDialog.BuilderInterface getOkCancelDialog() {
+        return mOkCancelDialog;
+    }
+
+    @Override
+    public void chouiceDialog(int id, Boolean positive) {
+
+
+        if (id == OK_CANCEL_DI_DELL) {
+            if (positive) {
+
+
+                try {
+
+
+                    DellBarcodeInteractor dellBarcodeInteractor = new DellBarcodeInteractor(mBarcode.getId());
+                    dellBarcodeInteractor.getObservable()
+                            .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                            .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
+                            .subscribe(
+                                    resultO -> {
+
+
+                                    }
+                                    , throwable ->
+                                            getViewState().showSnackbarView(throwable.toString())
+                                    , () -> {
+
+                                        getViewState().showSnackbarView("Удалили!");
+                                        getViewState().finishView();
+                                    });
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    getViewState().showSnackbarView(e.getMessage());
+                }
+
+            }
+        }
+
+
+        mOkCancelDialog = null;
+
+        getViewState().startOkCancelDialog();
+
+    }
+
+
 }

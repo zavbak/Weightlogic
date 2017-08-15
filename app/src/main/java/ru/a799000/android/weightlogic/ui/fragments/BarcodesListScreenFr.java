@@ -24,6 +24,7 @@ import ru.a799000.android.weightlogic.mvp.view.BarcodesListScreenView;
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
 import ru.a799000.android.weightlogic.ui.activityes.MainActivity;
 import ru.a799000.android.weightlogic.ui.adapters.AdaprerBarcode;
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -51,6 +52,9 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     @BindView(R.id.lvBarcodes)
     ListView lvBarcodes;
 
+
+
+
     CallBackScreens mCallBackScreens;
 
     private CompositeSubscription mCompositeSubscription;
@@ -74,7 +78,6 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
         mCallBackScreens = (CallBackScreens) getActivity();
 
 
-
         return view;
     }
 
@@ -88,6 +91,13 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     void init() {
         mCompositeSubscription = new CompositeSubscription();
         mCompositeSubscription.add(((MainActivity) getActivity()).getObservableBarcode()
+                .filter(s -> {
+                    if (mPresenter.getOkCancelDialog() == null) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
                 .subscribe(s -> {
                     mPresenter.scanBarcode(s);
                 }));
@@ -153,6 +163,16 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     }
 
     @Override
+    public void startOkCancelDialog() {
+        OkCancelDialog.BuilderInterface okCancelDialogBuilderdata = mPresenter.getOkCancelDialog();
+        if(okCancelDialogBuilderdata != null){
+            OkCancelDialog okCancelDialog = OkCancelDialog.getInstance(okCancelDialogBuilderdata,mPresenter);
+            okCancelDialog.show(getActivity().getSupportFragmentManager(),OkCancelDialog.TAG);
+        }
+    }
+
+
+    @Override
     public void showInfoView(String messager) {
         tvMessage.setText(messager);
     }
@@ -164,13 +184,13 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     }
 
     @Override
-    public void startDetailBarcodeScreenView(String idProduct,String idBarcode) {
-        mCallBackScreens.startBarcodeProductScreenView(idProduct,idBarcode);
+    public void startDetailBarcodeScreenView(String idProduct, String idBarcode) {
+        mCallBackScreens.startBarcodeProductScreenView(idProduct, idBarcode);
     }
 
     @Override
     public void startDetailBarcodeForNewBarcodeScreenView(String idProduct, String barcode) {
-        mCallBackScreens.startDetailBarcodeForNewBarcodeScreenView(idProduct,barcode);
+        mCallBackScreens.startDetailBarcodeForNewBarcodeScreenView(idProduct, barcode);
     }
 
     @Override
@@ -181,10 +201,10 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        int position =  lvBarcodes.getSelectedItemPosition();
+        int position = lvBarcodes.getSelectedItemPosition();
 
-        if(event.getAction()== KeyEvent.ACTION_DOWN){
-            mPresenter.pressKey(event.getNumber(),position);
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            mPresenter.pressKey(event.getNumber(), position);
         }
 
         return false;

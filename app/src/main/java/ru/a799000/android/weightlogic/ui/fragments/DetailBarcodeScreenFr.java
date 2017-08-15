@@ -28,6 +28,7 @@ import ru.a799000.android.weightlogic.mvp.view.DetailBarcodeView;
 
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
 import ru.a799000.android.weightlogic.ui.activityes.MainActivity;
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -129,6 +130,11 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         mPresenter.onClickSave();
     }
 
+    @OnClick(R.id.btDell)
+    void onClickDell() {
+        mPresenter.onClickDell();
+    }
+
 
     @OnClick(R.id.btCancel)
     void onClickCancel() {
@@ -139,6 +145,13 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         mCompositeSubscription = new CompositeSubscription();
 
         mCompositeSubscription.add(RxTextView.textChanges(edBarcode)
+                .filter(s -> {
+                    if (mPresenter.getOkCancelDialog() == null) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
                 .map(charSequence -> charSequence.toString())
                 .filter(s -> !s.equals(mPresenter.getBarcode().toString()))
                 .doOnNext(s -> mPresenter.changeBarcode(s))
@@ -146,24 +159,52 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
                 .subscribe());
 
         mCompositeSubscription.add(RxTextView.textChanges(edWeight)
+                .filter(s -> {
+                    if (mPresenter.getOkCancelDialog() == null) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
                 .skip(1)
                 .map(charSequence -> charSequence.toString())
                 .filter(s -> !s.equals(mPresenter.getWeight().toString()))
                 .subscribe(s -> mPresenter.changeWeight(s)));
 
         mCompositeSubscription.add(RxTextView.textChanges(edSites)
+                .filter(s -> {
+                    if (mPresenter.getOkCancelDialog() == null) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
                 .skip(1)
                 .map(charSequence -> charSequence.toString())
                 .filter(s -> !s.equals(mPresenter.getSites().toString()))
                 .subscribe(s -> mPresenter.changeSites(s)));
 
         mCompositeSubscription.add(RxTextView.textChanges(edPallet)
+                .filter(s -> {
+                    if (mPresenter.getOkCancelDialog() == null) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
                 .skip(1)
                 .map(charSequence -> charSequence.toString())
                 .filter(s -> !s.equals(mPresenter.getPallet().toString()))
                 .subscribe(s -> mPresenter.changePallet(s)));
 
         mCompositeSubscription.add(((MainActivity) getActivity()).getObservableBarcode()
+                .filter(s -> {
+                    if (mPresenter.getOkCancelDialog() == null) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
                 .subscribe(s -> {
                     mPresenter.scanBarcode(s);
                 }));
@@ -231,6 +272,15 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
     @Override
     public void startDetailBarcodeForNewBarcodeScreenView(String idProduct, String barcode) {
         mCallBackScreens.startDetailBarcodeForNewBarcodeScreenView(idProduct,barcode);
+    }
+
+    @Override
+    public void startOkCancelDialog() {
+        OkCancelDialog.BuilderInterface okCancelDialogBuilderdata = mPresenter.getOkCancelDialog();
+        if(okCancelDialogBuilderdata != null){
+            OkCancelDialog okCancelDialog = OkCancelDialog.getInstance(okCancelDialogBuilderdata,mPresenter);
+            okCancelDialog.show(getActivity().getSupportFragmentManager(),OkCancelDialog.TAG);
+        }
     }
 
 

@@ -55,7 +55,7 @@ public class AdaprerBarcode extends RealmBaseAdapter<Barcode> {
         TextView tvInfoWeightSites;
         TextView tvInfoBarcodeDate;
 
-
+        TextView tvPalet;
         Barcode mBarcode;
 
 
@@ -64,6 +64,7 @@ public class AdaprerBarcode extends RealmBaseAdapter<Barcode> {
             tvId = (TextView)view.findViewById(R.id.tvId);
             tvInfoWeightSites = (TextView)view.findViewById(R.id.tvInfoWeightSites);
             tvInfoBarcodeDate = (TextView)view.findViewById(R.id.tvInfoBarcodeDate);
+            tvPalet           = (TextView)view.findViewById(R.id.tvPalet);
         }
 
 
@@ -74,17 +75,20 @@ public class AdaprerBarcode extends RealmBaseAdapter<Barcode> {
 
             tvId.setText(Long.toString(mBarcode.getId()));
 
-            String infoWeightSites = String.format("  Вес: %s, Мест: %s, Паллет: %s", mBarcode.getWeight(), mBarcode.getPlaces(),mBarcode.getPallet());
+            String infoWeightSites = String.format("Вес: %s Мест: %s", mBarcode.getWeight(), mBarcode.getPlaces());
             tvInfoWeightSites.setText(infoWeightSites);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
 
-            String infoBarcodeDate = String.format("%s  %s"
-                    ,mBarcode.getDate()==null?"":dateFormat.format(mBarcode.getDate())
-                    ,mBarcode.getBarcode()==null?"":mBarcode.getBarcode());
+            String infoBarcodeDate = String.format("%s"
+                    ,mBarcode.getDate()==null?"":dateFormat.format(mBarcode.getDate()));
 
 
             tvInfoBarcodeDate.setText(infoBarcodeDate);
+
+            String strPalet = String.format("Палет № %s",mBarcode.getPallet());
+
+            tvPalet.setText(strPalet);
         }
 
     }

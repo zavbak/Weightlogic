@@ -6,11 +6,13 @@ import com.arellomobile.mvp.MvpPresenter;
 import io.realm.RealmResults;
 import ru.a799000.android.weightlogic.mvp.model.interactors.GetSettingsInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.SaveSettingsInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllProductInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.ProductsListScreenView;
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -18,12 +20,16 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 
 @InjectViewState
-public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
+public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> implements OkCancelDialog.CallBackOkCancelDialog {
 
     RealmResults<Product> mData;
     String mId;
     int mPositionCurent;
 
+    OkCancelDialog.BuilderInterface mOkCancelDialog;
+    final int OK_CANCEL_DI_DELL = 1;
+
+    int mPositionForDell;
 
 
     private void refreshList() {
@@ -81,22 +87,27 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
 
     private void delleteProduct(int position) {
 
-        DellProductByIdInteractor interactor = new DellProductByIdInteractor(mData.get(position).getId());
-        //DellProductByIdInteractor interactor = new DellProductByIdInteractor(100);
-        interactor.getObservable()
-                .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
-                .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
-                .subscribe(
-                        resultO -> {
+        mPositionForDell = position;
 
-                        }
-                        , throwable -> {
-                            getViewState().showSnackbarView(throwable.toString());
-                        }
-                        , () -> {
-                            getViewState().showSnackbarView("Удалено");
-                        }
-                );
+        mOkCancelDialog = new OkCancelDialog.BuilderInterface() {
+            @Override
+            public int getId() {
+                return OK_CANCEL_DI_DELL;
+            }
+
+            @Override
+            public String getTitle() {
+                return "Удалить ?";
+            }
+
+            @Override
+            public String getMessage() {
+                return null;
+            }
+        };
+
+
+        getViewState().startOkCancelDialog();
     }
 
 
@@ -147,9 +158,9 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
                 })
                 .map(settingsApp -> settingsApp.getCurentProduct())
                 .map(integer -> {
-                    if(integer < 0){
+                    if (integer < 0) {
                         return 0;
-                    }else{
+                    } else {
                         return integer;
                     }
                 })
@@ -159,4 +170,50 @@ public class ProductsListScreenPr extends MvpPresenter<ProductsListScreenView> {
     }
 
 
+    public OkCancelDialog.BuilderInterface getOkCancelDialog() {
+       return mOkCancelDialog;
+    }
+
+    @Override
+    public void chouiceDialog(int id, Boolean positive) {
+        if (id == OK_CANCEL_DI_DELL) {
+            if (positive) {
+
+
+                long idDell = 0;
+                try {
+                    idDell = mData.get(mPositionForDell).getId();
+
+                    DellProductByIdInteractor interactor = new DellProductByIdInteractor(idDell);
+                    //DellProductByIdInteractor interactor = new DellProductByIdInteractor(100);
+                    interactor.getObservable()
+                            .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
+                            .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
+                            .subscribe(
+                                    resultO -> {
+
+                                    }
+                                    , throwable -> {
+                                        getViewState().showSnackbarView(throwable.toString());
+                                    }
+                                    , () -> {
+                                        getViewState().showSnackbarView("Удалено");
+                                    }
+                            );
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    getViewState().showSnackbarView(e.getMessage());
+                }
+
+                refreshList();
+
+            }
+        }
+
+
+        mOkCancelDialog = null;
+        getViewState().startOkCancelDialog();
+    }
 }
