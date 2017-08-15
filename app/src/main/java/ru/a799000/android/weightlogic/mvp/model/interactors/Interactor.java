@@ -7,6 +7,5 @@ import rx.Observable;
  */
 
 public abstract class Interactor<T> {
-
     public abstract Observable<T> getObservable();
 }
