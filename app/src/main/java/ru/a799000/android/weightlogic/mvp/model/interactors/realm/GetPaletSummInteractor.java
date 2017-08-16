@@ -1,5 +1,6 @@
 package ru.a799000.android.weightlogic.mvp.model.interactors.realm;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 
 import javax.inject.Inject;
@@ -42,14 +43,21 @@ public class GetPaletSummInteractor extends Interactor {
         RealmResults<Barcode> results = barcodes.where().equalTo("pallet", pallet).findAll();
 
 
+
+
          return Observable.from(results)
                 .reduce(new PaletSumResult(pallet,product),(r, barcode) -> {
 
                      int plases = ((PaletSumResult) r).getPlaces() + barcode.getPlaces();
                      float weights = ((PaletSumResult) r).getWeight() + barcode.getWeight();
 
+                    BigDecimal bigDecimalW = ((PaletSumResult) r).getBigDecimalWeight().add(new BigDecimal(Float.toString(barcode.getWeight())));
+
+
                     ((PaletSumResult) r).setPlaces(plases);
                     ((PaletSumResult) r).setWeight(weights);
+                    ((PaletSumResult) r).setBigDecimalWeight(bigDecimalW);
+
 
                     return ((PaletSumResult) r);
                 } );

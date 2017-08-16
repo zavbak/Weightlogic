@@ -4,6 +4,8 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
 
+import java.math.BigDecimal;
+
 import io.realm.RealmResults;
 
 
@@ -200,22 +202,32 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> i
     }
 
     public CharSequence getInfoBarcodes() {
+
+
         if (mProduct.getBarcodes().size() == 0) {
             return "";
         } else {
             String str = "";
 
+            BigDecimal bigDecimalW = new BigDecimal(Float.toString(0));
+
             float weight = 0;
             int plases = 0;
             int count = 0;
+
             for (Barcode barcode : mData) {
                 weight = weight + barcode.getWeight();
                 plases = plases + barcode.getPlaces();
+
+
+                bigDecimalW = bigDecimalW.add(new BigDecimal(Float.toString(barcode.getWeight())));
+
+
                 count++;
 
             }
 
-            return String.format("Вес %.2f Mест %d Кол. %d", weight, plases, count);
+            return String.format("Вес %s Mест %d Кол. %d", bigDecimalW, plases, count);
 
         }
 

@@ -133,7 +133,7 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> implements 
 
             @Override
             public String getMessage() {
-                return "Старые данные затруться";
+                return "Старые данные будут удалены";
             }
         };
 

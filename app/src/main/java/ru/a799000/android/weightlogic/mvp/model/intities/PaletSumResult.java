@@ -13,6 +13,8 @@ public class PaletSumResult {
     int mPlaces;
     float mWeight;
 
+    BigDecimal mBigDecimalWeight;
+
     Product mProduct;
 
     public Product getProduct() {
@@ -26,6 +28,19 @@ public class PaletSumResult {
     public PaletSumResult(int pullet, Product product) {
         mPullet = pullet;
         mProduct = product;
+        mBigDecimalWeight = new BigDecimal("0");
+    }
+
+    public void setPullet(int pullet) {
+        mPullet = pullet;
+    }
+
+    public BigDecimal getBigDecimalWeight() {
+        return mBigDecimalWeight;
+    }
+
+    public void setBigDecimalWeight(BigDecimal bigDecimalWeight) {
+        mBigDecimalWeight = bigDecimalWeight;
     }
 
     public int getPlaces() {
