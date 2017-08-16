@@ -106,12 +106,12 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> implements 
 
             @Override
             public String getTitle() {
-                return "Удалить? ?";
+                return "Удалить?";
             }
 
             @Override
             public String getMessage() {
-                return "Удалим все!!!";
+                return "Удалим все данные по товару!!!";
             }
         };
 
@@ -362,6 +362,9 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> implements 
                     product.setCode(intitiesTovar.getCode());
                     product.setName(intitiesTovar.getName());
                     product.setUnit(intitiesTovar.getEd());
+                    product.setStart(intitiesTovar.getStart());
+                    product.setFinish(intitiesTovar.getFinish());
+                    product.setCoef(intitiesTovar.getCoef());
 
                     SaveProductInteractor saveProductInteractor = new SaveProductInteractor(product);
                     return saveProductInteractor.getObservable();

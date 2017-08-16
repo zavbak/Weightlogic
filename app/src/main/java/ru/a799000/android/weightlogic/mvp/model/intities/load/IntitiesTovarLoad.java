@@ -19,6 +19,42 @@ public class IntitiesTovarLoad {
     @Expose
     private String ed;
 
+    @SerializedName("Начало")
+    @Expose
+    int start;
+    @SerializedName("Конец")
+    @Expose
+    int finish;
+
+    @SerializedName("Коэффициент")
+    @Expose
+    float coef;
+
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getFinish() {
+        return finish;
+    }
+
+    public void setFinish(int finish) {
+        this.finish = finish;
+    }
+
+    public float getCoef() {
+        return coef;
+    }
+
+    public void setCoef(float coef) {
+        this.coef = coef;
+    }
+
     public String getCode() {
         return code;
     }

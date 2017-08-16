@@ -83,6 +83,12 @@ public class OkCancelDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        mCallBackOkCancelDialog.chouiceDialog(mId,false);
+    }
+
+    @Override
     public void onClick(DialogInterface dialog, int which) {
         if (mCallBackOkCancelDialog != null) {
             switch (which) {
