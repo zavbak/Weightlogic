@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import java.math.BigDecimal;
+
 import butterknife.BindView;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
@@ -59,6 +61,8 @@ public class AdaprerProdact extends RealmBaseAdapter<Product> {
         Product mProduct;
         float mWeight;
         int mSites;
+        BigDecimal mBigDecimalW;
+
 
 
         public ViewHolder(View view) {
@@ -69,9 +73,13 @@ public class AdaprerProdact extends RealmBaseAdapter<Product> {
 
         private void init() {
             RealmList<Barcode> barcodes = mProduct.getBarcodes();
+            mBigDecimalW = new BigDecimal("0");
+
             for (Barcode barcode : barcodes) {
                 mSites = mSites + barcode.getPlaces();
                 mWeight = mWeight + barcode.getWeight();
+                mBigDecimalW = mBigDecimalW.add(new BigDecimal(Float.toString(barcode.getWeight())));
+
             }
         }
 
@@ -81,7 +89,7 @@ public class AdaprerProdact extends RealmBaseAdapter<Product> {
 
             tvId.setText(Long.toString(mProduct.getId()));
             tvName.setText(product.getName() == null ? "" : product.getName());
-            String info = String.format("  Вес: %s, Мест: %s", mWeight, mSites);
+            String info = String.format("  Вес: %s, Мест: %s", mBigDecimalW.toString(), mSites);
             tvInfo.setText(info);
         }
 

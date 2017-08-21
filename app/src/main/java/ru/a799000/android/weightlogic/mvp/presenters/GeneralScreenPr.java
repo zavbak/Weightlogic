@@ -269,6 +269,9 @@ public class GeneralScreenPr extends MvpPresenter<GeneralScreenView> implements 
                     product.setCode(intitiesTovar.getCode());
                     product.setName(intitiesTovar.getName());
                     product.setUnit(intitiesTovar.getEd());
+                    product.setStart(intitiesTovar.getStart());
+                    product.setFinish(intitiesTovar.getFinish());
+                    product.setCoef(intitiesTovar.getCoef());
 
                     SaveProductInteractor saveProductInteractor = new SaveProductInteractor(product);
                     return saveProductInteractor.getObservable();
