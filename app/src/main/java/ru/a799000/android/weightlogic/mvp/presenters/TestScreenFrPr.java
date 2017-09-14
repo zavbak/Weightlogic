@@ -15,8 +15,8 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.HttpInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellAllInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellProductByIdInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllPaletSummInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllProductInteractor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetPaletSummInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveProductInteractor;
@@ -316,7 +316,7 @@ public class TestScreenFrPr extends MvpPresenter<TestScreenFrView> {
 
         String mess = "";
 
-        GetPaletSummInteractor getPaletSummInteractor = new GetPaletSummInteractor(1);
+        GetAllPaletSummInteractor getPaletSummInteractor = new GetAllPaletSummInteractor(1);
         getPaletSummInteractor.getObservable()
                 .reduce(mess,(paletSumResult, paletSumResult2) -> {
                     paletSumResult = paletSumResult + "\n" +  paletSumResult2.toString();

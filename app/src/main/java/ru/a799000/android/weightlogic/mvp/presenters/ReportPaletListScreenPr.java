@@ -3,12 +3,9 @@ package ru.a799000.android.weightlogic.mvp.presenters;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import io.realm.RealmResults;
 import ru.a799000.android.weightlogic.mvp.model.interactors.Interactor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllProductInteractor;
-import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetPaletSummInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetAllPaletSummInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.PaletSumResult;
-import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.view.ReportPaletListScreenView;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -26,7 +23,7 @@ public class ReportPaletListScreenPr extends MvpPresenter<ReportPaletListScreenV
 
 
     private void refreshList() {
-        Interactor<PaletSumResult> interactor = new GetPaletSummInteractor(Long.parseLong(mIdProduct));
+        Interactor<PaletSumResult> interactor = new GetAllPaletSummInteractor(Long.parseLong(mIdProduct));
         interactor.getObservable()
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                 .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()

@@ -7,4 +7,5 @@ package ru.a799000.android.weightlogic.repository.realm;
 public interface RealmTable {
 
     String ID = "id";
+    String PALLET = "pallet";
 }

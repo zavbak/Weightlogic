@@ -74,10 +74,9 @@ public class SettingsScreenFr extends MvpAppCompatFragment implements SettingsSc
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        initSubscription();
     }
 
-    void initSubscription(){
+    void init(){
         mCompositeSubscription = new CompositeSubscription();
 
         mCompositeSubscription.add(RxTextView.textChanges(edFileName)
@@ -132,6 +131,12 @@ public class SettingsScreenFr extends MvpAppCompatFragment implements SettingsSc
     @OnClick(R.id.btCancel)
     void onClickCancel(){
         mPresenter.onClickCancel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        init();
     }
 
     @Override

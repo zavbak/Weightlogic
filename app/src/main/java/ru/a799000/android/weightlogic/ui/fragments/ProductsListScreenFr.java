@@ -89,11 +89,7 @@ public class ProductsListScreenFr extends MvpAppCompatFragment implements Produc
     }
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mPresenter.onStart();
-    }
+
 
 
     @Override

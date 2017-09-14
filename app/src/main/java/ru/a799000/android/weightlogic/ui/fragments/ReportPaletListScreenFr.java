@@ -72,12 +72,13 @@ public class ReportPaletListScreenFr extends MvpAppCompatFragment implements Rep
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        init();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        init();
         mPresenter.onStart();
     }
 

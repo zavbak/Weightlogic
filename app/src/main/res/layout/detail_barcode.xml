@@ -5,10 +5,15 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-
-
-
-
+    <TextView
+        android:id="@+id/tvDate"
+        style="@android:style/TextAppearance.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="01.02.17 15:12:15"
+        android:textAlignment="gravity"
+        android:textStyle="normal"/>
 
 
     <LinearLayout
@@ -19,23 +24,23 @@
 
         <TextView
             android:id="@+id/tvId"
+            style="@android:style/TextAppearance.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            android:text="(1)"
-            style="@android:style/TextAppearance.Medium"/>
+            android:text="(1)"/>
 
 
         <TextView
             android:id="@+id/tvInfoProduct"
+            style="@android:style/TextAppearance.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="100"
-            android:text="Мясо на кости"
-            style="@android:style/TextAppearance.Medium"
             android:maxLines="3"
+            android:text="Мясо на кости"
             />
 
 
@@ -64,11 +69,11 @@
 
             <EditText
                 android:id="@+id/edBarcode"
+                style="@android:style/TextAppearance.Large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Штрихкод"
                 android:inputType="textEmailAddress"
-                style="@android:style/TextAppearance.Large"
                 />
         </android.support.design.widget.TextInputLayout>
 
@@ -82,13 +87,16 @@
 
         <TextView
             android:id="@+id/tvMessageBarcode"
+            style="@android:style/TextAppearance.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="Сим. 10, 1245 ВЕС 12.45"
-            style="@android:style/TextAppearance.Medium"
-            android:textStyle="bold"/>
+            android:textStyle="normal"/>
     </FrameLayout>
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -97,37 +105,37 @@
 
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilWeight"
+            android:id="@+id/tilSites1"
             android:layout_width="100dp"
             android:layout_height="64dp"
             android:layout_margin="8dp"
 
-            >
-
-            <EditText
-                android:id="@+id/edWeight"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:hint="Вес"
-                android:inputType="numberDecimal"
-                style="@android:style/TextAppearance.Large"
-                />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilSites"
-            android:layout_width="100dp"
-            android:layout_height="64dp"
-            android:layout_margin="8dp"
             >
 
             <EditText
                 android:id="@+id/edSites"
+                style="@android:style/TextAppearance.Large"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:hint="Мест"
                 android:inputType="numberSigned"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilWeight"
+            android:layout_width="100dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            >
+
+            <EditText
+                android:id="@+id/edWeight"
                 style="@android:style/TextAppearance.Large"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="Вес"
+                android:inputType="numberDecimal"
                 />
         </android.support.design.widget.TextInputLayout>
 
@@ -140,27 +148,42 @@
 
             <EditText
                 android:id="@+id/edPallet"
+                style="@android:style/TextAppearance.Large"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:hint="Паллет"
                 android:inputType="numberSigned"
-                style="@android:style/TextAppearance.Large"
                 />
         </android.support.design.widget.TextInputLayout>
 
 
-
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvDate"
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="01.02.17 15:12:15"
-        android:textAlignment="center"
-        style="@android:style/TextAppearance.Medium"
-        android:textStyle="bold"/>
+        >
+
+
+        <TextView
+            android:id="@+id/tvInfoPallet"
+            style="@android:style/TextAppearance.Large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="64dp"
+            android:layout_marginBottom="8dp"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:layout_gravity="end"
+
+
+            />
+    </FrameLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -168,27 +191,33 @@
         android:orientation="horizontal">
 
         <Button
-            android:layout_marginLeft="16dp"
             android:id="@+id/btCancel"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
             android:layout_weight="5"
-            android:text="Отмена\n(ESC)"/>
+            android:text="Отмена\n(ESC)"
+            android:layout_gravity="bottom"
+            />
 
         <Button
             android:id="@+id/btDell"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:text="Удалить \n"/>
+            android:text="Удалить \n"
+            android:layout_gravity="bottom"
+            />
 
         <Button
             android:id="@+id/btSave"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
             android:layout_weight="1"
             android:text="Сохранить\n(ENT)"
-            android:layout_marginRight="16dp"/>
+            android:layout_gravity="bottom"
+            />
     </LinearLayout>
 
 </LinearLayout>

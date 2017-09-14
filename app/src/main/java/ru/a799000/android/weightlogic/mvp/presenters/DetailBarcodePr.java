@@ -13,9 +13,11 @@ import ru.a799000.android.weightlogic.mvp.model.interactors.GetSettingsInteracto
 import ru.a799000.android.weightlogic.mvp.model.interactors.SaveSettingsInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.DellBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetBarcodeByIDInteractor;
+import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetPaletSummInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.GetProductByIdInteractor;
 import ru.a799000.android.weightlogic.mvp.model.interactors.realm.SaveBarcodeInteractor;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
+import ru.a799000.android.weightlogic.mvp.model.intities.PaletSumResult;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.model.intities.SettingsApp;
 import ru.a799000.android.weightlogic.mvp.view.DetailBarcodeView;
@@ -41,6 +43,9 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
 
     OkCancelDialog.BuilderInterface mOkCancelDialog;
     final int OK_CANCEL_DI_DELL = 1;
+
+
+    PaletSumResult mPaletSumResult;
 
 
     public DetailBarcodePr() {
@@ -118,6 +123,18 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
                             .setPallet(barcode.getPallet())
                             .build();
                 })
+                .flatMap(barcode -> {
+
+                    GetPaletSummInteractor getPaletSummInteractor =
+                            new GetPaletSummInteractor(Long.parseLong(mParamIdProduct != null ? mParamIdProduct : "0"), barcode.getPallet());
+
+                    return getPaletSummInteractor.getObservable();
+
+
+                })
+                .doOnNext(paletSumResult -> {
+                    mPaletSumResult = paletSumResult;
+                })
                 .subscribeOn(AndroidSchedulers.mainThread()) //Schedulers.io()
                 .observeOn(AndroidSchedulers.mainThread()) //AndroidSchedulers.mainThread()
                 .subscribe(objectObservable -> {
@@ -166,9 +183,17 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
         return mProduct.getName() != null ? mProduct.getName() : "";
     }
 
+    public CharSequence getInfoPallet() {
+        String info = String.format("№ %s         %s / %s",
+                mBarcode.getPallet(), mPaletSumResult.getPlaces(), mPaletSumResult.getBigDecimalWeight());
+
+        return info;
+
+    }
+
 
     public CharSequence getSizeBarcode() {
-        return mProduct.getInitBarcode() == null ? "" : "Сим. " + mProduct.getInitBarcode().length();
+        return mBarcode.getBarcode() == null ? "" : "Сим. " + mBarcode.getBarcode().length();
     }
 
     public CharSequence getWeight() {
@@ -274,7 +299,6 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
                 .map(o -> {
                     return true;
                 });
-
 
 
         Observable.zip(booleanObservable, Observable.just(s), (barcodeSave, scancode) -> {

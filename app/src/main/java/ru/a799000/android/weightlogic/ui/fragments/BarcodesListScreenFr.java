@@ -85,7 +85,7 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        init();
+
     }
 
     void init() {
@@ -106,9 +106,9 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     @Override
     public void onResume() {
         super.onResume();
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener(this);
+        mPresenter.onStart();
+        init();
+
     }
 
     @Override
@@ -127,12 +127,16 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     @Override
     public void onStart() {
         super.onStart();
-        mPresenter.onStart();
+
     }
 
 
     @Override
     public void refreshView(OrderedRealmCollection<Barcode> data) {
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(this);
 
         AdaprerBarcode adapter = new AdaprerBarcode(data);
         lvBarcodes.setAdapter(adapter);

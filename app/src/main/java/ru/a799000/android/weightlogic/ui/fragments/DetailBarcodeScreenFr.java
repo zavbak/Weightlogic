@@ -62,6 +62,10 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
     @BindView(R.id.tvMessageBarcode)
     TextView tvMessageBarcode;
 
+    @BindView(R.id.tvInfoPallet)
+    TextView tvInfoPallet;
+
+
     @BindView(R.id.edWeight)
     EditText edWeight;
 
@@ -109,13 +113,14 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        init();
+
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+        init();
         mPresenter.onStart();
     }
 
@@ -230,6 +235,8 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
         edSites.setText(mPresenter.getSites());
         edPallet.setText(mPresenter.getPallet());
         tvDate.setText(mPresenter.getDate());
+        tvInfoPallet.setText(mPresenter.getInfoPallet());
+
         mPresenter.refreshBarcode();
 
         onFocusChange(edPallet, true);

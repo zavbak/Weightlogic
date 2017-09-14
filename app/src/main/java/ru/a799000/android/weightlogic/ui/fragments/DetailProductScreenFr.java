@@ -90,7 +90,7 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        init();
+
     }
 
     void init() {
@@ -148,6 +148,12 @@ public class DetailProductScreenFr extends MvpAppCompatFragment implements Detai
 
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        init();
     }
 
     @Override

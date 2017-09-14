@@ -11,12 +11,10 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import ru.a799000.android.weightlogic.repository.realm.RealmMigration;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by Alex on 11.08.2017.
  */
-public class GetPaletSummInteractorTest {
+public class GetAllPaletSummInteractorTest {
 
 
     Realm mRealm;
@@ -45,7 +43,7 @@ public class GetPaletSummInteractorTest {
     public void getObservable() throws Exception {
         Log.d("anit", "start");
 
-        GetPaletSummInteractor getPaletSummInteractor = new GetPaletSummInteractor(1);
+        GetAllPaletSummInteractor getPaletSummInteractor = new GetAllPaletSummInteractor(1);
 
         getPaletSummInteractor.getObservable()
                 .doOnNext(o -> {

@@ -52,8 +52,15 @@ public class AdaprerReportPalet extends BaseAdapter {
 
 
         PaletSumResult paletSumResult = getItem(position);
-        String info = "№ " + paletSumResult.getPullet() + " Вес " + paletSumResult.getBigDecimalWeight().toString() + " " + paletSumResult.getProduct().getUnit() +
-                " Мест " + paletSumResult.getPlaces() + "";
+        //String info1 = "№ " + paletSumResult.getPullet() + " Вес " + paletSumResult.getBigDecimalWeight().toString() + " " + paletSumResult.getProduct().getUnit() +
+        //        " Мест " + paletSumResult.getPlaces() + "";
+
+
+        String info = String.format("№ %s       %s / %s",
+                paletSumResult.getPullet(),
+                paletSumResult.getPlaces(),
+                paletSumResult.getBigDecimalWeight());
+
 
         viewHolder.txtItem.setText(info);
 
