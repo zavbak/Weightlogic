@@ -9,13 +9,44 @@
         android:layout_height="wrap_content"
         android:background="@color/colorGrey">
 
-        <TextView
-            android:id="@+id/tvMessageBarcode"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Отчет по палетам"
-            android:layout_margin="8dp"
-            />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvMessageBarcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Палеты. Удалить(9)"
+                android:layout_margin="8dp"
+                />
+
+            <TextView
+                android:id="@+id/tvInfoProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:layout_marginLeft="16dp"
+                android:text=""/>
+
+            <TextView
+                android:id="@+id/tvInfoBarcodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:layout_marginLeft="16dp"
+                android:text=""
+                style="@android:style/TextAppearance.Large"/>
+
+
+        </LinearLayout>
+
+
+
     </FrameLayout>
 
 

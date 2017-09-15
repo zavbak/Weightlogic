@@ -1,10 +1,14 @@
 package ru.a799000.android.weightlogic.mvp.presenters;
 
+
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+
 
 import io.realm.RealmResults;
 
@@ -227,7 +231,12 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> i
 
             }
 
-            return String.format("Вес %s Mест %d Кол. %d", bigDecimalW, plases, count);
+            DecimalFormat df = new DecimalFormat();
+            df.setGroupingUsed(true);
+            String result = df.format(bigDecimalW);
+
+
+            return String.format("Вес %s Mест %d Кол. %d", result, plases, count);
 
         }
 

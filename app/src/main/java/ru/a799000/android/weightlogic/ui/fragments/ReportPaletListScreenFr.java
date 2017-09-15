@@ -3,6 +3,7 @@ package ru.a799000.android.weightlogic.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import ru.a799000.android.weightlogic.R;
+import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.model.intities.PaletSumResult;
 import ru.a799000.android.weightlogic.mvp.model.intities.Product;
 import ru.a799000.android.weightlogic.mvp.presenters.ProductsListScreenPr;
@@ -28,13 +32,14 @@ import ru.a799000.android.weightlogic.mvp.view.ReportPaletListScreenView;
 import ru.a799000.android.weightlogic.ui.activityes.CallBackScreens;
 import ru.a799000.android.weightlogic.ui.activityes.MainActivity;
 import ru.a799000.android.weightlogic.ui.adapters.AdaprerReportPalet;
+import ru.a799000.android.weightlogic.ui.dialogs.OkCancelDialog;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Alex on 11.08.2017.
  */
 
-public class ReportPaletListScreenFr extends MvpAppCompatFragment implements ReportPaletListScreenView {
+public class ReportPaletListScreenFr extends MvpAppCompatFragment implements ReportPaletListScreenView,View.OnKeyListener {
 
     public static final String TAG = "ReportPaletListScreenFr";
     static final String ID = "id";
@@ -45,6 +50,12 @@ public class ReportPaletListScreenFr extends MvpAppCompatFragment implements Rep
 
     @BindView(R.id.lv)
     ListView mListView;
+
+    @BindView(R.id.tvInfoProduct)
+    TextView tvInfoProduct;
+
+    @BindView(R.id.tvInfoBarcodes)
+    TextView tvInfoBarcodes;
 
 
     public static ReportPaletListScreenFr getInstance(String id) {
@@ -89,9 +100,21 @@ public class ReportPaletListScreenFr extends MvpAppCompatFragment implements Rep
 
     @Override
     public void refreshView(List<PaletSumResult> lv) {
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+
+
         AdaprerReportPalet adaprerReportPalet = new AdaprerReportPalet(getActivity(),lv);
         mListView.setAdapter(adaprerReportPalet);
 
+        mListView.requestFocus(0);
+        mListView.setClickable(true);
+        mListView.setOnKeyListener(this);
+
+
+        tvInfoProduct.setText(mPresenter.getInfoProduct());
+        tvInfoBarcodes.setText(mPresenter.getInfoBarcodes());
     }
 
     @Override
@@ -99,6 +122,28 @@ public class ReportPaletListScreenFr extends MvpAppCompatFragment implements Rep
         Snackbar.make(getView(), messager, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
+
+    @Override
+    public void startOkCancelDialog() {
+        OkCancelDialog.BuilderInterface okCancelDialogBuilderdata = mPresenter.getOkCancelDialog();
+        if(okCancelDialogBuilderdata != null){
+            OkCancelDialog okCancelDialog = OkCancelDialog.getInstance(okCancelDialogBuilderdata,mPresenter);
+            okCancelDialog.show(getActivity().getSupportFragmentManager(),OkCancelDialog.TAG);
+        }
+    }
+
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        int position = mListView.getSelectedItemPosition();
+
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            mPresenter.pressKey(event.getNumber(), position);
+        }
+
+        return false;
+    }
+
 
 
 }

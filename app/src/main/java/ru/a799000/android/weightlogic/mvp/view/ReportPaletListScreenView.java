@@ -23,4 +23,7 @@ public interface ReportPaletListScreenView extends MvpView {
     @StateStrategyType(SkipStrategy.class)
     void showSnackbarView(String messager);
 
+    @StateStrategyType(AddToEndSingleStrategy .class)
+    void startOkCancelDialog();
+
 }
