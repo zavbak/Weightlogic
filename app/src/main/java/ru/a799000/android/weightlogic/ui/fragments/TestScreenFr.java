@@ -34,6 +34,8 @@ public class TestScreenFr extends MvpAppCompatFragment implements TestScreenFrVi
     TextView tvMessage;
 
 
+
+
     public static TestScreenFr getInstance() {
         TestScreenFr fragment = new TestScreenFr();
         Bundle args = new Bundle();
@@ -52,6 +54,8 @@ public class TestScreenFr extends MvpAppCompatFragment implements TestScreenFrVi
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+
     }
 
 
