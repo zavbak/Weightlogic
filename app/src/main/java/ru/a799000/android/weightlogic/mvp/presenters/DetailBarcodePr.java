@@ -46,7 +46,6 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
 
 
     PaletSumResult mPaletSumResult;
-
     Boolean mControlLengthBK;
 
 
