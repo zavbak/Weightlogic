@@ -388,6 +388,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
         };
 
 
+
         getViewState().startOkCancelDialog();
 
     }
