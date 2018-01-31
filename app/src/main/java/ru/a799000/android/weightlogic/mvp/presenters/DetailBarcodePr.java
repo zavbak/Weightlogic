@@ -47,6 +47,8 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
 
     PaletSumResult mPaletSumResult;
 
+    Boolean mControlLengthBK;
+
 
     public DetailBarcodePr() {
         mProduct = new Product();
@@ -69,6 +71,11 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
 
         Observable.zip(oProduct, oBarcode, oSettingsApp, (product, barcode, settingsApp) -> {
 
+            if (settingsApp == null){
+                mControlLengthBK = false;
+            }else{
+                mControlLengthBK = settingsApp.getControlLengthBK();
+            }
 
             if (product != null) {
                 mProduct = Product.getBuilder()
@@ -305,8 +312,30 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
             return scancode;
         })
                 .subscribe(s1 -> {
-                    getViewState().finishView();
-                    getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct, s1);
+
+
+                    if (mControlLengthBK == true){
+                        int lengthBk = mProduct.getInitBarcode()== null
+                                ? 0 : mProduct.getInitBarcode().length();
+
+                        if (lengthBk == 0){
+                            getViewState().showErrorSnackbarView("Не установлен ШК в товаре!");
+                        }else if (lengthBk != s1.length()){
+                            getViewState().showErrorSnackbarView("Длинна ШК не совподает!");
+                        }else{
+
+                            getViewState().finishView();
+                            getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct, s1);
+
+                        }
+                    }else{
+
+                        getViewState().finishView();
+                        getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct, s1);
+                    }
+
+
+
                 }, throwable -> {
                     getViewState().showSnackbarView(throwable.getMessage());
                 });

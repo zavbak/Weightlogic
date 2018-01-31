@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import ru.a799000.android.weightlogic.R;
+import ru.a799000.android.weightlogic.common.PlaySound;
 import ru.a799000.android.weightlogic.mvp.model.common.BarcodeSeporator;
 import ru.a799000.android.weightlogic.mvp.presenters.DetailBarcodePr;
 import ru.a799000.android.weightlogic.mvp.view.DetailBarcodeView;
@@ -245,6 +246,13 @@ public class DetailBarcodeScreenFr extends MvpAppCompatFragment implements Detai
 
     @Override
     public void showSnackbarView(String messager) {
+        Snackbar.make(getView(), messager, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
+    @Override
+    public void showErrorSnackbarView(String messager) {
+        PlaySound.playError();
         Snackbar.make(getView(), messager, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }

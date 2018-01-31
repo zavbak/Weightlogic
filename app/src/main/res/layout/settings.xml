@@ -99,6 +99,16 @@
                     />
             </android.support.design.widget.TextInputLayout>
 
+            <Switch
+                android:id="@+id/swControlLengthBK"
+                android:layout_width="match_parent"
+                android:text="Контроль длинны ШК"
+                style="@android:style/TextAppearance.Small"
+                android:textSize="24dp"
+                android:layout_height="68dp"
+                android:layout_margin="8dp"
+                />
+
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilFileName"
@@ -116,6 +126,8 @@
                     android:textSize="24dp"
                     />
             </android.support.design.widget.TextInputLayout>
+
+
 
 
         </LinearLayout>

@@ -14,7 +14,15 @@ public class SettingsApp {
     String mCode1C;
     String mLogin;
     String mPass;
+    Boolean mControlLengthBK;
 
+    public Boolean getControlLengthBK() {
+        return mControlLengthBK;
+    }
+
+    public void setControlLengthBK(Boolean controlLengthBK) {
+        mControlLengthBK = controlLengthBK;
+    }
 
     public String getLogin() {
         return mLogin;

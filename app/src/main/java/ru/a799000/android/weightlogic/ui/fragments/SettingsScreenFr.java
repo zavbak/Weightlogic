@@ -6,7 +6,9 @@ import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -48,6 +50,9 @@ public class SettingsScreenFr extends MvpAppCompatFragment implements SettingsSc
 
     @BindView(R.id.edPass)
     EditText edPass;
+
+    @BindView(R.id.swControlLengthBK)
+    Switch swControlLengthBK;
 
     CallBackScreens mCallBackScreens;
 
@@ -105,7 +110,11 @@ public class SettingsScreenFr extends MvpAppCompatFragment implements SettingsSc
                 .filter(charSequence -> (!charSequence.toString().equals(mPresenter.getPass())))
                 .subscribe(charSequence -> mPresenter.changePass(charSequence.toString())));
 
-
+        swControlLengthBK.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mPresenter.setControlLengthBK(isChecked);
+            }
+        });
 
 
 
@@ -119,6 +128,7 @@ public class SettingsScreenFr extends MvpAppCompatFragment implements SettingsSc
         edCode.setText(mPresenter.getCode());
         edLogin.setText(mPresenter.getLogin());
         edPass.setText(mPresenter.getPass());
+        swControlLengthBK.setChecked(mPresenter.getControlLengthBK());
 
     }
 

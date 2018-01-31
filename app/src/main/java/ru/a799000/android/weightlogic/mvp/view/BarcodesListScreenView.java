@@ -40,4 +40,7 @@ public interface BarcodesListScreenView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void startReportPalet(String paramIdProduct);
+
+    @StateStrategyType(SkipStrategy.class)
+    void showErrorSnackbarView(String messager);
 }

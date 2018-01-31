@@ -106,4 +106,12 @@ public class SettingsScreenPr extends MvpPresenter<SettingsScreenView> {
     public void changePass(String s) {
         mSettingsApp.setPass(s);
     }
+
+    public void setControlLengthBK(boolean isChecked) {
+        mSettingsApp.setControlLengthBK(isChecked);
+    }
+
+    public Boolean getControlLengthBK() {
+        return mSettingsApp.getControlLengthBK() == null ? false : mSettingsApp.getControlLengthBK();
+    }
 }

@@ -30,4 +30,7 @@ public interface DetailBarcodeView extends MvpView{
 
     @StateStrategyType(AddToEndSingleStrategy .class)
     void startOkCancelDialog();
+
+    @StateStrategyType(SkipStrategy.class)
+    void showErrorSnackbarView(String messager);
 }

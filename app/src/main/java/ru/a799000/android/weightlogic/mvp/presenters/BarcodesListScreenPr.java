@@ -40,6 +40,8 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> i
 
     Product mProduct;
 
+    Boolean mControlLengthBK;
+
 
 
     OkCancelDialog.BuilderInterface mOkCancelDialog;
@@ -147,7 +149,21 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> i
 
 
     public void scanBarcode(String s) {
-        getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct, s);
+        if (mControlLengthBK == true){
+            int lengthBk = mProduct.getInitBarcode()== null
+                    ? 0 : mProduct.getInitBarcode().length();
+
+            if (lengthBk == 0){
+                getViewState().showErrorSnackbarView("Не установлен ШК в товаре!");
+            }else if (lengthBk != s.length()){
+                getViewState().showErrorSnackbarView("Длинна ШК не совподает!");
+            }else{
+                getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct, s);
+            }
+        }else{
+
+            getViewState().startDetailBarcodeForNewBarcodeScreenView(mParamIdProduct, s);
+        }
     }
 
     public void saveSettings(int selectedItemPosition) {
@@ -177,6 +193,10 @@ public class BarcodesListScreenPr extends MvpPresenter<BarcodesListScreenView> i
                 .filter(settingsApp -> {
                     return settingsApp != null;
                 })
+                .doOnNext(settingsApp -> {
+                    mControlLengthBK = settingsApp.getControlLengthBK()==null?false:
+                            settingsApp.getControlLengthBK();
+                } )
                 .map(settingsApp -> settingsApp.getCurentBarcode())
                 .map(integer -> {
                     if (integer < 0) {

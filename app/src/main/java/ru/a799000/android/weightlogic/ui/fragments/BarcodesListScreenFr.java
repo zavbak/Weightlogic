@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import ru.a799000.android.weightlogic.R;
+import ru.a799000.android.weightlogic.common.PlaySound;
 import ru.a799000.android.weightlogic.mvp.model.intities.Barcode;
 import ru.a799000.android.weightlogic.mvp.presenters.BarcodesListScreenPr;
 import ru.a799000.android.weightlogic.mvp.view.BarcodesListScreenView;
@@ -200,6 +201,13 @@ public class BarcodesListScreenFr extends MvpAppCompatFragment implements Barcod
     @Override
     public void startReportPalet(String paramIdProduct) {
         mCallBackScreens.startReportPaletScreenView(paramIdProduct);
+    }
+
+    @Override
+    public void showErrorSnackbarView(String messager) {
+        PlaySound.playError();
+        Snackbar.make(getView(), messager, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
 
