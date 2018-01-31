@@ -36,7 +36,7 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
     String mParamIdBarcode;
     String mParamBarcode;
 
-    //Комментарий****6
+    //Комментарий****7
 
 
     Product mProduct;
