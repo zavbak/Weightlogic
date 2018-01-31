@@ -36,9 +36,9 @@ public class DetailBarcodePr extends MvpPresenter<DetailBarcodeView> implements 
     String mParamIdBarcode;
     String mParamBarcode;
 
+
     Product mProduct;
     Barcode mBarcode;
-
     BarcodeSeporator mBarcodeSeporator;
 
     OkCancelDialog.BuilderInterface mOkCancelDialog;
